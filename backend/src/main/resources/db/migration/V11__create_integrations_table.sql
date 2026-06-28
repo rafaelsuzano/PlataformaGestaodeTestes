@@ -1,0 +1,9 @@
+CREATE TABLE integrations (
+    id VARCHAR(36) PRIMARY KEY,
+    type VARCHAR(50) NOT NULL, -- AZURE_DEVOPS, JIRA_XRAY, JIRA_ZEPHYR
+    url VARCHAR(255) NOT NULL,
+    api_token VARCHAR(255) NOT NULL,
+    project_id VARCHAR(36),
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);

@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: SuzanoIT-QA
+  datasource:
+    url: jdbc:sqlite:suzanoit-qa.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    url: jdbc:sqlite:suzanoit-qa.db
+    user: sa
+    password:
+
+server:
+  port: 8080
