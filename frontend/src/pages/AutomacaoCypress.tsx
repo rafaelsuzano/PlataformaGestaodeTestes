@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Card, CardContent, Button, Dialog, DialogTitle, DialogContent, Typography, Box, Chip } from '@mui/material';
 import { Copy, Terminal, CheckCircle, XCircle, Clock } from 'lucide-react';
-import { AutomatedTestRun, AutomationIntegrationService } from '@/services/api';
-import { useAuth } from '@/hooks/useAuth';
+import type { AutomatedTestRun } from '@/services/api';
+import { AutomationIntegrationService } from '@/services/api';
 
 export const AutomacaoCypress: React.FC = () => {
-  const { user } = useAuth();
+  // Para MVP, usando um projectId hardcoded ou capturado do localstorage
+  const projectId = localStorage.getItem('currentProjectId') || 'default-project-id';
   const [runs, setRuns] = useState<AutomatedTestRun[]>([]);
   const [loading, setLoading] = useState(true);
-  const projectId = user?.projectIds?.[0] || 'demo-project-id';
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const loadRuns = async () => {
     try {
@@ -27,7 +25,6 @@ export const AutomacaoCypress: React.FC = () => {
 
   useEffect(() => {
     loadRuns();
-    // Poll for new results every 15 seconds
     const interval = setInterval(loadRuns, 15000);
     return () => clearInterval(interval);
   }, [projectId]);
@@ -65,30 +62,33 @@ module.exports = defineConfig({
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="p-6 max-w-7xl mx-auto space-y-6 text-slate-200">
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Automação Cypress</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-3xl font-bold tracking-tight text-white">Automação Cypress</h1>
+          <p className="text-slate-400 mt-2">
             Integração em tempo real com execuções de testes automatizados via Cypress.
           </p>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="default" className="bg-[#0070F0] hover:bg-[#005BCC]">
-              <Terminal className="mr-2 h-4 w-4" />
-              Configurar Integração
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl bg-slate-900 border-slate-800 text-slate-100">
-            <DialogHeader>
-              <DialogTitle>Integração com Cypress</DialogTitle>
-              <DialogDescription className="text-slate-400">
-                Adicione o script abaixo no arquivo <code className="text-cyan-400">cypress.config.js</code> do seu projeto para enviar os resultados automaticamente para a nossa plataforma.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="relative mt-4">
-              <pre className="bg-slate-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-emerald-400">
+        
+        <Button 
+          variant="contained" 
+          onClick={() => setDialogOpen(true)}
+          sx={{ bgcolor: '#0070F0', '&:hover': { bgcolor: '#005BCC' }, borderRadius: 2 }}
+        >
+          <Terminal className="mr-2 h-4 w-4" />
+          Configurar Integração
+        </Button>
+      </div>
+
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ bgcolor: '#0f172a', color: 'white' }}>Integração com Cypress</DialogTitle>
+        <DialogContent sx={{ bgcolor: '#0f172a', color: '#cbd5e1' }}>
+          <Typography variant="body2" sx={{ mb: 2, color: '#94a3b8' }}>
+            Adicione o script abaixo no arquivo <code className="text-cyan-400 bg-slate-800 px-1 rounded">cypress.config.js</code> do seu projeto para enviar os resultados automaticamente para a nossa plataforma.
+          </Typography>
+          <Box sx={{ position: 'relative', mt: 2 }}>
+            <pre className="bg-slate-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-emerald-400 border border-slate-800">
 {`// cypress.config.js
 const axios = require('axios');
 const { defineConfig } = require('cypress');
@@ -118,65 +118,70 @@ module.exports = defineConfig({
     },
   },
 });`}
-              </pre>
-              <Button size="icon" variant="ghost" className="absolute top-2 right-2 text-slate-400 hover:text-white" onClick={copySnippet}>
-                <Copy className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-4 text-sm text-slate-400">
-              Lembre-se de instalar o <code className="text-cyan-400">axios</code> no seu projeto Cypress executando: <br/>
-              <code className="text-emerald-400 mt-2 block bg-slate-950 p-2 rounded">npm install axios</code>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </pre>
+            <Button 
+              sx={{ position: 'absolute', top: 8, right: 8, minWidth: 'auto', p: 1, color: '#94a3b8' }} 
+              onClick={copySnippet}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </Box>
+          <Typography variant="body2" sx={{ mt: 3, color: '#94a3b8' }}>
+            Lembre-se de instalar o <code className="text-cyan-400 bg-slate-800 px-1 rounded">axios</code> no seu projeto Cypress executando: <br/>
+            <code className="text-emerald-400 mt-2 block bg-slate-950 p-2 rounded w-max border border-slate-800">npm install axios</code>
+          </Typography>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Execuções</CardTitle>
-            <Terminal className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
+        <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.5)', backdropFilter: 'blur(12px)', color: 'white', borderRadius: 2 }}>
           <CardContent>
-            <div className="text-2xl font-bold">{runs.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-emerald-500">Testes Passados</CardTitle>
-            <CheckCircle className="h-4 w-4 text-emerald-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{runs.reduce((acc, run) => acc + run.passedTests, 0)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-red-500">Testes Falhos</CardTitle>
-            <XCircle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{runs.reduce((acc, run) => acc + run.failedTests, 0)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-500">Tempo Total Gasto</CardTitle>
-            <Clock className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {(runs.reduce((acc, run) => acc + run.durationMs, 0) / 1000 / 60).toFixed(1)} min
+            <div className="flex items-center justify-between pb-2">
+              <Typography variant="subtitle2" sx={{ color: '#94a3b8' }}>Total de Execuções</Typography>
+              <Terminal className="h-4 w-4 text-slate-500" />
             </div>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{runs.length}</Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.5)', backdropFilter: 'blur(12px)', color: 'white', borderRadius: 2 }}>
+          <CardContent>
+            <div className="flex items-center justify-between pb-2">
+              <Typography variant="subtitle2" sx={{ color: '#10b981' }}>Testes Passados</Typography>
+              <CheckCircle className="h-4 w-4 text-emerald-500" />
+            </div>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+              {runs.reduce((acc, run) => acc + run.passedTests, 0)}
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.5)', backdropFilter: 'blur(12px)', color: 'white', borderRadius: 2 }}>
+          <CardContent>
+            <div className="flex items-center justify-between pb-2">
+              <Typography variant="subtitle2" sx={{ color: '#ef4444' }}>Testes Falhos</Typography>
+              <XCircle className="h-4 w-4 text-red-500" />
+            </div>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+              {runs.reduce((acc, run) => acc + run.failedTests, 0)}
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.5)', backdropFilter: 'blur(12px)', color: 'white', borderRadius: 2 }}>
+          <CardContent>
+            <div className="flex items-center justify-between pb-2">
+              <Typography variant="subtitle2" sx={{ color: '#3b82f6' }}>Tempo Total Gasto</Typography>
+              <Clock className="h-4 w-4 text-blue-500" />
+            </div>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+              {(runs.reduce((acc, run) => acc + run.durationMs, 0) / 1000 / 60).toFixed(1)} min
+            </Typography>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Últimas Execuções</CardTitle>
-        </CardHeader>
+      <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.5)', backdropFilter: 'blur(12px)', color: 'white', borderRadius: 2, mt: 4 }}>
         <CardContent>
+          <Typography variant="h6" sx={{ mb: 4, fontWeight: 'bold' }}>Últimas Execuções</Typography>
+          
           {loading && runs.length === 0 ? (
             <div className="text-center py-10 text-slate-500">Carregando execuções...</div>
           ) : runs.length === 0 ? (
@@ -186,7 +191,7 @@ module.exports = defineConfig({
           ) : (
             <div className="space-y-4">
               {runs.map((run) => (
-                <div key={run.id} className="flex items-center justify-between p-4 border rounded-lg bg-card hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                <div key={run.id} className="flex items-center justify-between p-4 border border-slate-800 rounded-lg bg-slate-900/50 hover:bg-slate-800 transition-colors">
                   <div className="flex items-center space-x-4">
                     {run.status === 'PASSED' ? (
                       <CheckCircle className="h-6 w-6 text-emerald-500" />
@@ -194,9 +199,9 @@ module.exports = defineConfig({
                       <XCircle className="h-6 w-6 text-red-500" />
                     )}
                     <div>
-                      <h4 className="font-semibold">{run.name}</h4>
-                      <div className="flex items-center space-x-2 text-sm text-slate-500 mt-1">
-                        <Badge variant="outline">{run.framework}</Badge>
+                      <h4 className="font-semibold text-lg">{run.name}</h4>
+                      <div className="flex items-center space-x-2 text-sm text-slate-400 mt-1">
+                        <Chip label={run.framework} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.1)', color: 'white', height: 20 }} />
                         <span>•</span>
                         <span>Ambiente: {run.environment || 'Local'}</span>
                         <span>•</span>
@@ -204,22 +209,22 @@ module.exports = defineConfig({
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-6 text-sm">
+                  <div className="flex items-center space-x-8 text-sm">
                     <div className="flex flex-col items-center">
                       <span className="text-slate-500">Total</span>
-                      <span className="font-semibold">{run.totalTests}</span>
+                      <span className="font-semibold text-white">{run.totalTests}</span>
                     </div>
                     <div className="flex flex-col items-center">
                       <span className="text-emerald-500">Passed</span>
-                      <span className="font-semibold text-emerald-600">{run.passedTests}</span>
+                      <span className="font-semibold text-emerald-400">{run.passedTests}</span>
                     </div>
                     <div className="flex flex-col items-center">
                       <span className="text-red-500">Failed</span>
-                      <span className="font-semibold text-red-600">{run.failedTests}</span>
+                      <span className="font-semibold text-red-400">{run.failedTests}</span>
                     </div>
                     <div className="flex flex-col items-center">
                       <span className="text-slate-500">Duração</span>
-                      <span className="font-semibold">{(run.durationMs / 1000).toFixed(1)}s</span>
+                      <span className="font-semibold text-white">{(run.durationMs / 1000).toFixed(1)}s</span>
                     </div>
                   </div>
                 </div>
