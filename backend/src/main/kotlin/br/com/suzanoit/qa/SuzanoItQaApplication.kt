@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class SuzanoItQaApplication {
 
-    @GetMapping("/")
+    @GetMapping("/api/health")
     fun healthCheck(): Map<String, String> {
         return mapOf(
             "status" to "UP",
-            "service" to "SuzanoIT QA Backend API",
-            "message" to "A API está rodando perfeitamente. Para acessar a plataforma visual, utilize a URL do Frontend."
+            "service" to "SuzanoIT QA Backend API"
         )
     }
 }
