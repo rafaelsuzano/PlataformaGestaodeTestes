@@ -4,9 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ClientJpaRepository : JpaRepository<ClientJpaEntity, String>
-
-@Repository
 interface ProjectJpaRepository : JpaRepository<ProjectJpaEntity, String>
 
 @Repository
@@ -40,3 +37,17 @@ interface TestExecutionStepJpaRepository : JpaRepository<TestExecutionStepJpaEnt
 
 @Repository
 interface DefectJpaRepository : JpaRepository<DefectJpaEntity, String>
+
+@Repository
+interface TestPlanJpaRepository : JpaRepository<TestPlanJpaEntity, String> {
+    fun findByProjectId(projectId: String): List<TestPlanJpaEntity>
+}
+
+@Repository
+interface EnvironmentJpaRepository : JpaRepository<EnvironmentJpaEntity, String>
+
+@Repository
+interface ExecutionHistoryJpaRepository : JpaRepository<ExecutionHistoryJpaEntity, String>
+
+@Repository
+interface SystemLogJpaRepository : JpaRepository<SystemLogJpaEntity, String>

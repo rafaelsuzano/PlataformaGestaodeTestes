@@ -111,13 +111,14 @@ class ApiExecutionService(
                 "API Execution: ${planEntity.get().name}",
                 null, // sprint
                 tcId,
-                null, // testerId (could be system)
+                planId, // testPlanId
+                null, // testerId
                 "API", // environment
                 status,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(), // startedAt
+                LocalDateTime.now(), // completedAt
+                LocalDateTime.now(), // createdAt
+                LocalDateTime.now()  // updatedAt
             )
             testExecutionRepository.save(globalExec)
         }

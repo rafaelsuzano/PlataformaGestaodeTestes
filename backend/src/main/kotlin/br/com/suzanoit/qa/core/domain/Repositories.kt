@@ -1,11 +1,6 @@
 package br.com.suzanoit.qa.core.domain
 
-interface ClientRepository {
-    fun save(client: Client): Client
-    fun findById(id: String): Client?
-    fun findAll(): List<Client>
-    fun delete(id: String)
-}
+
 
 interface ProjectRepository {
     fun save(project: Project): Project
@@ -81,5 +76,34 @@ interface DefectRepository {
     fun save(defect: Defect): Defect
     fun findById(id: String): Defect?
     fun findAll(): List<Defect>
+    fun delete(id: String)
+}
+
+interface TestPlanRepository {
+    fun save(plan: TestPlan): TestPlan
+    fun findById(id: String): TestPlan?
+    fun findAll(): List<TestPlan>
+    fun findByProjectId(projectId: String): List<TestPlan>
+    fun delete(id: String)
+}
+
+interface EnvironmentRepository {
+    fun save(environment: Environment): Environment
+    fun findById(id: String): Environment?
+    fun findAll(): List<Environment>
+    fun delete(id: String)
+}
+
+interface ExecutionHistoryRepository {
+    fun save(history: ExecutionHistory): ExecutionHistory
+    fun findById(id: String): ExecutionHistory?
+    fun findAll(): List<ExecutionHistory>
+    fun delete(id: String)
+}
+
+interface SystemLogRepository {
+    fun save(log: SystemLog): SystemLog
+    fun findById(id: String): SystemLog?
+    fun findAll(): List<SystemLog>
     fun delete(id: String)
 }

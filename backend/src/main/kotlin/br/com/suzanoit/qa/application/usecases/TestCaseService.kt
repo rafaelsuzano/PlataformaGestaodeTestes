@@ -16,7 +16,8 @@ class TestCaseService(private val repository: TestCaseRepository) {
             status = testCase.status,
             gherkinContent = testCase.gherkinContent,
             requirementId = testCase.requirementId,
-            featureId = testCase.featureId
+            featureId = testCase.featureId,
+            folderId = testCase.folderId
         )
         return repository.save(updated)
     }

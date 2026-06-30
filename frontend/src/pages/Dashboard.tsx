@@ -28,13 +28,39 @@ ChartJS.register(
 );
 
 const StatCard = ({ title, value, icon, color }: { title: string, value: number, icon: React.ReactNode, color: string }) => (
-  <Card elevation={4} sx={{ borderLeft: `6px solid ${color}` }}>
-    <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+  <Card sx={{ 
+    background: 'rgba(15, 23, 42, 0.6)', 
+    backdropFilter: 'blur(16px)', 
+    border: '1px solid rgba(255, 255, 255, 0.05)', 
+    borderBottom: `4px solid ${color}`,
+    borderRadius: 3,
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+    transition: 'transform 0.2s ease-in-out',
+    '&:hover': {
+      transform: 'translateY(-4px)',
+      background: 'rgba(30, 41, 59, 0.7)',
+    }
+  }}>
+    <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 3 }}>
       <Box>
-        <Typography color="textSecondary" variant="subtitle2">{title}</Typography>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{value}</Typography>
+        <Typography sx={{ color: '#94a3b8', fontWeight: 600, letterSpacing: 0.5, mb: 1, textTransform: 'uppercase' }} variant="subtitle2">
+          {title}
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 800, color: '#f1f5f9' }}>
+          {value}
+        </Typography>
       </Box>
-      <Box sx={{ color: color }}>{icon}</Box>
+      <Box sx={{ 
+        color: color, 
+        bgcolor: `${color}15`, 
+        p: 2, 
+        borderRadius: 2, 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+      }}>
+        {icon}
+      </Box>
     </CardContent>
   </Card>
 );
@@ -50,31 +76,31 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h4" sx={{ mb: 3 }}><Skeleton width={250} /></Typography>
+      <Box sx={{ p: 1 }}>
+        <Typography variant="h4" sx={{ mb: 4 }}><Skeleton width={250} sx={{ bgcolor: 'rgba(255,255,255,0.1)' }} /></Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {[1, 2, 3, 4].map(i => (
             <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
-              <Card elevation={4} sx={{ borderRadius: 2 }}>
+              <Card sx={{ borderRadius: 3, bgcolor: 'rgba(15, 23, 42, 0.4)' }}>
                 <CardContent>
-                  <Skeleton variant="text" width="60%" />
-                  <Skeleton variant="text" width="40%" height={60} />
+                  <Skeleton variant="text" width="60%" sx={{ bgcolor: 'rgba(255,255,255,0.1)' }} />
+                  <Skeleton variant="text" width="40%" height={60} sx={{ bgcolor: 'rgba(255,255,255,0.1)' }} />
                 </CardContent>
               </Card>
             </Grid>
           ))}
         </Grid>
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 8 }}>
-            <Paper sx={{ p: 3, height: 400, display: 'flex', flexDirection: 'column' }}>
-              <Skeleton variant="text" width="40%" sx={{ mb: 2 }} />
-              <Skeleton variant="rectangular" sx={{ flexGrow: 1, borderRadius: 2 }} />
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 3, height: 400, bgcolor: 'rgba(15, 23, 42, 0.4)', borderRadius: 3 }}>
+              <Skeleton variant="text" width="40%" sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Skeleton variant="rectangular" sx={{ flexGrow: 1, borderRadius: 2, height: 300, bgcolor: 'rgba(255,255,255,0.1)' }} />
             </Paper>
           </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Paper sx={{ p: 3, height: 400, display: 'flex', flexDirection: 'column' }}>
-              <Skeleton variant="text" width="60%" sx={{ mb: 2 }} />
-              <Skeleton variant="circular" width={250} height={250} sx={{ m: 'auto' }} />
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 3, height: 400, bgcolor: 'rgba(15, 23, 42, 0.4)', borderRadius: 3 }}>
+              <Skeleton variant="text" width="60%" sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Skeleton variant="circular" width={250} height={250} sx={{ m: 'auto', bgcolor: 'rgba(255,255,255,0.1)' }} />
             </Paper>
           </Grid>
         </Grid>
@@ -154,37 +180,67 @@ export default function Dashboard() {
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold' }}>Dashboard de Qualidade</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Typography variant="h4" sx={{ 
+          fontWeight: 800, 
+          background: 'linear-gradient(135deg, #a855f7 0%, #3b82f6 100%)', 
+          WebkitBackgroundClip: 'text', 
+          WebkitTextFillColor: 'transparent',
+          letterSpacing: '-0.5px'
+        }}>
+          Dashboard de Qualidade
+        </Typography>
+      </Box>
       
       {/* Metric Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Projetos Ativos" value={totalProjects} icon={<AssignmentIcon fontSize="large" />} color="#6366f1" />
+          <StatCard title="Projetos Ativos" value={totalProjects} icon={<AssignmentIcon sx={{ fontSize: 40 }} />} color="#6366f1" />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Casos de Teste" value={totalTestCases} icon={<ScienceIcon fontSize="large" />} color="#10B981" />
+          <StatCard title="Casos de Teste" value={totalTestCases} icon={<ScienceIcon sx={{ fontSize: 40 }} />} color="#10B981" />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Defeitos Ativos" value={activeDefects} icon={<BugReportIcon fontSize="large" />} color="#EF4444" />
+          <StatCard title="Defeitos Ativos" value={activeDefects} icon={<BugReportIcon sx={{ fontSize: 40 }} />} color="#EF4444" />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Testes de API" value={totalApiExecutions} icon={<HttpIcon fontSize="large" />} color="#EC4899" />
+          <StatCard title="Testes de API" value={totalApiExecutions} icon={<HttpIcon sx={{ fontSize: 40 }} />} color="#EC4899" />
         </Grid>
       </Grid>
 
       {/* Charts */}
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper elevation={4} sx={{ p: 3, height: '400px', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>Status das Execuções (Lotes)</Typography>
+          <Paper sx={{ 
+            p: 3, 
+            height: '400px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            background: 'rgba(15, 23, 42, 0.6)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+          }}>
+            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#e2e8f0' }}>Status das Execuções (Lotes)</Typography>
             <Box sx={{ flexGrow: 1, position: 'relative' }}>
               <Doughnut data={doughnutData} options={doughnutOptions} />
             </Box>
           </Paper>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper elevation={4} sx={{ p: 3, height: '400px', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>Defeitos por Severidade</Typography>
+          <Paper sx={{ 
+            p: 3, 
+            height: '400px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            background: 'rgba(15, 23, 42, 0.6)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+          }}>
+            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#e2e8f0' }}>Defeitos por Severidade</Typography>
             <Box sx={{ flexGrow: 1, position: 'relative' }}>
               <Bar data={barData} options={barOptions} />
             </Box>

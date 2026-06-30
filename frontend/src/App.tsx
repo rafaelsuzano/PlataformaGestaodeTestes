@@ -4,10 +4,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Clients from './pages/Clients';
 import Projects from './pages/Projects';
 import Requirements from './pages/Requirements';
 import CasosTeste from './pages/CasosTeste';
+import PlanosTeste from './pages/PlanosTeste';
+import HistoricoExecucoes from './pages/HistoricoExecucoes';
+import CentralLogs from './pages/CentralLogs';
+import Ambientes from './pages/Ambientes';
 import Execucao from './pages/Execucao';
 import Defeitos from './pages/Defeitos';
 import Sprints from './pages/Sprints';
@@ -16,6 +19,9 @@ import Integrations from './pages/Integrations';
 import ApiTester from './pages/ApiTester';
 import CentralExecucaoApi from './pages/CentralExecucaoApi';
 import Layout from './components/Layout';
+import Placeholder from './pages/Placeholder';
+import { SettingsDashboard } from './pages/SettingsDashboard';
+
 
 const queryClient = new QueryClient();
 
@@ -210,10 +216,10 @@ function App() {
     localStorage.setItem('auth', 'true');
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('auth');
-  };
+  // const handleLogout = () => {
+  //   setIsAuthenticated(false);
+  //   localStorage.removeItem('auth');
+  // };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -226,19 +232,49 @@ function App() {
               element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
             />
             {isAuthenticated ? (
-              <Route element={<Layout onLogout={handleLogout} />}>
+              <Route element={<Layout />}>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/clientes" element={<Clients />} />
                 <Route path="/projetos" element={<Projects />} />
                 <Route path="/usuarios" element={<Users />} />
                 <Route path="/requisitos" element={<Requirements />} />
                 <Route path="/casos-teste" element={<CasosTeste />} />
+                <Route path="/planos-teste" element={<PlanosTeste />} />
+                <Route path="/historico-execucoes" element={<HistoricoExecucoes />} />
+                <Route path="/logs" element={<CentralLogs />} />
+                <Route path="/ambientes" element={<Ambientes />} />
                 <Route path="/sprints" element={<Sprints />} />
                 <Route path="/integracoes" element={<Integrations />} />
                 <Route path="/api-tester" element={<ApiTester />} />
                 <Route path="/central-api" element={<CentralExecucaoApi />} />
                 <Route path="/execucao" element={<Execucao />} />
                 <Route path="/defeitos" element={<Defeitos />} />
+
+
+
+                {/* --- Placeholders para novas rotas QA Workspace --- */}
+                <Route path="/funcionalidades" element={<Placeholder title="Funcionalidades" />} />
+                <Route path="/evidencias" element={<Placeholder title="Central de Evidências" />} />
+                <Route path="/automacao-cypress" element={<Placeholder title="Integração Cypress" />} />
+                <Route path="/automacao-playwright" element={<Placeholder title="Integração Playwright" />} />
+                <Route path="/automacao-selenium" element={<Placeholder title="Integração Selenium" />} />
+                <Route path="/pipelines" element={<Placeholder title="Pipelines e CI/CD" />} />
+                <Route path="/cobertura" element={<Placeholder title="Cobertura de Testes" />} />
+                <Route path="/relatorios" element={<Placeholder title="Relatórios Gerais" />} />
+                <Route path="/metricas" element={<Placeholder title="Métricas de Qualidade" />} />
+
+                {/* --- Placeholders para novas rotas Admin Settings --- */}
+                <Route path="/admin" element={<SettingsDashboard />} />
+                <Route path="/times" element={<Placeholder title="Gestão de Times" />} />
+                <Route path="/perfis" element={<Placeholder title="Perfis de Acesso" />} />
+                <Route path="/permissoes" element={<Placeholder title="Gestão de Permissões" />} />
+                <Route path="/banco-de-dados" element={<Placeholder title="Configurações de Banco de Dados" />} />
+                <Route path="/backup" element={<Placeholder title="Rotinas de Backup" />} />
+                <Route path="/api-keys" element={<Placeholder title="Gerenciamento de API Keys" />} />
+                <Route path="/tokens" element={<Placeholder title="Tokens de Acesso" />} />
+                <Route path="/auditoria" element={<Placeholder title="Logs de Auditoria Avançados" />} />
+                <Route path="/notificacoes" element={<Placeholder title="Configuração de Notificações" />} />
+                <Route path="/licenciamento" element={<Placeholder title="Licenciamento e Plano" />} />
+                <Route path="/faturamento" element={<Placeholder title="Faturamento e Cobrança" />} />
               </Route>
             ) : (
               <Route path="*" element={<Navigate to="/login" />} />

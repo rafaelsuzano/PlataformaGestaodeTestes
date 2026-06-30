@@ -2,7 +2,7 @@ spring:
   application:
     name: SuzanoIT-QA
   datasource:
-    url: jdbc:sqlite:suzanoit-qa.db
+    url: jdbc:sqlite:data/suzanoit-qa.db
     driver-class-name: org.sqlite.JDBC
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
@@ -14,7 +14,7 @@ spring:
         format_sql: true
   flyway:
     enabled: true
-    url: jdbc:sqlite:suzanoit-qa.db
+    url: jdbc:sqlite:data/suzanoit-qa.db
     user: sa
     password:
 

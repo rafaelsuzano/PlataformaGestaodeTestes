@@ -20,17 +20,17 @@ class TestExecutionController(private val service: TestExecutionService) {
     }
 
     @PostMapping
-    fun create(@RequestBody testExecution: TestExecution): TestExecution = service.createTestExecution(testExecution)
+    fun create(@RequestBody testExecution: TestExecution, @RequestHeader("X-User-Id", required = false) userId: String?): TestExecution = service.createTestExecution(testExecution, userId)
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: String, @RequestBody testExecution: TestExecution): ResponseEntity<TestExecution> {
-        val updated = service.updateTestExecution(id, testExecution)
+    fun update(@PathVariable id: String, @RequestBody testExecution: TestExecution, @RequestHeader("X-User-Id", required = false) userId: String?): ResponseEntity<TestExecution> {
+        val updated = service.updateTestExecution(id, testExecution, userId)
         return if (updated != null) ResponseEntity.ok(updated) else ResponseEntity.notFound().build()
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: String): ResponseEntity<Void> {
-        service.deleteTestExecution(id)
+    fun delete(@PathVariable id: String, @RequestHeader("X-User-Id", required = false) userId: String?): ResponseEntity<Void> {
+        service.deleteTestExecution(id, userId)
         return ResponseEntity.noContent().build()
     }
 }

@@ -3,21 +3,9 @@ package br.com.suzanoit.qa.core.domain
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class Client(
-    val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val corporateName: String?,
-    val cnpj: String?,
-    val contactName: String?,
-    val contactEmail: String?,
-    val status: String,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-    val updatedAt: LocalDateTime = LocalDateTime.now()
-)
-
 data class Project(
     val id: String = UUID.randomUUID().toString(),
-    val clientId: String,
+
     val name: String,
     val description: String?,
     val version: String?,
@@ -146,7 +134,7 @@ data class TestCaseFolder(
 
 data class TestCase(
     val id: String = UUID.randomUUID().toString(),
-    val featureId: String,
+    val featureId: String?,
     val folderId: String?, // Pasta do Test Case (Árvore por Projeto)
     val requirementId: String?, // Vínculo com Requisito (Rastreabilidade)
     val title: String,
@@ -173,6 +161,7 @@ data class TestExecution(
     val name: String?,
     val sprint: String?,
     val testCaseId: String,
+    val testPlanId: String?, // Vinculo com o Plano de Testes
     val testerId: String?,
     val environment: String?,
     val status: String, // PENDING, IN_PROGRESS, PASSED, FAILED, BLOCKED
@@ -205,4 +194,60 @@ data class Defect(
     val status: String, // OPEN, IN_PROGRESS, RESOLVED, CLOSED
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()
+)
+
+data class TestPlan(
+    val id: String = UUID.randomUUID().toString(),
+    val projectId: String,
+    val sprintId: String?,
+    val name: String,
+    val description: String?,
+    val environment: String?,
+    val status: String, // DRAFT, IN_PROGRESS, COMPLETED
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val updatedAt: LocalDateTime = LocalDateTime.now()
+)
+
+data class Environment(
+    val id: String = UUID.randomUUID().toString(),
+    val name: String,
+    val description: String?,
+    val baseUrl: String?,
+    val type: String?,
+    val status: String,
+    val color: String?,
+    val icon: String?,
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val updatedAt: LocalDateTime = LocalDateTime.now()
+)
+
+data class ExecutionHistory(
+    val id: String = UUID.randomUUID().toString(),
+    val testExecutionId: String?,
+    val testCaseId: String,
+    val environmentId: String?,
+    val userId: String?,
+    val startTime: LocalDateTime?,
+    val endTime: LocalDateTime?,
+    val durationMs: Long?,
+    val totalSteps: Int,
+    val passedSteps: Int,
+    val failedSteps: Int,
+    val blockedSteps: Int,
+    val status: String,
+    val browser: String?,
+    val browserVersion: String?,
+    val observations: String?
+)
+
+data class SystemLog(
+    val id: String = UUID.randomUUID().toString(),
+    val userId: String?,
+    val actionType: String,
+    val module: String,
+    val description: String?,
+    val ipAddress: String?,
+    val browser: String?,
+    val result: String?,
+    val createdAt: LocalDateTime = LocalDateTime.now()
 )

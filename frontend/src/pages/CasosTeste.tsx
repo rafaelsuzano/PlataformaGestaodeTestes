@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer, 
@@ -23,7 +23,7 @@ import { TestCaseService, RequirementService, AiService, ProjectService, TestCas
 import type { TestCase, Requirement, TestCaseFolder } from '../services/api';
 
 const DEFAULT_FORM_DATA = {
-  featureId: 'TODO-MOCKED-FEATURE-ID', requirementId: '', title: '', description: '', type: 'BDD', status: 'DRAFT', gherkinContent: 'Feature: ...\n\n  Scenario: ...\n    Given ...\n    When ...\n    Then ...'
+  featureId: null, requirementId: '', title: '', description: '', type: 'BDD', status: 'DRAFT', gherkinContent: 'Feature: ...\n\n  Scenario: ...\n    Given ...\n    When ...\n    Then ...'
 };
 
 export default function CasosTeste() {
@@ -103,13 +103,36 @@ export default function CasosTeste() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['testCaseFolders'] }); setSelectedFolderId(null); }
   });
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, targetFolderId: string) => {
+    e.preventDefault();
+    const testCaseId = e.dataTransfer.getData('text/plain');
+    if (testCaseId && testCases) {
+      const tc = testCases.find(t => t.id === testCaseId);
+      if (tc && tc.folderId !== targetFolderId) {
+        updateMutation.mutate({ ...tc, folderId: targetFolderId } as TestCase);
+      }
+    }
+  };
+
   // Render Tree recursively
   const renderTree = (nodes: TestCaseFolder[]) => {
     return nodes.map((node) => {
       const children = folders?.filter(f => f.parentId === node.id) || [];
       return (
         <TreeItem key={node.id} itemId={node.id!} label={
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
+          <Box 
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, node.id!)}
+            sx={{ 
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1,
+              transition: 'background-color 0.2s',
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
               <FolderIcon sx={{ color: '#6366f1' }} fontSize="small" />
               <Typography variant="body2" sx={{ fontWeight: selectedFolderId === node.id ? 'bold' : 'normal' }}>
@@ -180,7 +203,8 @@ export default function CasosTeste() {
   };
 
   const handleSubmit = () => {
-    const dataToSave = { ...formData, folderId: selectedFolderId };
+    const finalFolderId = formData.folderId === 'root' ? null : formData.folderId;
+    const dataToSave = { ...formData, folderId: finalFolderId };
     if (dataToSave.type === 'MANUAL') {
       dataToSave.description = JSON.stringify(manualSteps);
     }
@@ -218,7 +242,7 @@ export default function CasosTeste() {
   };
 
   const handleOpenNew = () => {
-    setFormData(DEFAULT_FORM_DATA);
+    setFormData({ ...DEFAULT_FORM_DATA, folderId: (selectedFolderId === 'root' ? null : selectedFolderId) });
     setManualSteps([{ action: '', expected: '' }]);
     setIsEditing(false);
     setOpen(true);
@@ -227,24 +251,26 @@ export default function CasosTeste() {
   const handleChangePage = (_event: unknown, newPage: number) => setPage(newPage);
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => { setRowsPerPage(parseInt(event.target.value, 10)); setPage(0); };
 
-  // Filter test cases by selected folder
+  // Filter test cases by selected folder (or all if null/'root')
   const filteredTestCases = useMemo(() => {
     if (!testCases) return [];
-    if (!selectedFolderId) return testCases; // If no folder selected, show all? Or show none? Let's show those in the selected folder.
+    if (!selectedFolderId || selectedFolderId === 'root') return testCases; // Mostra todos os casos na raiz
     return testCases.filter(tc => tc.folderId === selectedFolderId);
   }, [testCases, selectedFolderId]);
 
   const paginatedTestCases = filteredTestCases.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   // Auto-select first project if none selected
-  if (!selectedProjectId && projects && projects.length > 0) {
-    setSelectedProjectId(projects[0].id!);
-  }
+  useEffect(() => {
+    if (!selectedProjectId && projects && projects.length > 0) {
+      setSelectedProjectId(projects[0].id!);
+    }
+  }, [projects, selectedProjectId]);
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4, alignItems: 'center' }}>
-        <Typography variant="h4">Gestão de Casos de Teste</Typography>
+    <Box sx={{ minWidth: 800, pb: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4, alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Gestão de Casos de Teste</Typography>
         <FormControl sx={{ minWidth: 250 }} size="small">
           <InputLabel>Projeto</InputLabel>
           <Select
@@ -259,15 +285,19 @@ export default function CasosTeste() {
         </FormControl>
       </Box>
 
-      <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'nowrap' }}>
         {/* Left Pane - Tree View */}
-        <Box sx={{ flex: '1 1 25%', minWidth: 300 }}>
+        <Box sx={{ flex: '0 0 240px', width: 240 }}>
           <Paper sx={{ p: 2, height: 'calc(100vh - 200px)', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Estrutura</Typography>
               <Box>
                 <Tooltip title="Nova Pasta Raiz">
-                  <IconButton size="small" onClick={() => handleOpenNewFolder(null)}><CreateNewFolderIcon fontSize="small" /></IconButton>
+                  <span>
+                    <IconButton size="small" onClick={() => handleOpenNewFolder(null)} disabled={!selectedProjectId}>
+                      <CreateNewFolderIcon fontSize="small" />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </Box>
             </Box>
@@ -276,15 +306,28 @@ export default function CasosTeste() {
             <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
               {foldersLoading ? <CircularProgress size={24} /> : (
                 <SimpleTreeView
-                  selectedItems={selectedFolderId}
+                  selectedItems={selectedFolderId || 'root'}
                   onSelectedItemsChange={(_e, id) => setSelectedFolderId(id as string | null)}
+                  defaultExpandedItems={['root']}
                 >
-                  {renderTree(rootFolders)}
+                  <TreeItem 
+                    itemId="root" 
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1, pr: 1 }}>
+                        <FolderIcon sx={{ color: '#ec4899' }} fontSize="small" />
+                        <Typography variant="body2" sx={{ fontWeight: (!selectedFolderId || selectedFolderId === 'root') ? 'bold' : 'normal' }}>
+                          Raiz do Projeto (Todos)
+                        </Typography>
+                      </Box>
+                    }
+                  >
+                    {renderTree(rootFolders)}
+                  </TreeItem>
                 </SimpleTreeView>
               )}
             </Box>
             
-            {selectedFolderId && (
+            {selectedFolderId && selectedFolderId !== 'root' && (
               <Box sx={{ pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'center', gap: 1 }}>
                 <Tooltip title="Nova Sub-pasta">
                   <IconButton size="small" color="primary" onClick={() => handleOpenNewFolder(selectedFolderId)}><AddIcon fontSize="small" /></IconButton>
@@ -301,16 +344,15 @@ export default function CasosTeste() {
         </Box>
 
         {/* Right Pane - Test Cases Table */}
-        <Box sx={{ flex: '1 1 70%', minWidth: 400 }}>
-          <Paper sx={{ height: 'calc(100vh - 200px)', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 1, minWidth: 500 }}>
+          <Paper sx={{ height: 'calc(100vh - 200px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                Casos de Teste {selectedFolderId ? `- ${folders?.find(f => f.id === selectedFolderId)?.name}` : '(Selecione uma pasta)'}
+                Casos de Teste {(!selectedFolderId || selectedFolderId === 'root') ? '(Todos)' : `- ${folders?.find(f => f.id === selectedFolderId)?.name}`}
               </Typography>
               <Button 
                 variant="contained" 
                 size="small" 
-                disabled={!selectedFolderId}
                 onClick={handleOpenNew}
               >
                 Novo Caso de Teste
@@ -334,7 +376,16 @@ export default function CasosTeste() {
                     <TableRow><TableCell colSpan={4} align="center" sx={{ py: 4, color: 'text.secondary' }}>Nenhum caso de teste encontrado nesta pasta.</TableCell></TableRow>
                   ) : (
                     paginatedTestCases.map((tc) => (
-                      <TableRow key={tc.id} hover>
+                      <TableRow 
+                        key={tc.id} 
+                        hover
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', tc.id!);
+                          e.dataTransfer.effectAllowed = 'move';
+                        }}
+                        sx={{ cursor: 'grab', '&:active': { cursor: 'grabbing' } }}
+                      >
                         <TableCell>{tc.title}</TableCell>
                         <TableCell>{tc.type}</TableCell>
                         <TableCell>{getStatusChip(tc.status || 'DRAFT')}</TableCell>
@@ -403,6 +454,20 @@ export default function CasosTeste() {
               <MenuItem value="">Nenhum</MenuItem>
               {requirements?.map((req: Requirement) => (
                 <MenuItem key={req.id} value={req.id}>{req.code} - {req.title}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Pasta (Diretório)</InputLabel>
+            <Select
+              value={formData.folderId || 'root'}
+              label="Pasta (Diretório)"
+              onChange={e => setFormData({...formData, folderId: e.target.value === 'root' ? null : e.target.value})}
+            >
+              <MenuItem value="root">Raiz do Projeto (Sem Pasta)</MenuItem>
+              {folders?.map((f: TestCaseFolder) => (
+                <MenuItem key={f.id} value={f.id}>{f.name}</MenuItem>
               ))}
             </Select>
           </FormControl>

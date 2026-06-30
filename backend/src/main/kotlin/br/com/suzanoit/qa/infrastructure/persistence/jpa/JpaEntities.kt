@@ -6,38 +6,15 @@ import jakarta.persistence.Table
 import jakarta.persistence.Column
 import jakarta.persistence.IdClass
 import java.time.LocalDateTime
-import br.com.suzanoit.qa.core.domain.Client
+
 import br.com.suzanoit.qa.core.domain.Project
-
-@Entity
-@Table(name = "clients")
-class ClientJpaEntity(
-    @Id
-    var id: String,
-    var name: String,
-    var corporateName: String?,
-    var cnpj: String?,
-    var contactName: String?,
-    var contactEmail: String?,
-    var status: String,
-    var createdAt: LocalDateTime,
-    var updatedAt: LocalDateTime
-) {
-    fun toDomain() = Client(id, name, corporateName, cnpj, contactName, contactEmail, status, createdAt, updatedAt)
-
-    companion object {
-        fun fromDomain(domain: Client) = ClientJpaEntity(
-            domain.id, domain.name, domain.corporateName, domain.cnpj, domain.contactName, domain.contactEmail, domain.status, domain.createdAt, domain.updatedAt
-        )
-    }
-}
 
 @Entity
 @Table(name = "projects")
 class ProjectJpaEntity(
     @Id
     var id: String,
-    var clientId: String,
+
     var name: String,
     var description: String?,
     var version: String?,
@@ -46,11 +23,11 @@ class ProjectJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = Project(id, clientId, name, description, version, status, managerName, createdAt, updatedAt)
+    fun toDomain() = Project(id, name, description, version, status, managerName, createdAt, updatedAt)
 
     companion object {
         fun fromDomain(domain: Project) = ProjectJpaEntity(
-            domain.id, domain.clientId, domain.name, domain.description, domain.version, domain.status, domain.managerName, domain.createdAt, domain.updatedAt
+            domain.id, domain.name, domain.description, domain.version, domain.status, domain.managerName, domain.createdAt, domain.updatedAt
         )
     }
 }
@@ -253,7 +230,7 @@ class TestCaseFolderJpaEntity(
 @Table(name = "test_cases")
 class TestCaseJpaEntity(
     @Id var id: String,
-    var featureId: String,
+    var featureId: String?,
     var folderId: String?,
     var requirementId: String?,
     var title: String,
@@ -298,6 +275,7 @@ class TestExecutionJpaEntity(
     var name: String?,
     var sprint: String?,
     var testCaseId: String,
+    var testPlanId: String?,
     var testerId: String?,
     var environment: String?,
     var status: String,
@@ -306,10 +284,10 @@ class TestExecutionJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestExecution(id, name, sprint, testCaseId, testerId, environment, status, startedAt, completedAt, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.core.domain.TestExecution(id, name, sprint, testCaseId, testPlanId, testerId, environment, status, startedAt, completedAt, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestExecution) = TestExecutionJpaEntity(
-            domain.id, domain.name, domain.sprint, domain.testCaseId, domain.testerId, domain.environment, domain.status, domain.startedAt, domain.completedAt, domain.createdAt, domain.updatedAt
+            domain.id, domain.name, domain.sprint, domain.testCaseId, domain.testPlanId, domain.testerId, domain.environment, domain.status, domain.startedAt, domain.completedAt, domain.createdAt, domain.updatedAt
         )
     }
 }
@@ -353,6 +331,98 @@ class DefectJpaEntity(
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Defect) = DefectJpaEntity(
             domain.id, domain.testExecutionId, domain.testCaseId, domain.title, domain.description, domain.severity, domain.status, domain.createdAt, domain.updatedAt
+        )
+    }
+}
+
+@Entity
+@Table(name = "test_plans")
+class TestPlanJpaEntity(
+    @Id var id: String,
+    var projectId: String,
+    var sprintId: String?,
+    var name: String,
+    var description: String?,
+    var environment: String?,
+    var status: String,
+    var createdAt: LocalDateTime,
+    var updatedAt: LocalDateTime
+) {
+    fun toDomain() = br.com.suzanoit.qa.core.domain.TestPlan(id, projectId, sprintId, name, description, environment, status, createdAt, updatedAt)
+    companion object {
+        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestPlan) = TestPlanJpaEntity(
+            domain.id, domain.projectId, domain.sprintId, domain.name, domain.description, domain.environment, domain.status, domain.createdAt, domain.updatedAt
+        )
+    }
+}
+
+@Entity
+@Table(name = "environments")
+class EnvironmentJpaEntity(
+    @Id var id: String,
+    var name: String,
+    var description: String?,
+    var baseUrl: String?,
+    var type: String?,
+    var status: String,
+    var color: String?,
+    var icon: String?,
+    var createdAt: LocalDateTime,
+    var updatedAt: LocalDateTime
+) {
+    fun toDomain() = br.com.suzanoit.qa.core.domain.Environment(id, name, description, baseUrl, type, status, color, icon, createdAt, updatedAt)
+    companion object {
+        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Environment) = EnvironmentJpaEntity(
+            domain.id, domain.name, domain.description, domain.baseUrl, domain.type, domain.status, domain.color, domain.icon, domain.createdAt, domain.updatedAt
+        )
+    }
+}
+
+@Entity
+@Table(name = "execution_history")
+class ExecutionHistoryJpaEntity(
+    @Id var id: String,
+    var testExecutionId: String?,
+    var testCaseId: String,
+    var environmentId: String?,
+    var userId: String?,
+    var startTime: LocalDateTime?,
+    var endTime: LocalDateTime?,
+    var durationMs: Long?,
+    var totalSteps: Int,
+    var passedSteps: Int,
+    var failedSteps: Int,
+    var blockedSteps: Int,
+    var status: String,
+    var browser: String?,
+    var browserVersion: String?,
+    var observations: String?
+) {
+    fun toDomain() = br.com.suzanoit.qa.core.domain.ExecutionHistory(id, testExecutionId, testCaseId, environmentId, userId, startTime, endTime, durationMs, totalSteps, passedSteps, failedSteps, blockedSteps, status, browser, browserVersion, observations)
+    companion object {
+        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.ExecutionHistory) = ExecutionHistoryJpaEntity(
+            domain.id, domain.testExecutionId, domain.testCaseId, domain.environmentId, domain.userId, domain.startTime, domain.endTime, domain.durationMs, domain.totalSteps, domain.passedSteps, domain.failedSteps, domain.blockedSteps, domain.status, domain.browser, domain.browserVersion, domain.observations
+        )
+    }
+}
+
+@Entity
+@Table(name = "system_logs")
+class SystemLogJpaEntity(
+    @Id var id: String,
+    var userId: String?,
+    var actionType: String,
+    var module: String,
+    var description: String?,
+    var ipAddress: String?,
+    var browser: String?,
+    var result: String?,
+    var createdAt: LocalDateTime
+) {
+    fun toDomain() = br.com.suzanoit.qa.core.domain.SystemLog(id, userId, actionType, module, description, ipAddress, browser, result, createdAt)
+    companion object {
+        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.SystemLog) = SystemLogJpaEntity(
+            domain.id, domain.userId, domain.actionType, domain.module, domain.description, domain.ipAddress, domain.browser, domain.result, domain.createdAt
         )
     }
 }

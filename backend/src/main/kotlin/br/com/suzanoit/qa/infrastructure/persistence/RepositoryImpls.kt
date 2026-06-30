@@ -1,22 +1,10 @@
 package br.com.suzanoit.qa.infrastructure.persistence
 
-import br.com.suzanoit.qa.core.domain.Client
-import br.com.suzanoit.qa.core.domain.ClientRepository
 import br.com.suzanoit.qa.core.domain.Project
 import br.com.suzanoit.qa.core.domain.ProjectRepository
-import br.com.suzanoit.qa.infrastructure.persistence.jpa.ClientJpaRepository
-import br.com.suzanoit.qa.infrastructure.persistence.jpa.ProjectJpaRepository
-import br.com.suzanoit.qa.infrastructure.persistence.jpa.ClientJpaEntity
 import br.com.suzanoit.qa.infrastructure.persistence.jpa.ProjectJpaEntity
+import br.com.suzanoit.qa.infrastructure.persistence.jpa.ProjectJpaRepository
 import org.springframework.stereotype.Component
-
-@Component
-class ClientRepositoryImpl(private val jpaRepository: ClientJpaRepository) : ClientRepository {
-    override fun save(client: Client): Client = jpaRepository.save(ClientJpaEntity.fromDomain(client)).toDomain()
-    override fun findById(id: String): Client? = jpaRepository.findById(id).orElse(null)?.toDomain()
-    override fun findAll(): List<Client> = jpaRepository.findAll().map { it.toDomain() }
-    override fun delete(id: String) = jpaRepository.deleteById(id)
-}
 
 @Component
 class ProjectRepositoryImpl(private val jpaRepository: ProjectJpaRepository) : ProjectRepository {
@@ -103,5 +91,38 @@ class DefectRepositoryImpl(private val jpaRepository: br.com.suzanoit.qa.infrast
     override fun save(defect: br.com.suzanoit.qa.core.domain.Defect): br.com.suzanoit.qa.core.domain.Defect = jpaRepository.save(br.com.suzanoit.qa.infrastructure.persistence.jpa.DefectJpaEntity.fromDomain(defect)).toDomain()
     override fun findById(id: String): br.com.suzanoit.qa.core.domain.Defect? = jpaRepository.findById(id).orElse(null)?.toDomain()
     override fun findAll(): List<br.com.suzanoit.qa.core.domain.Defect> = jpaRepository.findAll().map { it.toDomain() }
+    override fun delete(id: String) = jpaRepository.deleteById(id)
+}
+
+@Component
+class TestPlanRepositoryImpl(private val jpaRepository: br.com.suzanoit.qa.infrastructure.persistence.jpa.TestPlanJpaRepository) : br.com.suzanoit.qa.core.domain.TestPlanRepository {
+    override fun save(plan: br.com.suzanoit.qa.core.domain.TestPlan): br.com.suzanoit.qa.core.domain.TestPlan = jpaRepository.save(br.com.suzanoit.qa.infrastructure.persistence.jpa.TestPlanJpaEntity.fromDomain(plan)).toDomain()
+    override fun findById(id: String): br.com.suzanoit.qa.core.domain.TestPlan? = jpaRepository.findById(id).orElse(null)?.toDomain()
+    override fun findAll(): List<br.com.suzanoit.qa.core.domain.TestPlan> = jpaRepository.findAll().map { it.toDomain() }
+    override fun findByProjectId(projectId: String): List<br.com.suzanoit.qa.core.domain.TestPlan> = jpaRepository.findByProjectId(projectId).map { it.toDomain() }
+    override fun delete(id: String) = jpaRepository.deleteById(id)
+}
+
+@Component
+class EnvironmentRepositoryImpl(private val jpaRepository: br.com.suzanoit.qa.infrastructure.persistence.jpa.EnvironmentJpaRepository) : br.com.suzanoit.qa.core.domain.EnvironmentRepository {
+    override fun save(environment: br.com.suzanoit.qa.core.domain.Environment): br.com.suzanoit.qa.core.domain.Environment = jpaRepository.save(br.com.suzanoit.qa.infrastructure.persistence.jpa.EnvironmentJpaEntity.fromDomain(environment)).toDomain()
+    override fun findById(id: String): br.com.suzanoit.qa.core.domain.Environment? = jpaRepository.findById(id).orElse(null)?.toDomain()
+    override fun findAll(): List<br.com.suzanoit.qa.core.domain.Environment> = jpaRepository.findAll().map { it.toDomain() }
+    override fun delete(id: String) = jpaRepository.deleteById(id)
+}
+
+@Component
+class ExecutionHistoryRepositoryImpl(private val jpaRepository: br.com.suzanoit.qa.infrastructure.persistence.jpa.ExecutionHistoryJpaRepository) : br.com.suzanoit.qa.core.domain.ExecutionHistoryRepository {
+    override fun save(history: br.com.suzanoit.qa.core.domain.ExecutionHistory): br.com.suzanoit.qa.core.domain.ExecutionHistory = jpaRepository.save(br.com.suzanoit.qa.infrastructure.persistence.jpa.ExecutionHistoryJpaEntity.fromDomain(history)).toDomain()
+    override fun findById(id: String): br.com.suzanoit.qa.core.domain.ExecutionHistory? = jpaRepository.findById(id).orElse(null)?.toDomain()
+    override fun findAll(): List<br.com.suzanoit.qa.core.domain.ExecutionHistory> = jpaRepository.findAll().map { it.toDomain() }
+    override fun delete(id: String) = jpaRepository.deleteById(id)
+}
+
+@Component
+class SystemLogRepositoryImpl(private val jpaRepository: br.com.suzanoit.qa.infrastructure.persistence.jpa.SystemLogJpaRepository) : br.com.suzanoit.qa.core.domain.SystemLogRepository {
+    override fun save(log: br.com.suzanoit.qa.core.domain.SystemLog): br.com.suzanoit.qa.core.domain.SystemLog = jpaRepository.save(br.com.suzanoit.qa.infrastructure.persistence.jpa.SystemLogJpaEntity.fromDomain(log)).toDomain()
+    override fun findById(id: String): br.com.suzanoit.qa.core.domain.SystemLog? = jpaRepository.findById(id).orElse(null)?.toDomain()
+    override fun findAll(): List<br.com.suzanoit.qa.core.domain.SystemLog> = jpaRepository.findAll().map { it.toDomain() }
     override fun delete(id: String) = jpaRepository.deleteById(id)
 }

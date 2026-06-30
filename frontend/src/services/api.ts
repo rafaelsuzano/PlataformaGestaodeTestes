@@ -1,37 +1,8 @@
-export interface Client {
-  id?: string;
-  name: string;
-  corporateName: string;
-  cnpj: string;
-  contactName: string;
-  contactEmail: string;
-  status: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
 const API_URL = 'http://localhost:8080/api';
-
-export const ClientService = {
-  getAll: async (): Promise<Client[]> => {
-    const res = await fetch(`${API_URL}/clients`);
-    if (!res.ok) throw new Error('Failed to fetch clients');
-    return res.json();
-  },
-  create: async (client: Client): Promise<Client> => {
-    const res = await fetch(`${API_URL}/clients`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(client)
-    });
-    if (!res.ok) throw new Error('Failed to create client');
-    return res.json();
-  }
-};
 
 export interface Project {
   id?: string;
-  clientId: string;
+
   name: string;
   description: string;
   version: string;
@@ -379,7 +350,7 @@ export const TestCaseFolderService = {
 
 export interface TestCase {
   id?: string;
-  featureId: string;
+  featureId?: string | null;
   folderId?: string | null;
   requirementId?: string | null;
   title: string;
@@ -387,6 +358,11 @@ export interface TestCase {
   type: string;
   status: string;
   gherkinContent: string;
+  category?: string;
+  functionality?: string;
+  priority?: string;
+  preConditions?: string;
+  expectedResult?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -428,6 +404,7 @@ export interface TestExecution {
   name?: string;
   sprint?: string;
   testCaseId: string;
+  testPlanId?: string | null;
   testerId?: string;
   environment?: string;
   status: string;
@@ -503,6 +480,156 @@ export const DefectService = {
       body: JSON.stringify(defect)
     });
     if (!res.ok) throw new Error('Failed to update defect');
+    return res.json();
+  }
+};
+
+export interface TestPlan {
+  id?: string;
+  projectId: string;
+  sprintId?: string | null;
+  name: string;
+  description?: string;
+  environment?: string;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateTestPlanRequest {
+  testPlan: TestPlan;
+  testCaseIds: string[];
+}
+
+export const TestPlanService = {
+  getByProject: async (projectId: string): Promise<TestPlan[]> => {
+    const res = await fetch(`${API_URL}/test-plans/project/${projectId}`);
+    if (!res.ok) throw new Error('Failed to fetch test plans');
+    return res.json();
+  },
+  create: async (request: CreateTestPlanRequest): Promise<TestPlan> => {
+    const res = await fetch(`${API_URL}/test-plans`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request)
+    });
+    if (!res.ok) throw new Error('Failed to create test plan');
+    return res.json();
+  },
+  update: async (plan: TestPlan): Promise<TestPlan> => {
+    const res = await fetch(`${API_URL}/test-plans/${plan.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(plan)
+    });
+    if (!res.ok) throw new Error('Failed to update test plan');
+    return res.json();
+  },
+  delete: async (id: string): Promise<void> => {
+    const res = await fetch(`${API_URL}/test-plans/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Failed to delete test plan');
+  }
+};
+
+export interface Environment {
+  id?: string;
+  name: string;
+  description?: string;
+  baseUrl?: string;
+  type?: string;
+  status: string;
+  color?: string;
+  icon?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const EnvironmentService = {
+  getAll: async (): Promise<Environment[]> => {
+    const res = await fetch(`${API_URL}/environments`);
+    if (!res.ok) throw new Error('Failed to fetch environments');
+    return res.json();
+  },
+  create: async (env: Environment): Promise<Environment> => {
+    const res = await fetch(`${API_URL}/environments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(env)
+    });
+    if (!res.ok) throw new Error('Failed to create environment');
+    return res.json();
+  },
+  update: async (env: Environment): Promise<Environment> => {
+    const res = await fetch(`${API_URL}/environments/${env.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(env)
+    });
+    if (!res.ok) throw new Error('Failed to update environment');
+    return res.json();
+  },
+  delete: async (id: string): Promise<void> => {
+    const res = await fetch(`${API_URL}/environments/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Failed to delete environment');
+  }
+};
+
+export interface ExecutionHistory {
+  id?: string;
+  testExecutionId?: string;
+  testCaseId: string;
+  environmentId?: string;
+  userId?: string;
+  startTime?: string;
+  endTime?: string;
+  durationMs?: number;
+  totalSteps: number;
+  passedSteps: number;
+  failedSteps: number;
+  blockedSteps: number;
+  status: string;
+  browser?: string;
+  browserVersion?: string;
+  observations?: string;
+}
+
+export const ExecutionHistoryService = {
+  getAll: async (): Promise<ExecutionHistory[]> => {
+    const res = await fetch(`${API_URL}/execution-history`);
+    if (!res.ok) throw new Error('Failed to fetch execution history');
+    return res.json();
+  },
+  create: async (history: ExecutionHistory): Promise<ExecutionHistory> => {
+    const res = await fetch(`${API_URL}/execution-history`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(history)
+    });
+    if (!res.ok) throw new Error('Failed to create execution history');
+    return res.json();
+  }
+};
+
+export interface SystemLog {
+  id?: string;
+  userId?: string;
+  actionType: string;
+  module: string;
+  description?: string;
+  ipAddress?: string;
+  browser?: string;
+  result?: string;
+  createdAt?: string;
+}
+
+export const SystemLogService = {
+  getAll: async (): Promise<SystemLog[]> => {
+    const res = await fetch(`${API_URL}/system-logs`);
+    if (!res.ok) throw new Error('Failed to fetch system logs');
     return res.json();
   }
 };

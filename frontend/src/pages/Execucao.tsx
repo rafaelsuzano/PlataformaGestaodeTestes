@@ -12,7 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import BlockIcon from '@mui/icons-material/Block';
-import { TestExecutionService, TestCaseService } from '../services/api';
+import { TestExecutionService, TestCaseService, EnvironmentService, ExecutionHistoryService } from '../services/api';
 import type { TestCase, TestExecution } from '../services/api';
 
 export default function Execucao() {
@@ -21,17 +21,21 @@ export default function Execucao() {
   const [editOpen, setEditOpen] = useState(false);
   
   const [formData, setFormData] = useState({
-    name: '', sprint: '', testCaseIds: [] as string[], status: 'ATIVO', environment: 'QA'
+    name: '', sprint: '', testCaseIds: [] as string[], status: 'ATIVO', environment: ''
   });
 
   const [editData, setEditData] = useState<Partial<TestExecution> & { additionalTestCaseIds?: string[] }>({});
   
   const [runnerOpen, setRunnerOpen] = useState(false);
+  const [envSelectOpen, setEnvSelectOpen] = useState(false);
   const [runningExec, setRunningExec] = useState<TestExecution | null>(null);
   const [runningTestCase, setRunningTestCase] = useState<TestCase | null>(null);
+  const [selectedEnvId, setSelectedEnvId] = useState('');
+  const [startTime, setStartTime] = useState<Date | null>(null);
 
   const { data: testCases } = useQuery({ queryKey: ['testCases'], queryFn: TestCaseService.getAll });
   const { data: executions, isLoading } = useQuery({ queryKey: ['executions'], queryFn: TestExecutionService.getAll });
+  const { data: environments } = useQuery({ queryKey: ['environments'], queryFn: EnvironmentService.getAll });
 
   const createMutation = useMutation({
     mutationFn: TestExecutionService.create,
@@ -66,7 +70,7 @@ export default function Execucao() {
       });
     }
     setOpen(false);
-    setFormData({ name: '', sprint: '', testCaseIds: [], status: 'ATIVO', environment: 'QA' });
+    setFormData({ name: '', sprint: '', testCaseIds: [], status: 'ATIVO', environment: '' });
   };
 
   const handleUpdate = async () => {
@@ -107,22 +111,50 @@ export default function Execucao() {
     }
   };
 
-  const handleOpenRunner = (exec: TestExecution, tc: TestCase | undefined) => {
+  const handleOpenEnvSelect = (exec: TestExecution, tc: TestCase | undefined) => {
     setRunningExec(exec);
     setRunningTestCase(tc || null);
+    setSelectedEnvId('');
+    setEnvSelectOpen(true);
+  };
+
+  const handleStartRunner = () => {
+    if (!selectedEnvId) return;
+    setEnvSelectOpen(false);
+    setStartTime(new Date());
     setRunnerOpen(true);
-    // Mark as IN_PROGRESS if pending
-    if (exec.status === 'ATIVO' || exec.status === 'PENDING') {
-      updateMutation.mutate({ ...exec, status: 'IN_PROGRESS' });
+    if (runningExec && (runningExec.status === 'ATIVO' || runningExec.status === 'PENDING')) {
+      updateMutation.mutate({ ...runningExec, status: 'IN_PROGRESS' });
     }
   };
 
   const handleFinishExecution = async (status: string) => {
     if (runningExec) {
+      const endTime = new Date();
+      const durationMs = startTime ? endTime.getTime() - startTime.getTime() : 0;
+      
+      // Update execution status
       await updateMutation.mutateAsync({ ...runningExec, status });
+      
+      // Create history
+      await ExecutionHistoryService.create({
+        testExecutionId: runningExec.id,
+        testCaseId: runningTestCase?.id || runningExec.testCaseId,
+        environmentId: selectedEnvId,
+        startTime: startTime?.toISOString(),
+        endTime: endTime.toISOString(),
+        durationMs,
+        totalSteps: 1, // simplified
+        passedSteps: status === 'PASSED' ? 1 : 0,
+        failedSteps: status === 'FAILED' ? 1 : 0,
+        blockedSteps: status === 'BLOCKED' ? 1 : 0,
+        status
+      });
+
       setRunnerOpen(false);
       setRunningExec(null);
       setRunningTestCase(null);
+      setStartTime(null);
     }
   };
 
@@ -161,7 +193,7 @@ export default function Execucao() {
                       <Chip label={exec.status} color={getStatusColor(exec.status) as any} size="small" />
                     </TableCell>
                     <TableCell>
-                      <IconButton color="success" onClick={() => handleOpenRunner(exec, tc)} title="Executar Teste">
+                      <IconButton color="success" onClick={() => handleOpenEnvSelect(exec, tc)} title="Executar Teste">
                         <PlayArrowIcon />
                       </IconButton>
                       <IconButton color="primary" onClick={() => openEdit(exec)} title="Editar Lote">
@@ -219,16 +251,16 @@ export default function Execucao() {
             </Select>
           </FormControl>
           <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
-            <InputLabel>Ambiente</InputLabel>
+            <InputLabel>Ambiente Base (Opcional)</InputLabel>
             <Select
               value={formData.environment}
-              label="Ambiente"
+              label="Ambiente Base (Opcional)"
               onChange={e => setFormData({...formData, environment: e.target.value as string})}
             >
-              <MenuItem value="DEV">DEV</MenuItem>
-              <MenuItem value="QA">QA</MenuItem>
-              <MenuItem value="STG">Staging</MenuItem>
-              <MenuItem value="PROD">Produção</MenuItem>
+              <MenuItem value="">Nenhum (selecionar na execução)</MenuItem>
+              {environments?.map(env => (
+                <MenuItem key={env.id} value={env.id}>{env.name} ({env.type})</MenuItem>
+              ))}
             </Select>
           </FormControl>
         </DialogContent>
@@ -309,37 +341,94 @@ export default function Execucao() {
         </DialogActions>
       </Dialog>
 
+      {/* Select Environment Modal */}
+      <Dialog open={envSelectOpen} onClose={() => setEnvSelectOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>Selecionar Ambiente</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            Selecione o ambiente onde o teste "{runningTestCase?.title}" será executado.
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel>Ambiente</InputLabel>
+            <Select
+              value={selectedEnvId}
+              label="Ambiente"
+              onChange={e => setSelectedEnvId(e.target.value)}
+            >
+              {environments?.map(env => (
+                <MenuItem key={env.id} value={env.id!}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: env.color || '#ccc' }} />
+                    {env.name} ({env.type})
+                  </Box>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEnvSelectOpen(false)}>Cancelar</Button>
+          <Button onClick={handleStartRunner} variant="contained" disabled={!selectedEnvId}>Iniciar Execução</Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Tela de Execução (Runner) */}
-      <Dialog open={runnerOpen} onClose={() => setRunnerOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h5">Runner de Execução</Typography>
-          {runningExec && <Chip label={`Ambiente: ${runningExec.environment}`} color="primary" size="small" />}
+      <Dialog open={runnerOpen} onClose={() => setRunnerOpen(false)} maxWidth="lg" fullWidth sx={{ '& .MuiDialog-paper': { height: '90vh' } }}>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'rgba(30, 41, 59, 0.95)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Runner de Execução</Typography>
+          {runningExec && <Chip label={`Ambiente: ${environments?.find(e => e.id === selectedEnvId)?.name || selectedEnvId}`} color="primary" size="small" />}
         </DialogTitle>
-        <DialogContent dividers>
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="subtitle2" color="text.secondary">Caso de Teste</Typography>
-            <Typography variant="h6">{runningTestCase?.title || 'Desconhecido'}</Typography>
-          </Box>
-          
-          <Divider sx={{ my: 2 }} />
+        <DialogContent sx={{ p: 0, bgcolor: '#0f172a' }}>
+          <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Box>
+              <Typography variant="subtitle2" color="#94a3b8" sx={{ mb: 1 }}>Caso de Teste</Typography>
+              <Typography variant="h5" sx={{ color: '#f8fafc', fontWeight: 'medium' }}>{runningTestCase?.title || 'Desconhecido'}</Typography>
+            </Box>
+            
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Chip label={`Categoria: ${runningTestCase?.category || '-'}`} variant="outlined" sx={{ color: '#cbd5e1', borderColor: 'rgba(255,255,255,0.2)' }} />
+              <Chip label={`Funcionalidade: ${runningTestCase?.functionality || '-'}`} variant="outlined" sx={{ color: '#cbd5e1', borderColor: 'rgba(255,255,255,0.2)' }} />
+              <Chip label={`Prioridade: ${runningTestCase?.priority || '-'}`} variant="outlined" sx={{ color: '#cbd5e1', borderColor: 'rgba(255,255,255,0.2)' }} />
+            </Box>
 
-          <Typography variant="h6" gutterBottom>Instruções / Passos</Typography>
-          {runningTestCase?.description ? (
-            <Paper sx={{ p: 2, bgcolor: 'background.default', mb: 3, whiteSpace: 'pre-wrap' }}>
-              <Typography variant="body1">{runningTestCase.description}</Typography>
-            </Paper>
-          ) : (
-            <Typography color="text.secondary" sx={{ mb: 3 }}>Nenhuma instrução em texto fornecida.</Typography>
-          )}
+            <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
 
-          {runningTestCase?.gherkinContent && (
-            <>
-              <Typography variant="h6" gutterBottom>Cenário BDD (Gherkin)</Typography>
-              <Paper sx={{ p: 2, bgcolor: '#1e1e1e', color: '#a6e22e', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
-                {runningTestCase.gherkinContent}
+            {runningTestCase?.preConditions && (
+              <Box>
+                <Typography variant="h6" sx={{ color: '#e2e8f0', mb: 1 }}>Pré-condições</Typography>
+                <Paper sx={{ p: 2, bgcolor: 'rgba(30, 41, 59, 0.5)', color: '#cbd5e1', whiteSpace: 'pre-wrap' }}>
+                  {runningTestCase.preConditions}
+                </Paper>
+              </Box>
+            )}
+
+            <Box>
+              <Typography variant="h6" sx={{ color: '#e2e8f0', mb: 1 }}>Instruções / Descrição</Typography>
+              {runningTestCase?.description ? (
+                <Paper sx={{ p: 2, bgcolor: 'rgba(30, 41, 59, 0.5)', color: '#cbd5e1', whiteSpace: 'pre-wrap' }}>
+                  {runningTestCase.description}
+                </Paper>
+              ) : (
+                <Typography color="text.secondary">Nenhuma instrução em texto fornecida.</Typography>
+              )}
+            </Box>
+
+            {runningTestCase?.gherkinContent && (
+              <Box>
+                <Typography variant="h6" sx={{ color: '#e2e8f0', mb: 1 }}>Cenário BDD (Gherkin)</Typography>
+                <Paper sx={{ p: 2, bgcolor: '#1e1e1e', color: '#a6e22e', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
+                  {runningTestCase.gherkinContent}
+                </Paper>
+              </Box>
+            )}
+            
+            <Box>
+              <Typography variant="h6" sx={{ color: '#e2e8f0', mb: 1 }}>Resultado Esperado</Typography>
+              <Paper sx={{ p: 2, bgcolor: 'rgba(16, 185, 129, 0.1)', color: '#34d399', whiteSpace: 'pre-wrap', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                {runningTestCase?.expectedResult || 'O sistema deve comportar-se conforme descrito.'}
               </Paper>
-            </>
-          )}
+            </Box>
+          </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3, justifyContent: 'space-between' }}>
           <Button onClick={() => setRunnerOpen(false)}>Cancelar / Fechar</Button>
