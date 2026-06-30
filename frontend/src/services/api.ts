@@ -633,3 +633,26 @@ export const SystemLogService = {
     return res.json();
   }
 };
+
+export interface AutomatedTestRun {
+  id: string;
+  projectId: string;
+  name: string;
+  environment?: string;
+  framework: string;
+  status: string;
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  skippedTests: number;
+  durationMs: number;
+  executedAt: string;
+}
+
+export const AutomationIntegrationService = {
+  getRunsByProject: async (projectId: string): Promise<AutomatedTestRun[]> => {
+    const res = await fetch(`${API_URL}/integrations/automation/runs/project/${projectId}`);
+    if (!res.ok) throw new Error('Failed to fetch automation runs');
+    return res.json();
+  }
+};
