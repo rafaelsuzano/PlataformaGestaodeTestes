@@ -195,15 +195,32 @@ class RequirementJpaEntity(
 class FeatureJpaEntity(
     @Id var id: String,
     var moduleId: String,
+    var categoryId: String?,
+    var code: String?,
     var name: String,
     var description: String?,
+    var objective: String?,
+    var status: String?,
+    var priority: String?,
+    var version: String?,
+    var permissions: String?,
+    var dependencies: String?,
+    var tags: String?,
+    var iconName: String?,
+    var color: String?,
+    var menuOrder: Int,
+    var url: String?,
+    var visibleInMenu: Boolean,
+    var showInDashboard: Boolean,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Feature(id, moduleId, name, description, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.core.domain.Feature(
+        id, moduleId, categoryId, code, name, description, objective, status, priority, version, permissions, dependencies, tags, iconName, color, menuOrder, url, visibleInMenu, showInDashboard, createdAt, updatedAt
+    )
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Feature) = FeatureJpaEntity(
-            domain.id, domain.moduleId, domain.name, domain.description, domain.createdAt, domain.updatedAt
+            domain.id, domain.moduleId, domain.categoryId, domain.code, domain.name, domain.description, domain.objective, domain.status, domain.priority, domain.version, domain.permissions, domain.dependencies, domain.tags, domain.iconName, domain.color, domain.menuOrder, domain.url, domain.visibleInMenu, domain.showInDashboard, domain.createdAt, domain.updatedAt
         )
     }
 }

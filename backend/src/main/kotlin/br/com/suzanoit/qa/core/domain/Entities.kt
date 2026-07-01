@@ -83,7 +83,7 @@ data class ApiTestExecution(
 
 data class Module(
     val id: String = UUID.randomUUID().toString(),
-    val projectId: String,
+    val projectId: String = "GLOBAL",
     val name: String,
     val description: String?,
     val createdAt: LocalDateTime = LocalDateTime.now(),
@@ -117,8 +117,23 @@ data class Requirement(
 data class Feature(
     val id: String = UUID.randomUUID().toString(),
     val moduleId: String,
+    val categoryId: String? = null,
+    val code: String? = null,
     val name: String,
     val description: String?,
+    val objective: String? = null,
+    val status: String? = null,
+    val priority: String? = null,
+    val version: String? = null,
+    val permissions: String? = null,
+    val dependencies: String? = null,
+    val tags: String? = null,
+    val iconName: String? = null,
+    val color: String? = null,
+    val menuOrder: Int = 0,
+    val url: String? = null,
+    val visibleInMenu: Boolean = true,
+    val showInDashboard: Boolean = true,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()
 )

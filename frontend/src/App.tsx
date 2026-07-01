@@ -23,6 +23,7 @@ import { Funcionalidades } from './pages/Funcionalidades';
 import Layout from './components/Layout';
 import Placeholder from './pages/Placeholder';
 import { SettingsDashboard } from './pages/SettingsDashboard';
+import { ConfiguracaoModulosCategorias } from './pages/ConfiguracaoModulosCategorias';
 
 
 const queryClient = new QueryClient();
@@ -266,6 +267,7 @@ function App() {
 
                 {/* --- Placeholders para novas rotas Admin Settings --- */}
                 <Route path="/admin" element={<SettingsDashboard />} />
+                <Route path="/configuracoes/modulos-categorias" element={<ConfiguracaoModulosCategorias />} />
                 <Route path="/times" element={<Placeholder title="Gestão de Times" />} />
                 <Route path="/perfis" element={<Placeholder title="Perfis de Acesso" />} />
                 <Route path="/permissoes" element={<Placeholder title="Gestão de Permissões" />} />

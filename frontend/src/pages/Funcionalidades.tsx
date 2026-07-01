@@ -1,43 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Card, CardContent, Typography, Button, TextField, MenuItem, 
   RadioGroup, FormControlLabel, Radio, Checkbox, FormGroup, 
   Switch, Dialog, DialogTitle, DialogContent, DialogActions, 
-  IconButton, Chip, Box, Tooltip
+  IconButton, Chip, Box, Tooltip, CircularProgress
 } from '@mui/material';
 import { 
   Plus, Save, X, Search, Edit2, Copy, Trash2, 
   Code, Database, Globe, LayoutDashboard, Users, Activity, PlaySquare, Settings, CheckCircle2, AlertCircle, StopCircle, Archive
 } from 'lucide-react';
+import type { Feature, Module, Category } from '../services/api';
+import { FeatureService, ModuleService, CategoryService } from '../services/api';
 
-// Interfaces
-interface Feature {
-  id: string;
-  code: string;
-  name: string;
-  module: string;
-  category: string;
-  description: string;
-  objective: string;
-  status: 'Ativa' | 'Em Desenvolvimento' | 'Inativa' | 'Descontinuada';
-  priority: 'Baixa' | 'Média' | 'Alta' | 'Crítica';
-  version: string;
-  permissions: string[];
-  dependencies: string;
-  tags: string;
-  iconName: string;
-  color: string;
-  menuOrder: number;
-  url: string;
-  visibleInMenu: boolean;
-  showInDashboard: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Constantes
-const MODULES = ['Administração', 'Gestão de Testes', 'BDD', 'Automação', 'Execuções', 'Relatórios', 'Dashboard', 'Usuários', 'Integrações', 'Configurações'];
-const CATEGORIES = ['Cadastro', 'Consulta', 'Relatório', 'Configuração', 'Integração', 'Automação', 'Dashboard'];
 const PERMISSIONS = ['Administrador', 'QA', 'Desenvolvedor', 'Tech Lead', 'Gestor', 'Cliente'];
 const ICONS = [
   { name: 'Código', icon: <Code size={24} /> },
@@ -51,59 +25,57 @@ const ICONS = [
 ];
 
 const INITIAL_FEATURE: Feature = {
-  id: '',
-  code: 'FUNC-001',
+  moduleId: '',
+  categoryId: '',
+  code: '',
   name: '',
-  module: 'Gestão de Testes',
-  category: 'Cadastro',
   description: '',
   objective: '',
   status: 'Em Desenvolvimento',
   priority: 'Média',
   version: '1.0.0',
-  permissions: ['QA', 'Administrador'],
+  permissions: 'QA,Administrador',
   dependencies: '',
   tags: '',
   iconName: 'Código',
-  color: '#6366f1', // Indigo
+  color: '#6366f1',
   menuOrder: 1,
   url: '/',
   visibleInMenu: true,
   showInDashboard: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
 };
 
-// Dados Mockados para a Tabela
-const MOCK_FEATURES: Feature[] = [
-  {
-    ...INITIAL_FEATURE,
-    id: '1',
-    code: 'FUNC-001',
-    name: 'Gestão de Casos de Teste',
-    status: 'Ativa',
-    priority: 'Alta',
-  },
-  {
-    ...INITIAL_FEATURE,
-    id: '2',
-    code: 'FUNC-002',
-    name: 'Execução de Cenários BDD',
-    module: 'BDD',
-    category: 'Automação',
-    status: 'Em Desenvolvimento',
-    priority: 'Crítica',
-    iconName: 'Testes',
-    color: '#ec4899', // Pink
-  }
-];
-
 export const Funcionalidades: React.FC = () => {
-  const [features, setFeatures] = useState<Feature[]>(MOCK_FEATURES);
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [modules, setModules] = useState<Module[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [formData, setFormData] = useState<Feature>(INITIAL_FEATURE);
-  const [isEditing, setIsEditing] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [feats, mods, cats] = await Promise.all([
+        FeatureService.getAll(),
+        ModuleService.getAll(),
+        CategoryService.getAll()
+      ]);
+      setFeatures(feats);
+      setModules(mods);
+      setCategories(cats);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   // Handlers
   const handleChange = (field: keyof Feature, value: any) => {
@@ -111,59 +83,60 @@ export const Funcionalidades: React.FC = () => {
   };
 
   const handlePermissionToggle = (perm: string) => {
-    setFormData(prev => {
-      const perms = prev.permissions.includes(perm)
-        ? prev.permissions.filter(p => p !== perm)
-        : [...prev.permissions, perm];
-      return { ...prev, permissions: perms };
-    });
+    const currentPerms = formData.permissions ? formData.permissions.split(',').filter(p => p.trim()) : [];
+    const newPerms = currentPerms.includes(perm)
+      ? currentPerms.filter(p => p !== perm)
+      : [...currentPerms, perm];
+    handleChange('permissions', newPerms.join(','));
   };
 
-  const handleSave = () => {
-    if (!formData.name) {
-      alert("O Nome da Funcionalidade é obrigatório!");
+  const handleSave = async () => {
+    if (!formData.name || !formData.moduleId || !formData.categoryId) {
+      alert("Nome, Módulo e Categoria são obrigatórios!");
       return;
     }
-    if (isEditing) {
-      setFeatures(features.map(f => f.id === formData.id ? { ...formData, updatedAt: new Date().toISOString() } : f));
-    } else {
-      const newFeature = { 
-        ...formData, 
-        id: Math.random().toString(), 
-        code: `FUNC-00${features.length + 1}` 
-      };
-      setFeatures([newFeature, ...features]);
+    
+    try {
+      await FeatureService.create(formData);
+      fetchData();
+      resetForm();
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao salvar funcionalidade');
     }
-    resetForm();
   };
 
   const handleEdit = (feature: Feature) => {
     setFormData(feature);
-    setIsEditing(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDuplicate = (feature: Feature) => {
     setFormData({ 
       ...feature, 
-      id: '', 
-      code: `FUNC-00${features.length + 1}`, 
+      id: undefined, 
+      code: `${feature.code || ''}-COPY`, 
       name: `${feature.name} (Cópia)` 
     });
-    setIsEditing(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deleteId) {
-      setFeatures(features.filter(f => f.id !== deleteId));
-      setDeleteId(null);
+      try {
+        await FeatureService.delete(deleteId);
+        fetchData();
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao excluir funcionalidade');
+      } finally {
+        setDeleteId(null);
+      }
     }
   };
 
   const resetForm = () => {
     setFormData({ ...INITIAL_FEATURE, code: `FUNC-00${features.length + 1}` });
-    setIsEditing(false);
   };
 
   // Stats
@@ -178,7 +151,7 @@ export const Funcionalidades: React.FC = () => {
   }, [features]);
 
   // Helpers UI
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | null | undefined) => {
     switch(status) {
       case 'Ativa': return '#10b981'; // Emerald
       case 'Em Desenvolvimento': return '#3b82f6'; // Blue
@@ -188,7 +161,7 @@ export const Funcionalidades: React.FC = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: string | null | undefined) => {
     switch(status) {
       case 'Ativa': return <CheckCircle2 size={16} />;
       case 'Em Desenvolvimento': return <Activity size={16} />;
@@ -198,7 +171,7 @@ export const Funcionalidades: React.FC = () => {
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string | null | undefined) => {
     switch(priority) {
       case 'Baixa': return 'rgba(59, 130, 246, 0.2)'; // Blue
       case 'Média': return 'rgba(245, 158, 11, 0.2)'; // Amber
@@ -208,7 +181,7 @@ export const Funcionalidades: React.FC = () => {
     }
   };
   
-  const getPriorityTextColor = (priority: string) => {
+  const getPriorityTextColor = (priority: string | null | undefined) => {
     switch(priority) {
       case 'Baixa': return '#60a5fa'; 
       case 'Média': return '#fbbf24'; 
@@ -219,13 +192,20 @@ export const Funcionalidades: React.FC = () => {
   };
 
   const SelectedIcon = ICONS.find(i => i.name === formData.iconName)?.icon || <Code size={24} />;
+  const currentPermsList = formData.permissions ? formData.permissions.split(',').filter(p => p.trim()) : [];
 
   // Filtro
   const filteredFeatures = features.filter(f => 
     f.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    f.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    f.module.toLowerCase().includes(searchTerm.toLowerCase())
+    (f.code || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const getModuleName = (id: string) => modules.find(m => m.id === id)?.name || id;
+  const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || id;
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-64"><CircularProgress /></div>;
+  }
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-8 text-slate-200">
@@ -308,8 +288,8 @@ export const Funcionalidades: React.FC = () => {
                   sx={{ input: { color: 'white' }, '& .MuiInputLabel-root': { color: '#94a3b8' } }}
                 />
                 <TextField 
-                  label="Código *" 
-                  value={formData.code}
+                  label="Código" 
+                  value={formData.code || ''}
                   onChange={(e) => handleChange('code', e.target.value)}
                   fullWidth 
                   variant="outlined"
@@ -321,29 +301,29 @@ export const Funcionalidades: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <TextField 
                   select
-                  label="Módulo" 
-                  value={formData.module}
-                  onChange={(e) => handleChange('module', e.target.value)}
+                  label="Módulo *" 
+                  value={formData.moduleId}
+                  onChange={(e) => handleChange('moduleId', e.target.value)}
                   fullWidth 
                   variant="outlined"
                   size="small"
                   slotProps={{ select: { style: { color: 'white' } } }}
                   sx={{ '& .MuiInputLabel-root': { color: '#94a3b8' } }}
                 >
-                  {MODULES.map(m => <MenuItem key={m} value={m}>{m}</MenuItem>)}
+                  {modules.map(m => <MenuItem key={m.id} value={m.id}>{m.name}</MenuItem>)}
                 </TextField>
                 <TextField 
                   select
-                  label="Categoria" 
-                  value={formData.category}
-                  onChange={(e) => handleChange('category', e.target.value)}
+                  label="Categoria *" 
+                  value={formData.categoryId || ''}
+                  onChange={(e) => handleChange('categoryId', e.target.value)}
                   fullWidth 
                   variant="outlined"
                   size="small"
                   slotProps={{ select: { style: { color: 'white' } } }}
                   sx={{ '& .MuiInputLabel-root': { color: '#94a3b8' } }}
                 >
-                  {CATEGORIES.map(c => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+                  {categories.map(c => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
                 </TextField>
               </div>
 
@@ -360,7 +340,7 @@ export const Funcionalidades: React.FC = () => {
                 />
                 <TextField 
                   label="Objetivo (Finalidade)" 
-                  value={formData.objective}
+                  value={formData.objective || ''}
                   onChange={(e) => handleChange('objective', e.target.value)}
                   fullWidth 
                   multiline
@@ -375,7 +355,7 @@ export const Funcionalidades: React.FC = () => {
                 <div>
                   <Typography variant="subtitle2" className="text-slate-400 mb-2">Status da Funcionalidade</Typography>
                   <RadioGroup 
-                    value={formData.status} 
+                    value={formData.status || 'Em Desenvolvimento'} 
                     onChange={(e) => handleChange('status', e.target.value)}
                   >
                     {['Ativa', 'Em Desenvolvimento', 'Inativa', 'Descontinuada'].map(status => (
@@ -411,7 +391,7 @@ export const Funcionalidades: React.FC = () => {
                   </div>
                   <TextField 
                     label="Versão" 
-                    value={formData.version}
+                    value={formData.version || ''}
                     onChange={(e) => handleChange('version', e.target.value)}
                     fullWidth 
                     variant="outlined"
@@ -430,7 +410,7 @@ export const Funcionalidades: React.FC = () => {
                       key={perm}
                       control={
                         <Checkbox 
-                          checked={formData.permissions.includes(perm)}
+                          checked={currentPermsList.includes(perm)}
                           onChange={() => handlePermissionToggle(perm)}
                           sx={{ color: '#64748b', '&.Mui-checked': { color: '#6366f1' } }}
                         />
@@ -444,7 +424,7 @@ export const Funcionalidades: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-700/50">
                 <TextField 
                   label="Dependências" 
-                  value={formData.dependencies}
+                  value={formData.dependencies || ''}
                   onChange={(e) => handleChange('dependencies', e.target.value)}
                   placeholder="Ex: Gestão de Projetos, Automação"
                   fullWidth 
@@ -454,7 +434,7 @@ export const Funcionalidades: React.FC = () => {
                 />
                 <TextField 
                   label="Tags (separadas por vírgula)" 
-                  value={formData.tags}
+                  value={formData.tags || ''}
                   onChange={(e) => handleChange('tags', e.target.value)}
                   placeholder="Ex: BDD, API, Frontend"
                   fullWidth 
@@ -470,7 +450,7 @@ export const Funcionalidades: React.FC = () => {
                   <TextField 
                     select
                     label="Ícone Representativo" 
-                    value={formData.iconName}
+                    value={formData.iconName || 'Código'}
                     onChange={(e) => handleChange('iconName', e.target.value)}
                     fullWidth 
                     variant="outlined"
@@ -494,7 +474,7 @@ export const Funcionalidades: React.FC = () => {
                   <TextField 
                     label="Cor Tema (HEX)" 
                     type="color"
-                    value={formData.color}
+                    value={formData.color || '#6366f1'}
                     onChange={(e) => handleChange('color', e.target.value)}
                     fullWidth 
                     variant="outlined"
@@ -505,7 +485,7 @@ export const Funcionalidades: React.FC = () => {
                   <TextField 
                     label="Ordem no Menu" 
                     type="number"
-                    value={formData.menuOrder}
+                    value={formData.menuOrder || 0}
                     onChange={(e) => handleChange('menuOrder', parseInt(e.target.value))}
                     fullWidth 
                     variant="outlined"
@@ -517,7 +497,7 @@ export const Funcionalidades: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <TextField 
                     label="URL da Rota" 
-                    value={formData.url}
+                    value={formData.url || ''}
                     onChange={(e) => handleChange('url', e.target.value)}
                     placeholder="/minha-funcionalidade"
                     fullWidth 
@@ -527,11 +507,11 @@ export const Funcionalidades: React.FC = () => {
                   />
                   <div className="flex gap-6 items-center">
                     <FormControlLabel 
-                      control={<Switch checked={formData.visibleInMenu} onChange={(e) => handleChange('visibleInMenu', e.target.checked)} color="primary" />}
+                      control={<Switch checked={!!formData.visibleInMenu} onChange={(e) => handleChange('visibleInMenu', e.target.checked)} color="primary" />}
                       label={<span className="text-slate-300 text-sm">Visível Menu</span>}
                     />
                     <FormControlLabel 
-                      control={<Switch checked={formData.showInDashboard} onChange={(e) => handleChange('showInDashboard', e.target.checked)} color="secondary" />}
+                      control={<Switch checked={!!formData.showInDashboard} onChange={(e) => handleChange('showInDashboard', e.target.checked)} color="secondary" />}
                       label={<span className="text-slate-300 text-sm">Dashboard</span>}
                     />
                   </div>
@@ -562,19 +542,19 @@ export const Funcionalidades: React.FC = () => {
             >
               <div 
                 className="h-2 w-full" 
-                style={{ backgroundColor: formData.color }} 
+                style={{ backgroundColor: formData.color || '#6366f1' }} 
               />
               <CardContent className="p-6 space-y-6">
                 
                 <div className="flex justify-between items-start">
                   <div 
                     className="p-3 rounded-2xl flex items-center justify-center"
-                    style={{ backgroundColor: `${formData.color}20`, color: formData.color }}
+                    style={{ backgroundColor: `${formData.color}20`, color: formData.color || '#6366f1' }}
                   >
                     {SelectedIcon}
                   </div>
                   <Chip 
-                    label={formData.status} 
+                    label={formData.status || 'Em Desenvolvimento'} 
                     size="small" 
                     icon={getStatusIcon(formData.status)}
                     sx={{ 
@@ -598,16 +578,16 @@ export const Funcionalidades: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-slate-500 block text-xs uppercase tracking-wider">Módulo</span>
-                    <span className="text-slate-200">{formData.module}</span>
+                    <span className="text-slate-200">{getModuleName(formData.moduleId) || 'Não definido'}</span>
                   </div>
                   <div>
                     <span className="text-slate-500 block text-xs uppercase tracking-wider">Categoria</span>
-                    <span className="text-slate-200">{formData.category}</span>
+                    <span className="text-slate-200">{getCategoryName(formData.categoryId || '') || 'Não definido'}</span>
                   </div>
                   <div>
                     <span className="text-slate-500 block text-xs uppercase tracking-wider">Prioridade</span>
                     <span style={{ color: getPriorityTextColor(formData.priority), fontWeight: 'bold' }}>
-                      {formData.priority}
+                      {formData.priority || 'Média'}
                     </span>
                   </div>
                   <div>
@@ -625,27 +605,14 @@ export const Funcionalidades: React.FC = () => {
                   </div>
                 )}
 
-                {(formData.tags || formData.permissions.length > 0) && (
+                {(formData.tags || currentPermsList.length > 0) && (
                   <div className="pt-4 border-t border-slate-800 flex flex-wrap gap-2">
-                    {formData.permissions.slice(0,3).map(p => (
+                    {currentPermsList.slice(0,3).map(p => (
                       <Chip key={p} label={p} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: '#94a3b8', fontSize: '0.7rem' }} />
                     ))}
-                    {formData.permissions.length > 3 && <Chip label={`+${formData.permissions.length-3}`} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: '#94a3b8', fontSize: '0.7rem' }} />}
+                    {currentPermsList.length > 3 && <Chip label={`+${currentPermsList.length-3}`} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: '#94a3b8', fontSize: '0.7rem' }} />}
                   </div>
                 )}
-
-                {/* AUDITORIA READONLY */}
-                <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800 text-xs text-slate-500 space-y-1 mt-4">
-                  <div className="flex justify-between">
-                    <span>Criado por:</span> <span className="text-slate-300">Admin (Mock)</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Data Criação:</span> <span className="text-slate-300">{new Date(formData.createdAt).toLocaleDateString('pt-BR')}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Última Alt.:</span> <span className="text-slate-300">{new Date(formData.updatedAt).toLocaleDateString('pt-BR')}</span>
-                  </div>
-                </div>
 
               </CardContent>
             </Card>
@@ -688,11 +655,11 @@ export const Funcionalidades: React.FC = () => {
                   <tr key={f.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
                     <td className="p-4 font-mono text-slate-400">{f.code}</td>
                     <td className="p-4 font-medium text-white flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: f.color }}></div>
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: f.color || '#6366f1' }}></div>
                       {f.name}
                     </td>
-                    <td className="p-4 text-slate-300">{f.module}</td>
-                    <td className="p-4 text-slate-300">{f.category}</td>
+                    <td className="p-4 text-slate-300">{getModuleName(f.moduleId)}</td>
+                    <td className="p-4 text-slate-300">{getCategoryName(f.categoryId || '')}</td>
                     <td className="p-4">
                       <span className="px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 w-max" style={{ backgroundColor: `${getStatusColor(f.status)}20`, color: getStatusColor(f.status), border: `1px solid ${getStatusColor(f.status)}50`}}>
                         {f.status}
@@ -716,7 +683,7 @@ export const Funcionalidades: React.FC = () => {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Excluir">
-                          <IconButton size="small" onClick={() => setDeleteId(f.id)} sx={{ color: '#94a3b8', '&:hover': { color: '#f87171' } }}>
+                          <IconButton size="small" onClick={() => setDeleteId(f.id!)} sx={{ color: '#94a3b8', '&:hover': { color: '#f87171' } }}>
                             <Trash2 size={16} />
                           </IconButton>
                         </Tooltip>
@@ -744,7 +711,7 @@ export const Funcionalidades: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           <Typography className="text-slate-300">
-            Tem certeza que deseja excluir esta funcionalidade? Esta ação não poderá ser desfeita e todas as referências a ela serão impactadas.
+            Tem certeza que deseja excluir esta funcionalidade? Esta ação não poderá ser desfeita.
           </Typography>
         </DialogContent>
         <DialogActions className="p-4 border-t border-slate-800">

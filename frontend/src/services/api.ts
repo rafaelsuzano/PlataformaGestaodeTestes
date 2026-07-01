@@ -283,11 +283,88 @@ export const RequirementService = {
   }
 };
 
+export interface Module {
+  id?: string;
+  name: string;
+  description: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const ModuleService = {
+  getAll: async (): Promise<Module[]> => {
+    const res = await fetch(`${API_URL}/settings/modules`);
+    if (!res.ok) throw new Error('Failed to fetch modules');
+    return res.json();
+  },
+  create: async (module: Module): Promise<Module> => {
+    const res = await fetch(`${API_URL}/settings/modules`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(module)
+    });
+    if (!res.ok) throw new Error('Failed to create module');
+    return res.json();
+  },
+  delete: async (id: string): Promise<void> => {
+    const res = await fetch(`${API_URL}/settings/modules/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Failed to delete module');
+  }
+};
+
+export interface Category {
+  id?: string;
+  name: string;
+  description: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const CategoryService = {
+  getAll: async (): Promise<Category[]> => {
+    const res = await fetch(`${API_URL}/settings/categories`);
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    return res.json();
+  },
+  create: async (category: Category): Promise<Category> => {
+    const res = await fetch(`${API_URL}/settings/categories`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(category)
+    });
+    if (!res.ok) throw new Error('Failed to create category');
+    return res.json();
+  },
+  delete: async (id: string): Promise<void> => {
+    const res = await fetch(`${API_URL}/settings/categories/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Failed to delete category');
+  }
+};
+
 export interface Feature {
   id?: string;
   moduleId: string;
+  categoryId?: string | null;
+  code?: string | null;
   name: string;
   description: string;
+  objective?: string | null;
+  status?: string | null;
+  priority?: string | null;
+  version?: string | null;
+  permissions?: string | null;
+  dependencies?: string | null;
+  tags?: string | null;
+  iconName?: string | null;
+  color?: string | null;
+  menuOrder?: number;
+  url?: string | null;
+  visibleInMenu?: boolean;
+  showInDashboard?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -306,6 +383,12 @@ export const FeatureService = {
     });
     if (!res.ok) throw new Error('Failed to create feature');
     return res.json();
+  },
+  delete: async (id: string): Promise<void> => {
+    const res = await fetch(`${API_URL}/features/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Failed to delete feature');
   }
 };
 
