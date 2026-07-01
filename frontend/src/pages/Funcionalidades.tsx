@@ -9,8 +9,9 @@ import {
   Plus, Save, X, Search, Edit2, Copy, Trash2, 
   Code, Database, Globe, LayoutDashboard, Users, Activity, PlaySquare, Settings, CheckCircle2, AlertCircle, StopCircle, Archive
 } from 'lucide-react';
-import type { Feature, Module, Category } from '../services/api';
-import { FeatureService, ModuleService, CategoryService } from '../services/api';
+import type { Feature, Module, Category, TestCase } from '../services/api';
+import { FeatureService, ModuleService, CategoryService, TestCaseService } from '../services/api';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const PERMISSIONS = ['Administrador', 'QA', 'Desenvolvedor', 'Tech Lead', 'Gestor', 'Cliente'];
 const ICONS = [
@@ -55,17 +56,23 @@ export const Funcionalidades: React.FC = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const [testCases, setTestCases] = useState<TestCase[]>([]);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
+
   const fetchData = async () => {
     setLoading(true);
     try {
       const [feats, mods, cats] = await Promise.all([
         FeatureService.getAll(),
         ModuleService.getAll(),
-        CategoryService.getAll()
+        CategoryService.getAll(),
+        TestCaseService.getAll()
       ]);
       setFeatures(feats);
       setModules(mods);
       setCategories(cats);
+      setTestCases(tcs);
     } catch (error) {
       console.error(error);
     } finally {
@@ -137,6 +144,15 @@ export const Funcionalidades: React.FC = () => {
 
   const resetForm = () => {
     setFormData({ ...INITIAL_FEATURE, code: `FUNC-00${features.length + 1}` });
+  };
+
+  const handleView = (feature: Feature) => {
+    setSelectedFeature(feature);
+    setViewOpen(true);
+  };
+
+  const getLinkedTestCases = (featureId: string) => {
+    return testCases?.filter(tc => tc.featureId === featureId) || [];
   };
 
   // Stats
@@ -545,6 +561,7 @@ export const Funcionalidades: React.FC = () => {
                   <th className="p-4 font-semibold">Categoria</th>
                   <th className="p-4 font-semibold">Status</th>
                   <th className="p-4 font-semibold">Prioridade</th>
+                  <th className="p-4 font-semibold">Cobertura</th>
                   <th className="p-4 font-semibold">Ações</th>
                 </tr>
               </thead>
@@ -569,7 +586,19 @@ export const Funcionalidades: React.FC = () => {
                       </span>
                     </td>
                     <td className="p-4">
+                      <Chip 
+                        label={`${getLinkedTestCases(f.id!).length} TC(s)`} 
+                        size="small" 
+                        color={getLinkedTestCases(f.id!).length > 0 ? "success" : "default"} 
+                      />
+                    </td>
+                    <td className="p-4">
                       <div className="flex gap-1">
+                        <Tooltip title="Visualizar">
+                          <IconButton size="small" onClick={() => handleView(f)} sx={{ color: '#94a3b8', '&:hover': { color: '#818cf8' } }}>
+                            <VisibilityIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                         <Tooltip title="Editar">
                           <IconButton size="small" onClick={() => handleEdit(f)} sx={{ color: '#94a3b8', '&:hover': { color: '#60a5fa' } }}>
                             <Edit2 size={16} />
@@ -620,6 +649,49 @@ export const Funcionalidades: React.FC = () => {
         </DialogActions>
       </Dialog>
       
+      {/* Modal - Visualizar Funcionalidade e Rastreabilidade */}
+      <Dialog open={viewOpen} onClose={() => setViewOpen(false)} maxWidth="md" fullWidth sx={{ '& .MuiDialog-paper': { bgcolor: '#0f172a', color: 'white', border: '1px solid #334155' } }}>
+        <DialogTitle>Funcionalidade: {selectedFeature?.code}</DialogTitle>
+        <DialogContent>
+          <Typography variant="h6" sx={{ color: 'white' }}>{selectedFeature?.name}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 4, color: '#94a3b8' }}>Módulo: {getModuleName(selectedFeature?.moduleId || '')}</Typography>
+
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 2, borderBottom: '1px solid #334155', pb: 1, color: 'white' }}>
+            Rastreabilidade (Matriz de Cobertura)
+          </Typography>
+          
+          {selectedFeature && getLinkedTestCases(selectedFeature.id!).length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-700/50 text-slate-400 text-sm bg-slate-900/30">
+                    <th className="p-2 font-semibold">Caso de Teste</th>
+                    <th className="p-2 font-semibold">Tipo</th>
+                    <th className="p-2 font-semibold">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {getLinkedTestCases(selectedFeature.id!).map(tc => (
+                    <tr key={tc.id} className="border-b border-slate-800/50">
+                      <td className="p-2 font-medium text-slate-300">{tc.title}</td>
+                      <td className="p-2"><Chip label={tc.type} size="small" sx={{ color: 'white', bgcolor: '#334155' }} /></td>
+                      <td className="p-2 text-slate-400">{tc.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <Typography variant="body2" sx={{ py: 2, color: '#94a3b8' }}>
+              Nenhum Caso de Teste vinculado a esta funcionalidade ainda. (Vincule lá na tela de Casos de Teste)
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ borderTop: '1px solid #334155' }}>
+          <Button onClick={() => setViewOpen(false)} variant="contained" sx={{ bgcolor: '#334155' }}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 };

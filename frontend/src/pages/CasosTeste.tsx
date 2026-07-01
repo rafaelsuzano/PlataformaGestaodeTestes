@@ -19,8 +19,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import ScienceIcon from '@mui/icons-material/Science';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import Editor from '@monaco-editor/react';
-import { TestCaseService, RequirementService, AiService, ProjectService, TestCaseFolderService } from '../services/api';
-import type { TestCase, Requirement, TestCaseFolder } from '../services/api';
+import { TestCaseService, RequirementService, AiService, ProjectService, TestCaseFolderService, FeatureService } from '../services/api';
+import type { TestCase, Requirement, Project, TestCaseFolder, Feature } from '../services/api';
 
 const DEFAULT_FORM_DATA = {
   featureId: null, requirementId: '', title: '', description: '', type: 'BDD', status: 'DRAFT', gherkinContent: 'Feature: ...\n\n  Scenario: ...\n    Given ...\n    When ...\n    Then ...'
@@ -63,6 +63,11 @@ export default function CasosTeste() {
   const { data: requirements } = useQuery({
     queryKey: ['requirements'],
     queryFn: RequirementService.getAll
+  });
+
+  const { data: features } = useQuery({
+    queryKey: ['features'],
+    queryFn: FeatureService.getAll
   });
 
   const { data: folders, isLoading: foldersLoading } = useQuery({
@@ -404,7 +409,25 @@ export default function CasosTeste() {
                           </TableCell>
                         )}
                         <TableCell>{tc.type}</TableCell>
-                        <TableCell>{getStatusChip(tc.status || 'DRAFT')}</TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                            {getStatusChip(tc.status || 'DRAFT')}
+                            {tc.requirementId && (
+                              <Chip 
+                                label={`Req: ${requirements?.find(r => r.id === tc.requirementId)?.code || '?'}`} 
+                                size="small" 
+                                sx={{ bgcolor: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', fontSize: '0.65rem', height: 20 }} 
+                              />
+                            )}
+                            {tc.featureId && (
+                              <Chip 
+                                label={`Func: ${features?.find(f => f.id === tc.featureId)?.name || '?'}`} 
+                                size="small" 
+                                sx={{ bgcolor: 'rgba(168, 85, 247, 0.1)', color: '#a855f7', fontSize: '0.65rem', height: 20 }} 
+                              />
+                            )}
+                          </Box>
+                        </TableCell>
                         <TableCell>
                           <Tooltip title="Visualizar">
                             <IconButton size="small" onClick={() => handleView(tc)}><VisibilityIcon fontSize="small" /></IconButton>
@@ -470,6 +493,20 @@ export default function CasosTeste() {
               <MenuItem value="">Nenhum</MenuItem>
               {requirements?.map((req: Requirement) => (
                 <MenuItem key={req.id} value={req.id}>{req.code} - {req.title}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Funcionalidade Vinculada</InputLabel>
+            <Select
+              value={formData.featureId || ''}
+              label="Funcionalidade Vinculada"
+              onChange={e => setFormData({...formData, featureId: e.target.value as string})}
+            >
+              <MenuItem value="">Nenhuma</MenuItem>
+              {features?.map((f: Feature) => (
+                <MenuItem key={f.id} value={f.id}>{f.name}</MenuItem>
               ))}
             </Select>
           </FormControl>

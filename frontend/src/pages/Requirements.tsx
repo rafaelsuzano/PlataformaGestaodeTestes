@@ -3,14 +3,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, 
-  DialogActions, TextField, Select, MenuItem, InputLabel, FormControl 
+  DialogActions, TextField, Select, MenuItem, InputLabel, FormControl, IconButton, Chip 
 } from '@mui/material';
-import { RequirementService, ProjectService } from '../services/api';
-import type { Requirement } from '../services/api';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { RequirementService, ProjectService, TestCaseService } from '../services/api';
+import type { Requirement, TestCase } from '../services/api';
 
 export default function Requirements() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedReq, setSelectedReq] = useState<Requirement | null>(null);
   const [formData, setFormData] = useState<Requirement>({
     projectId: '', code: '', title: '', description: '', source: '', priority: 'MEDIA', criticality: 'ALTA', sprint: '', releaseVersion: '', status: 'ACTIVE'
   });
@@ -25,6 +28,11 @@ export default function Requirements() {
     queryFn: ProjectService.getAll
   });
 
+  const { data: testCases } = useQuery({
+    queryKey: ['testCases'],
+    queryFn: TestCaseService.getAll
+  });
+
   const mutation = useMutation({
     mutationFn: RequirementService.create,
     onSuccess: () => {
@@ -37,6 +45,15 @@ export default function Requirements() {
 
   const getProjectName = (projectId: string) => {
     return projects?.find(p => p.id === projectId)?.name || projectId;
+  };
+
+  const handleView = (req: Requirement) => {
+    setSelectedReq(req);
+    setViewOpen(true);
+  };
+
+  const getLinkedTestCases = (reqId: string) => {
+    return testCases?.filter(tc => tc.requirementId === reqId) || [];
   };
 
   return (
@@ -55,7 +72,8 @@ export default function Requirements() {
                 <TableCell>Título</TableCell>
                 <TableCell>Projeto</TableCell>
                 <TableCell>Prioridade</TableCell>
-                <TableCell>Sprint</TableCell>
+                <TableCell>Cobertura (Testes)</TableCell>
+                <TableCell>Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -65,7 +83,18 @@ export default function Requirements() {
                   <TableCell>{req.title}</TableCell>
                   <TableCell>{getProjectName(req.projectId)}</TableCell>
                   <TableCell>{req.priority}</TableCell>
-                  <TableCell>{req.sprint}</TableCell>
+                  <TableCell>
+                    <Chip 
+                      label={`${getLinkedTestCases(req.id!).length} TC(s)`} 
+                      size="small" 
+                      color={getLinkedTestCases(req.id!).length > 0 ? "success" : "default"} 
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton size="small" color="primary" onClick={() => handleView(req)}>
+                      <VisibilityIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -73,6 +102,7 @@ export default function Requirements() {
         </TableContainer>
       )}
 
+      {/* Modal - Novo Requisito */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Novo Requisito</DialogTitle>
         <DialogContent>
@@ -95,6 +125,47 @@ export default function Requirements() {
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancelar</Button>
           <Button onClick={handleSubmit} variant="contained" color="primary">Salvar</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal - Visualizar Requisito e Rastreabilidade */}
+      <Dialog open={viewOpen} onClose={() => setViewOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Visualizar Requisito: {selectedReq?.code}</DialogTitle>
+        <DialogContent>
+          <Typography variant="h6">{selectedReq?.title}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>Projeto: {getProjectName(selectedReq?.projectId || '')}</Typography>
+
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 2, borderBottom: '1px solid #eee', pb: 1 }}>
+            Rastreabilidade (Matriz de Cobertura)
+          </Typography>
+          
+          {selectedReq && getLinkedTestCases(selectedReq.id!).length > 0 ? (
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Caso de Teste</TableCell>
+                  <TableCell>Tipo</TableCell>
+                  <TableCell>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {getLinkedTestCases(selectedReq.id!).map(tc => (
+                  <TableRow key={tc.id}>
+                    <TableCell>{tc.title}</TableCell>
+                    <TableCell><Chip label={tc.type} size="small" /></TableCell>
+                    <TableCell>{tc.status}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
+              Nenhum Caso de Teste vinculado a este requisito ainda. (Vincule lá na tela de Casos de Teste)
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setViewOpen(false)} variant="contained">Fechar</Button>
         </DialogActions>
       </Dialog>
     </Box>
