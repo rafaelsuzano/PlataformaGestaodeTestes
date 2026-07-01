@@ -134,8 +134,11 @@ export default function CasosTeste() {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1 }}>
-              <FolderIcon sx={{ color: '#6366f1' }} fontSize="small" />
-              <Typography variant="body2" sx={{ fontWeight: selectedFolderId === node.id ? 'bold' : 'normal' }}>
+              <FolderIcon sx={{ color: selectedFolderId === node.id ? '#a855f7' : '#6366f1' }} fontSize="small" />
+              <Typography variant="body2" sx={{ 
+                fontWeight: selectedFolderId === node.id ? 'bold' : 'normal',
+                color: selectedFolderId === node.id ? '#a855f7' : '#e2e8f0'
+              }}>
                 {node.name}
               </Typography>
             </Box>
@@ -314,8 +317,11 @@ export default function CasosTeste() {
                     itemId="root" 
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1, pr: 1 }}>
-                        <FolderIcon sx={{ color: '#ec4899' }} fontSize="small" />
-                        <Typography variant="body2" sx={{ fontWeight: (!selectedFolderId || selectedFolderId === 'root') ? 'bold' : 'normal' }}>
+                        <FolderIcon sx={{ color: (!selectedFolderId || selectedFolderId === 'root') ? '#ec4899' : '#94a3b8' }} fontSize="small" />
+                        <Typography variant="body2" sx={{ 
+                          fontWeight: (!selectedFolderId || selectedFolderId === 'root') ? 'bold' : 'normal',
+                          color: (!selectedFolderId || selectedFolderId === 'root') ? '#ec4899' : '#e2e8f0'
+                        }}>
                           Raiz do Projeto (Todos)
                         </Typography>
                       </Box>
@@ -364,6 +370,7 @@ export default function CasosTeste() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Título</TableCell>
+                    {(!selectedFolderId || selectedFolderId === 'root') && <TableCell>Diretório</TableCell>}
                     <TableCell>Tipo</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell width={150}>Ações</TableCell>
@@ -371,9 +378,9 @@ export default function CasosTeste() {
                 </TableHead>
                 <TableBody>
                   {isLoading ? (
-                    <TableRow><TableCell colSpan={4} align="center"><CircularProgress size={24} sx={{ my: 2 }} /></TableCell></TableRow>
+                    <TableRow><TableCell colSpan={5} align="center"><CircularProgress size={24} sx={{ my: 2 }} /></TableCell></TableRow>
                   ) : paginatedTestCases.length === 0 ? (
-                    <TableRow><TableCell colSpan={4} align="center" sx={{ py: 4, color: 'text.secondary' }}>Nenhum caso de teste encontrado nesta pasta.</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={5} align="center" sx={{ py: 4, color: 'text.secondary' }}>Nenhum caso de teste encontrado nesta pasta.</TableCell></TableRow>
                   ) : (
                     paginatedTestCases.map((tc) => (
                       <TableRow 
@@ -387,6 +394,15 @@ export default function CasosTeste() {
                         sx={{ cursor: 'grab', '&:active': { cursor: 'grabbing' } }}
                       >
                         <TableCell>{tc.title}</TableCell>
+                        {(!selectedFolderId || selectedFolderId === 'root') && (
+                          <TableCell>
+                            <Chip 
+                              label={tc.folderId ? (folders?.find(f => f.id === tc.folderId)?.name || 'Desconhecido') : 'Raiz'} 
+                              size="small" 
+                              sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: '#94a3b8', fontSize: '0.7rem' }} 
+                            />
+                          </TableCell>
+                        )}
                         <TableCell>{tc.type}</TableCell>
                         <TableCell>{getStatusChip(tc.status || 'DRAFT')}</TableCell>
                         <TableCell>
