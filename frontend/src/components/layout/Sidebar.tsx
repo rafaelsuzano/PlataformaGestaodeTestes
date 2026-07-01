@@ -34,7 +34,7 @@ const qaMenu = [
   { text: 'Histórico', icon: <History size={20} />, path: '/historico-execucoes' },
   { text: 'Evidências', icon: <FolderArchive size={20} />, path: '/evidencias' },
   { type: 'subheader', text: 'Automação' },
-  { text: 'Playwright / Cypress', icon: <Terminal size={20} />, path: '/automacao' },
+  { text: 'Automação Playwright', icon: <Terminal size={20} />, path: '/automacao' },
   { text: 'Pipelines', icon: <Activity size={20} />, path: '/pipelines' },
   { type: 'subheader', text: 'Qualidade' },
   { text: 'Defeitos / Bugs', icon: <Bug size={20} />, path: '/defeitos' },

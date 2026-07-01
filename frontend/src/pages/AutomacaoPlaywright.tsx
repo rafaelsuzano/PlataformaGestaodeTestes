@@ -4,7 +4,7 @@ import { Copy, Terminal, CheckCircle, XCircle, Clock } from 'lucide-react';
 import type { AutomatedTestRun } from '@/services/api';
 import { AutomationIntegrationService } from '@/services/api';
 
-export const AutomacaoCypress: React.FC = () => {
+export const AutomacaoPlaywright: React.FC = () => {
   // Para MVP, usando um projectId hardcoded ou capturado do localstorage
   const projectId = localStorage.getItem('currentProjectId') || 'default-project-id';
   const [runs, setRuns] = useState<AutomatedTestRun[]>([]);
@@ -30,34 +30,48 @@ export const AutomacaoCypress: React.FC = () => {
   }, [projectId]);
 
   const copySnippet = () => {
-    const snippet = `// cypress.config.js
-const axios = require('axios');
-const { defineConfig } = require('cypress');
+    const snippet = `// playwright-reporter.ts
+import { Reporter, FullResult, TestCase, TestResult } from '@playwright/test/reporter';
+import axios from 'axios';
 
-module.exports = defineConfig({
-  e2e: {
-    setupNodeEvents(on, config) {
-      on('after:run', async (results) => {
-        const payload = {
-          projectId: '${projectId}',
-          name: 'Cypress Run - ' + new Date().toISOString(),
-          environment: config.env.environment || 'Local',
-          framework: 'Cypress',
-          tests: results.runs.flatMap(run => 
-            run.tests.map(test => ({
-              name: test.title[test.title.length - 1],
-              suite: test.title[0],
-              status: test.state === 'passed' ? 'PASSED' : test.state === 'failed' ? 'FAILED' : 'SKIPPED',
-              durationMs: test.duration || 0,
-              errorMessage: test.displayError || null
-            }))
-          )
-        };
-        await axios.post('https://plataformagestaodetestes-production.up.railway.app/api/integrations/automation/report', payload);
-      });
-    },
-  },
-});`;
+class SuzanoQA_Reporter implements Reporter {
+  private tests: any[] = [];
+
+  onTestEnd(test: TestCase, result: TestResult) {
+    this.tests.push({
+      name: test.title,
+      suite: test.parent.title,
+      status: result.status === 'passed' ? 'PASSED' : result.status === 'failed' ? 'FAILED' : 'SKIPPED',
+      durationMs: result.duration,
+      errorMessage: result.errors.length > 0 ? result.errors[0].message : null
+    });
+  }
+
+  async onEnd(result: FullResult) {
+    const payload = {
+      projectId: '${projectId}',
+      name: 'Playwright Run - ' + new Date().toISOString(),
+      environment: process.env.ENVIRONMENT || 'Local',
+      framework: 'Playwright',
+      tests: this.tests
+    };
+
+    try {
+      await axios.post('https://plataformagestaodetestes-production.up.railway.app/api/integrations/automation/report', payload);
+      console.log('✅ Resultados enviados para a Plataforma SuzanoIT QA');
+    } catch (e: any) {
+      console.error('❌ Falha ao enviar resultados:', e.message);
+    }
+  }
+}
+export default SuzanoQA_Reporter;
+
+/* === No seu playwright.config.ts adicione ===
+  reporter: [
+    ['list'],
+    ['./playwright-reporter.ts']
+  ],
+*/`;
     navigator.clipboard.writeText(snippet);
   };
 
@@ -65,9 +79,9 @@ module.exports = defineConfig({
     <div className="p-6 max-w-7xl mx-auto space-y-6 text-slate-200">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Automação Cypress</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">Automação Playwright</h1>
           <p className="text-slate-400 mt-2">
-            Integração em tempo real com execuções de testes automatizados via Cypress.
+            Integração em tempo real com execuções de testes automatizados via Playwright.
           </p>
         </div>
         
@@ -82,42 +96,55 @@ module.exports = defineConfig({
       </div>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ bgcolor: '#0f172a', color: 'white' }}>Integração com Cypress</DialogTitle>
+        <DialogTitle sx={{ bgcolor: '#0f172a', color: 'white' }}>Integração com Playwright</DialogTitle>
         <DialogContent sx={{ bgcolor: '#0f172a', color: '#cbd5e1' }}>
           <Typography variant="body2" sx={{ mb: 2, color: '#94a3b8' }}>
-            Adicione o script abaixo no arquivo <code className="text-cyan-400 bg-slate-800 px-1 rounded">cypress.config.js</code> do seu projeto para enviar os resultados automaticamente para a nossa plataforma.
+            Crie um arquivo <code className="text-cyan-400 bg-slate-800 px-1 rounded">playwright-reporter.ts</code> no seu projeto e adicione o Custom Reporter abaixo. Depois, ative-o no seu <code className="text-cyan-400 bg-slate-800 px-1 rounded">playwright.config.ts</code>.
           </Typography>
           <Box sx={{ position: 'relative', mt: 2 }}>
             <pre className="bg-slate-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-emerald-400 border border-slate-800">
-{`// cypress.config.js
-const axios = require('axios');
-const { defineConfig } = require('cypress');
+{`// playwright-reporter.ts
+import { Reporter, FullResult, TestCase, TestResult } from '@playwright/test/reporter';
+import axios from 'axios';
 
-module.exports = defineConfig({
-  e2e: {
-    setupNodeEvents(on, config) {
-      on('after:run', async (results) => {
-        const payload = {
-          projectId: '${projectId}',
-          name: 'Cypress Run - ' + new Date().toISOString(),
-          environment: config.env.environment || 'Local',
-          framework: 'Cypress',
-          tests: results.runs.flatMap(run => 
-            run.tests.map(test => ({
-              name: test.title[test.title.length - 1],
-              suite: test.title[0],
-              status: test.state === 'passed' ? 'PASSED' : test.state === 'failed' ? 'FAILED' : 'SKIPPED',
-              durationMs: test.duration || 0,
-              errorMessage: test.displayError || null
-            }))
-          )
-        };
-        // Envia para a Plataforma SuzanoIT QA
-        await axios.post('https://plataformagestaodetestes-production.up.railway.app/api/integrations/automation/report', payload);
-      });
-    },
-  },
-});`}
+class SuzanoQA_Reporter implements Reporter {
+  private tests: any[] = [];
+
+  onTestEnd(test: TestCase, result: TestResult) {
+    this.tests.push({
+      name: test.title,
+      suite: test.parent.title,
+      status: result.status === 'passed' ? 'PASSED' : result.status === 'failed' ? 'FAILED' : 'SKIPPED',
+      durationMs: result.duration,
+      errorMessage: result.errors.length > 0 ? result.errors[0].message : null
+    });
+  }
+
+  async onEnd(result: FullResult) {
+    const payload = {
+      projectId: '${projectId}',
+      name: 'Playwright Run - ' + new Date().toISOString(),
+      environment: process.env.ENVIRONMENT || 'Local',
+      framework: 'Playwright',
+      tests: this.tests
+    };
+
+    try {
+      await axios.post('https://plataformagestaodetestes-production.up.railway.app/api/integrations/automation/report', payload);
+      console.log('✅ Resultados enviados para a Plataforma SuzanoIT QA');
+    } catch (e: any) {
+      console.error('❌ Falha ao enviar resultados:', e.message);
+    }
+  }
+}
+export default SuzanoQA_Reporter;
+
+/* === No seu playwright.config.ts adicione ===
+  reporter: [
+    ['list'],
+    ['./playwright-reporter.ts']
+  ],
+*/`}
             </pre>
             <Button 
               sx={{ position: 'absolute', top: 8, right: 8, minWidth: 'auto', p: 1, color: '#94a3b8' }} 
@@ -127,7 +154,7 @@ module.exports = defineConfig({
             </Button>
           </Box>
           <Typography variant="body2" sx={{ mt: 3, color: '#94a3b8' }}>
-            Lembre-se de instalar o <code className="text-cyan-400 bg-slate-800 px-1 rounded">axios</code> no seu projeto Cypress executando: <br/>
+            Lembre-se de instalar o <code className="text-cyan-400 bg-slate-800 px-1 rounded">axios</code> no seu projeto executando: <br/>
             <code className="text-emerald-400 mt-2 block bg-slate-950 p-2 rounded w-max border border-slate-800">npm install axios</code>
           </Typography>
         </DialogContent>
@@ -186,7 +213,7 @@ module.exports = defineConfig({
             <div className="text-center py-10 text-slate-500">Carregando execuções...</div>
           ) : runs.length === 0 ? (
             <div className="text-center py-10 text-slate-500">
-              Nenhuma execução recebida ainda. Configure o script no seu projeto Cypress para começar a ver os resultados aqui em tempo real.
+              Nenhuma execução recebida ainda. Configure o Custom Reporter no seu projeto Playwright para começar a ver os resultados aqui em tempo real.
             </div>
           ) : (
             <div className="space-y-4">

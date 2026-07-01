@@ -22,7 +22,7 @@ const routeNames: Record<string, string> = {
   'features': 'Features',
   'cenarios': 'Cenários',
   'evidencias': 'Evidências',
-  'automacao-cypress': 'Cypress',
+  'automacao': 'Playwright',
   'automacao-playwright': 'Playwright',
   'automacao-selenium': 'Selenium',
   'pipelines': 'Pipelines',
