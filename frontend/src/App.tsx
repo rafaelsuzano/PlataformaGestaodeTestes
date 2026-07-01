@@ -19,6 +19,7 @@ import Integrations from './pages/Integrations';
 import ApiTester from './pages/ApiTester';
 import CentralExecucaoApi from './pages/CentralExecucaoApi';
 import { AutomacaoCypress } from './pages/AutomacaoCypress';
+import { Funcionalidades } from './pages/Funcionalidades';
 import Layout from './components/Layout';
 import Placeholder from './pages/Placeholder';
 import { SettingsDashboard } from './pages/SettingsDashboard';
@@ -253,7 +254,7 @@ function App() {
 
 
                 {/* --- Placeholders para novas rotas QA Workspace --- */}
-                <Route path="/funcionalidades" element={<Placeholder title="Funcionalidades" />} />
+                <Route path="/funcionalidades" element={<Funcionalidades />} />
                 <Route path="/evidencias" element={<Placeholder title="Central de Evidências" />} />
                 <Route path="/automacao-cypress" element={<AutomacaoCypress />} />
                 <Route path="/automacao-playwright" element={<Placeholder title="Integração Playwright" />} />
