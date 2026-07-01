@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { RequirementService, ProjectService, TestCaseService } from '../services/api';
-import type { Requirement, TestCase } from '../services/api';
+import type { Requirement } from '../services/api';
 
 export default function Requirements() {
   const queryClient = useQueryClient();

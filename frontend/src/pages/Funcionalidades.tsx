@@ -63,7 +63,7 @@ export const Funcionalidades: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [feats, mods, cats] = await Promise.all([
+      const [feats, mods, cats, tcs] = await Promise.all([
         FeatureService.getAll(),
         ModuleService.getAll(),
         CategoryService.getAll(),

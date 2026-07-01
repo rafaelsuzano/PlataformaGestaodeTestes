@@ -20,7 +20,7 @@ import ScienceIcon from '@mui/icons-material/Science';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import Editor from '@monaco-editor/react';
 import { TestCaseService, RequirementService, AiService, ProjectService, TestCaseFolderService, FeatureService } from '../services/api';
-import type { TestCase, Requirement, Project, TestCaseFolder, Feature } from '../services/api';
+import type { TestCase, Requirement, TestCaseFolder, Feature } from '../services/api';
 
 const DEFAULT_FORM_DATA = {
   featureId: null, requirementId: '', title: '', description: '', type: 'BDD', status: 'DRAFT', gherkinContent: 'Feature: ...\n\n  Scenario: ...\n    Given ...\n    When ...\n    Then ...'
