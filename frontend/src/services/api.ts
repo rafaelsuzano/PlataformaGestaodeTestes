@@ -107,6 +107,15 @@ export const AiService = {
     });
     if (!res.ok) throw new Error('Failed to generate BDD');
     return res.json();
+  },
+  generatePlaywright: async (gherkin: string) => {
+    const res = await fetch(`${API_URL}/ai/generate-playwright`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gherkin })
+    });
+    if (!res.ok) throw new Error('Failed to generate Playwright code');
+    return res.json();
   }
 };
 

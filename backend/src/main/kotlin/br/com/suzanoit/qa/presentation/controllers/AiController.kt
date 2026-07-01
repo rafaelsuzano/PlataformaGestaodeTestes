@@ -15,4 +15,11 @@ class AiController(private val aiService: AiService) {
         val result = aiService.generateBdd(context)
         return ResponseEntity.ok(result)
     }
+
+    @PostMapping("/generate-playwright")
+    fun generatePlaywright(@RequestBody payload: Map<String, String>): ResponseEntity<Map<String, String>> {
+        val gherkin = payload["gherkin"] ?: return ResponseEntity.badRequest().build()
+        val result = aiService.generatePlaywrightCode(gherkin)
+        return ResponseEntity.ok(result)
+    }
 }

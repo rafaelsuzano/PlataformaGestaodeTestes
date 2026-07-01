@@ -19,4 +19,40 @@ class AiService {
             "expectedResult" to expectedResult
         )
     }
+
+    fun generatePlaywrightCode(gherkin: String): Map<String, String> {
+        // Mock de Integração com LLM (OpenAI/Gemini)
+        // Em um cenário real, aqui seria feita uma chamada de prompt para a IA converter Gherkin para TypeScript Playwright
+        val code = """
+import { test, expect } from '@playwright/test';
+
+test.describe('Automação Gerada a partir de Gherkin', () => {
+    test('Executar Cenário', async ({ page }) => {
+        // Código gerado pela SuzanoIT QA AI a partir do seu Gherkin
+        console.log('Iniciando o teste...');
+        
+        // Passos interpretados:
+        // Por favor, revise os seletores e URLs abaixo antes de executar.
+        
+        // Given
+        await test.step('Acessar o sistema', async () => {
+            await page.goto('https://sua-url-aqui.com');
+        });
+        
+        // When / And
+        await test.step('Preencher dados baseados no Gherkin', async () => {
+            // await page.locator('#input-id').fill('Valor');
+            // await page.locator('#button-submit').click();
+        });
+        
+        // Then
+        await test.step('Validar os resultados', async () => {
+            // await expect(page.locator('.success-message')).toBeVisible();
+        });
+    });
+});
+        """.trimIndent()
+
+        return mapOf("code" to code)
+    }
 }
