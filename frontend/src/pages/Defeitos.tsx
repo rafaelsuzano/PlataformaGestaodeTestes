@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  Box, Typography, Button, Table, TableBody, TableCell, TableContainer, 
-  TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, 
-  DialogActions, TextField, Select, MenuItem, InputLabel, FormControl, Chip 
+import {
+  Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField, Select, MenuItem, InputLabel, FormControl, Chip
 } from '@mui/material';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import { DefectService, TestCaseService } from '../services/api';
@@ -83,22 +83,22 @@ export default function Defeitos() {
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Reportar Novo Defeito</DialogTitle>
         <DialogContent>
-          <TextField 
-            margin="dense" label="Título do Defeito" fullWidth 
-            value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} 
+          <TextField
+            margin="dense" label="Título do Defeito" fullWidth
+            value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })}
             sx={{ mt: 2 }}
           />
-          <TextField 
+          <TextField
             margin="dense" label="Descrição (Opcional)" fullWidth multiline rows={3}
-            value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} 
+            value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })}
           />
-          
+
           <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
             <InputLabel>Caso de Teste Vinculado</InputLabel>
             <Select
               value={formData.testCaseId}
               label="Caso de Teste Vinculado"
-              onChange={e => setFormData({...formData, testCaseId: e.target.value as string})}
+              onChange={e => setFormData({ ...formData, testCaseId: e.target.value as string })}
             >
               {testCases?.map((tc: TestCase) => (
                 <MenuItem key={tc.id} value={tc.id}>{tc.title}</MenuItem>
@@ -111,7 +111,7 @@ export default function Defeitos() {
             <Select
               value={formData.severity}
               label="Severidade"
-              onChange={e => setFormData({...formData, severity: e.target.value as string})}
+              onChange={e => setFormData({ ...formData, severity: e.target.value as string })}
             >
               <MenuItem value="CRITICAL">CRÍTICO</MenuItem>
               <MenuItem value="HIGH">ALTA</MenuItem>
