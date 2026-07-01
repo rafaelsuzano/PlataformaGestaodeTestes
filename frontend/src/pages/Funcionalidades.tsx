@@ -191,7 +191,6 @@ export const Funcionalidades: React.FC = () => {
     }
   };
 
-  const SelectedIcon = ICONS.find(i => i.name === formData.iconName)?.icon || <Code size={24} />;
   const currentPermsList = formData.permissions ? formData.permissions.split(',').filter(p => p.trim()) : [];
 
   // Filtro
@@ -263,12 +262,9 @@ export const Funcionalidades: React.FC = () => {
         ))}
       </div>
 
-      {/* MAIN CONTENT SPLIT */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* LEFT: FORMULARIO */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)' }}>
+      {/* FORMULARIO */}
+      <div className="space-y-6">
+        <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)' }}>
             <CardContent className="p-6 space-y-6">
               
               <div className="flex items-center gap-2 mb-2 pb-4 border-b border-slate-700/50">
@@ -520,104 +516,6 @@ export const Funcionalidades: React.FC = () => {
 
             </CardContent>
           </Card>
-        </div>
-
-        {/* RIGHT: LIVE PREVIEW RESUMO */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-6">
-            <Typography variant="h6" className="text-slate-300 mb-4 flex items-center gap-2">
-              <Activity size={20} className="text-indigo-400" />
-              Painel Resumo (Live)
-            </Typography>
-            
-            <Card 
-              sx={{ 
-                bgcolor: 'rgba(15, 23, 42, 0.8)', 
-                backdropFilter: 'blur(20px)', 
-                borderRadius: 4, 
-                border: `1px solid ${formData.color}50`,
-                boxShadow: `0 10px 40px -10px ${formData.color}40`,
-                transition: 'all 0.3s ease'
-              }}
-            >
-              <div 
-                className="h-2 w-full" 
-                style={{ backgroundColor: formData.color || '#6366f1' }} 
-              />
-              <CardContent className="p-6 space-y-6">
-                
-                <div className="flex justify-between items-start">
-                  <div 
-                    className="p-3 rounded-2xl flex items-center justify-center"
-                    style={{ backgroundColor: `${formData.color}20`, color: formData.color || '#6366f1' }}
-                  >
-                    {SelectedIcon}
-                  </div>
-                  <Chip 
-                    label={formData.status || 'Em Desenvolvimento'} 
-                    size="small" 
-                    icon={getStatusIcon(formData.status)}
-                    sx={{ 
-                      bgcolor: `${getStatusColor(formData.status)}20`, 
-                      color: getStatusColor(formData.status),
-                      fontWeight: 'bold',
-                      border: `1px solid ${getStatusColor(formData.status)}50`
-                    }} 
-                  />
-                </div>
-
-                <div>
-                  <Typography variant="h5" className="text-white font-bold leading-tight break-words">
-                    {formData.name || 'Nome da Funcionalidade'}
-                  </Typography>
-                  <Typography variant="body2" className="text-slate-400 font-mono mt-1">
-                    {formData.code}
-                  </Typography>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-slate-500 block text-xs uppercase tracking-wider">Módulo</span>
-                    <span className="text-slate-200">{getModuleName(formData.moduleId) || 'Não definido'}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block text-xs uppercase tracking-wider">Categoria</span>
-                    <span className="text-slate-200">{getCategoryName(formData.categoryId || '') || 'Não definido'}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block text-xs uppercase tracking-wider">Prioridade</span>
-                    <span style={{ color: getPriorityTextColor(formData.priority), fontWeight: 'bold' }}>
-                      {formData.priority || 'Média'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block text-xs uppercase tracking-wider">Versão</span>
-                    <span className="text-slate-200">{formData.version}</span>
-                  </div>
-                </div>
-
-                {formData.description && (
-                  <div className="pt-4 border-t border-slate-800">
-                    <span className="text-slate-500 block text-xs uppercase tracking-wider mb-1">Resumo</span>
-                    <Typography variant="body2" className="text-slate-300 line-clamp-3">
-                      {formData.description}
-                    </Typography>
-                  </div>
-                )}
-
-                {(formData.tags || currentPermsList.length > 0) && (
-                  <div className="pt-4 border-t border-slate-800 flex flex-wrap gap-2">
-                    {currentPermsList.slice(0,3).map(p => (
-                      <Chip key={p} label={p} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: '#94a3b8', fontSize: '0.7rem' }} />
-                    ))}
-                    {currentPermsList.length > 3 && <Chip label={`+${currentPermsList.length-3}`} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: '#94a3b8', fontSize: '0.7rem' }} />}
-                  </div>
-                )}
-
-              </CardContent>
-            </Card>
-          </div>
-        </div>
       </div>
 
       {/* Tabela Inferior */}
