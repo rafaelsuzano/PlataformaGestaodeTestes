@@ -256,7 +256,6 @@ function App() {
 
                 {/* --- Placeholders para novas rotas QA Workspace --- */}
                 <Route path="/funcionalidades" element={<Funcionalidades />} />
-                <Route path="/evidencias" element={<Placeholder title="Central de Evidências" />} />
                 <Route path="/automacao-cypress" element={<AutomacaoCypress />} />
                 <Route path="/automacao-playwright" element={<Placeholder title="Integração Playwright" />} />
                 <Route path="/automacao-selenium" element={<Placeholder title="Integração Selenium" />} />

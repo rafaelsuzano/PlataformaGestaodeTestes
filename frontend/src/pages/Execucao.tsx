@@ -32,6 +32,7 @@ export default function Execucao() {
   const [runningTestCase, setRunningTestCase] = useState<TestCase | null>(null);
   const [selectedEnvId, setSelectedEnvId] = useState('');
   const [startTime, setStartTime] = useState<Date | null>(null);
+  const [observations, setObservations] = useState('');
 
   const { data: testCases } = useQuery({ queryKey: ['testCases'], queryFn: TestCaseService.getAll });
   const { data: executions, isLoading } = useQuery({ queryKey: ['executions'], queryFn: TestExecutionService.getAll });
@@ -122,6 +123,7 @@ export default function Execucao() {
     if (!selectedEnvId) return;
     setEnvSelectOpen(false);
     setStartTime(new Date());
+    setObservations('');
     setRunnerOpen(true);
     if (runningExec && (runningExec.status === 'ATIVO' || runningExec.status === 'PENDING')) {
       updateMutation.mutate({ ...runningExec, status: 'IN_PROGRESS' });
@@ -148,13 +150,15 @@ export default function Execucao() {
         passedSteps: status === 'PASSED' ? 1 : 0,
         failedSteps: status === 'FAILED' ? 1 : 0,
         blockedSteps: status === 'BLOCKED' ? 1 : 0,
-        status
+        status,
+        observations
       });
 
       setRunnerOpen(false);
       setRunningExec(null);
       setRunningTestCase(null);
       setStartTime(null);
+      setObservations('');
     }
   };
 
@@ -426,6 +430,31 @@ export default function Execucao() {
               <Typography variant="h6" sx={{ color: '#e2e8f0', mb: 1 }}>Resultado Esperado</Typography>
               <Paper sx={{ p: 2, bgcolor: 'rgba(16, 185, 129, 0.1)', color: '#34d399', whiteSpace: 'pre-wrap', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                 {runningTestCase?.expectedResult || 'O sistema deve comportar-se conforme descrito.'}
+              </Paper>
+            </Box>
+
+            <Box>
+              <Typography variant="h6" sx={{ color: '#e2e8f0', mb: 1 }}>Evidências da Execução</Typography>
+              <Paper sx={{ p: 2, bgcolor: 'rgba(30, 41, 59, 0.5)' }}>
+                <TextField 
+                  fullWidth 
+                  multiline 
+                  rows={3} 
+                  variant="outlined" 
+                  placeholder="Cole links de imagens, vídeos, logs ou anotações detalhadas sobre a execução..."
+                  value={observations}
+                  onChange={(e) => setObservations(e.target.value)}
+                  sx={{ 
+                    '& .MuiOutlinedInput-root': { color: 'white', bgcolor: 'rgba(0,0,0,0.2)' },
+                    '& .MuiInputBase-input': { color: 'white' }
+                  }}
+                />
+                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                  <Button variant="outlined" component="label" sx={{ color: '#94a3b8', borderColor: 'rgba(255,255,255,0.2)' }}>
+                    Anexar Arquivos (Imagens/Logs)
+                    <input type="file" hidden multiple />
+                  </Button>
+                </Box>
               </Paper>
             </Box>
           </Box>
