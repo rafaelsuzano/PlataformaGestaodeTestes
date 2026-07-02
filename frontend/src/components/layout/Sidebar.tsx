@@ -43,6 +43,8 @@ const qaMenu = [
   { text: 'Cobertura', icon: <PieChart size={20} />, path: '/cobertura' },
   { text: 'Relatórios', icon: <BarChart4 size={20} />, path: '/relatorios' },
   { text: 'Métricas', icon: <Settings2 size={20} />, path: '/metricas' },
+  { type: 'subheader', text: 'Administração' },
+  { text: 'Módulos e Categorias', icon: <Settings2 size={20} />, path: '/configuracoes/modulos-categorias' },
 ];
 
 export function Sidebar() {
