@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
-  Box, Typography, Card, CardContent, Grid, Button, 
+  Box, Typography, Card, CardContent, Button, 
   Select, MenuItem, FormControl, InputLabel, Chip,
   LinearProgress
 } from '@mui/material';
 import { 
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend
+  BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
 import { ShieldCheck, Target, AlertTriangle, Layers } from 'lucide-react';
 
@@ -61,13 +61,13 @@ export const Cobertura = () => {
       </Box>
 
       {/* KPIs */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {[
           { title: 'Requisitos Cobertos', value: '75%', icon: <Target size={24} color="#10b981" />, bg: 'rgba(16, 185, 129, 0.1)' },
           { title: 'Testes Automatizados', value: '42%', icon: <Layers size={24} color="#3b82f6" />, bg: 'rgba(59, 130, 246, 0.1)' },
           { title: 'Risco de Qualidade', value: 'Médio', icon: <AlertTriangle size={24} color="#f59e0b" />, bg: 'rgba(245, 158, 11, 0.1)' },
         ].map((kpi, idx) => (
-          <Grid item xs={12} md={4} key={idx}>
+          <div key={idx}>
             <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3 }}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
                 <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: kpi.bg }}>
@@ -79,13 +79,13 @@ export const Cobertura = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </div>
 
       {/* Gráficos */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} md={5}>
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8">
+        <div className="md:col-span-5">
           <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3, height: '100%' }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: 'white', mb: 3 }}>Cobertura Global</Typography>
@@ -111,9 +111,9 @@ export const Cobertura = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
         
-        <Grid item xs={12} md={7}>
+        <div className="md:col-span-7">
           <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3, height: '100%' }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: 'white', mb: 3 }}>Cobertura por Módulo</Typography>
@@ -130,8 +130,8 @@ export const Cobertura = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
       {/* Matriz de Requisitos */}
       <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3 }}>

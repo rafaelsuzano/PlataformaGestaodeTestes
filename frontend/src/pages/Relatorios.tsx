@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
-  Box, Typography, Card, CardContent, Grid, Button, 
-  Select, MenuItem, FormControl, InputLabel, TextField,
-  Checkbox, FormControlLabel, Chip, IconButton
+  Box, Typography, Card, CardContent, Button, 
+  Select, MenuItem, FormControl, InputLabel,
+  Checkbox, FormControlLabel, Chip
 } from '@mui/material';
 import { FileText, Download, Filter, FileSpreadsheet, FileBarChart, Settings } from 'lucide-react';
 
@@ -35,9 +35,9 @@ export const Relatorios = () => {
         </Button>
       </Box>
 
-      <Grid container spacing={4}>
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Painel Esquerdo: Configuração do Relatório */}
-        <Grid item xs={12} md={4}>
+        <div className="md:col-span-4">
           <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3, position: 'sticky', top: 20 }}>
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ color: 'white', mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -106,14 +106,14 @@ export const Relatorios = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
 
         {/* Painel Direito: Catálogo de Relatórios */}
-        <Grid item xs={12} md={8}>
+        <div className="md:col-span-8">
           <Typography variant="h6" sx={{ color: 'white', mb: 3 }}>Catálogo de Modelos Disponíveis</Typography>
-          <Grid container spacing={2}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {availableReports.map(report => (
-              <Grid item xs={12} sm={6} key={report.id}>
+              <div key={report.id}>
                 <Card 
                   onClick={() => setReportType(report.id)}
                   sx={{ 
@@ -144,11 +144,11 @@ export const Relatorios = () => {
                     <Typography variant="body2" sx={{ color: '#94a3b8' }}>{report.desc}</Typography>
                   </CardContent>
                 </Card>
-              </Grid>
+              </div>
             ))}
-          </Grid>
-        </Grid>
-      </Grid>
+          </div>
+        </div>
+      </div>
     </Box>
   );
 };

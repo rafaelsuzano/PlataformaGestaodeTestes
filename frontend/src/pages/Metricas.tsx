@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
-  Box, Typography, Card, CardContent, Grid, Button, 
+  Box, Typography, Card, CardContent, 
   Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
 import { 
@@ -58,13 +58,13 @@ export const Metricas = () => {
       </Box>
 
       {/* Mini KPIs */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {[
           { title: 'Taxa de Sucesso (Pass Rate)', value: '89.4%', trend: '+2.1%', up: true, icon: <CheckCircle size={24} color="#10b981" /> },
           { title: 'Defeitos por KLOC', value: '1.2', trend: '-0.3', up: true, icon: <Bug size={24} color="#f59e0b" /> },
           { title: 'Velocidade de Teste', value: '45 TC/dia', trend: '+5', up: true, icon: <TrendingUp size={24} color="#3b82f6" /> },
         ].map((kpi, idx) => (
-          <Grid item xs={12} md={4} key={idx}>
+          <div key={idx}>
             <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3 }}>
               <CardContent sx={{ p: 3, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <Box>
@@ -79,13 +79,13 @@ export const Metricas = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </div>
 
       {/* Gráficos */}
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="md:col-span-2">
           <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: 'white', mb: 3 }}>Tendência de Execução (Pass vs Fail)</Typography>
@@ -114,9 +114,9 @@ export const Metricas = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
         
-        <Grid item xs={12} md={6}>
+        <div>
           <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: 'white', mb: 3 }}>Densidade de Defeitos por Módulo</Typography>
@@ -133,9 +133,9 @@ export const Metricas = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
 
-        <Grid item xs={12} md={6}>
+        <div>
           <Card sx={{ bgcolor: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: 'white', mb: 3 }}>Abertura vs Resolução de Bugs</Typography>
@@ -153,8 +153,8 @@ export const Metricas = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Box>
   );
 };
