@@ -96,15 +96,44 @@ export default SuzanoQA_Reporter;
       </div>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ bgcolor: '#0f172a', color: 'white' }}>Integração com Playwright</DialogTitle>
-        <DialogContent sx={{ bgcolor: '#0f172a', color: '#cbd5e1' }}>
-          <Typography variant="body2" sx={{ mb: 2, color: '#94a3b8' }}>
-            Crie um arquivo <code className="text-cyan-400 bg-slate-800 px-1 rounded">playwright-reporter.ts</code> no seu projeto e adicione o Custom Reporter abaixo. Depois, ative-o no seu <code className="text-cyan-400 bg-slate-800 px-1 rounded">playwright.config.ts</code>.
-          </Typography>
-          <Box sx={{ position: 'relative', mt: 2 }}>
-            <pre className="bg-slate-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-emerald-400 border border-slate-800">
-{`// playwright-reporter.ts
-import { Reporter, FullResult, TestCase, TestResult } from '@playwright/test/reporter';
+        <DialogTitle sx={{ bgcolor: '#0f172a', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', pb: 2 }}>
+          Guia de Integração com Playwright
+        </DialogTitle>
+        <DialogContent sx={{ bgcolor: '#0f172a', color: '#cbd5e1', pt: 4 }}>
+          
+          <div className="space-y-8 mt-2">
+            {/* Passo 1 */}
+            <div className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50">1</div>
+                <div className="w-px h-full bg-slate-800 mt-2"></div>
+              </div>
+              <div className="flex-1 pb-4">
+                <h3 className="text-lg font-semibold text-white mb-2">Instale a dependência</h3>
+                <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
+                  O reporter customizado precisa da biblioteca <code>axios</code> para enviar os dados para a nossa API. Execute o comando abaixo no terminal do seu projeto de testes:
+                </Typography>
+                <div className="bg-slate-950 p-3 rounded-lg font-mono text-emerald-400 border border-slate-800 text-sm">
+                  npm install axios
+                </div>
+              </div>
+            </div>
+
+            {/* Passo 2 */}
+            <div className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50">2</div>
+                <div className="w-px h-full bg-slate-800 mt-2"></div>
+              </div>
+              <div className="flex-1 pb-4">
+                <h3 className="text-lg font-semibold text-white mb-2">Crie o Custom Reporter</h3>
+                <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
+                  Na raiz do seu projeto de automação, crie um arquivo chamado <code className="text-cyan-400 bg-slate-800 px-1 py-0.5 rounded">suzano-reporter.ts</code> e cole o código abaixo. Ele será responsável por interceptar a finalização dos testes e enviar os resultados.
+                </Typography>
+                
+                <Box sx={{ position: 'relative' }}>
+                  <pre className="bg-slate-950 p-4 rounded-lg overflow-x-auto text-xs font-mono text-emerald-400 border border-slate-800 max-h-[300px]">
+{`import { Reporter, FullResult, TestCase, TestResult } from '@playwright/test/reporter';
 import axios from 'axios';
 
 class SuzanoQA_Reporter implements Reporter {
@@ -130,33 +159,54 @@ class SuzanoQA_Reporter implements Reporter {
     };
 
     try {
+      // O Endpoint da Plataforma
       await axios.post('https://plataformagestaodetestes-production.up.railway.app/api/integrations/automation/report', payload);
-      console.log('✅ Resultados enviados para a Plataforma SuzanoIT QA');
+      console.log('✅ Resultados enviados com sucesso para a Plataforma SuzanoIT QA');
     } catch (e: any) {
-      console.error('❌ Falha ao enviar resultados:', e.message);
+      console.error('❌ Falha ao enviar resultados para a Plataforma QA:', e.message);
     }
   }
 }
-export default SuzanoQA_Reporter;
+export default SuzanoQA_Reporter;`}
+                  </pre>
+                  <Button 
+                    sx={{ position: 'absolute', top: 8, right: 8, minWidth: 'auto', p: 1, color: '#94a3b8', bgcolor: 'rgba(255,255,255,0.05)' }} 
+                    onClick={copySnippet}
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </Box>
+              </div>
+            </div>
 
-/* === No seu playwright.config.ts adicione ===
+            {/* Passo 3 */}
+            <div className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50">3</div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-2">Ative o Reporter no Playwright</h3>
+                <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
+                  Por fim, abra o seu arquivo de configuração <code className="text-cyan-400 bg-slate-800 px-1 py-0.5 rounded">playwright.config.ts</code> e registre o nosso novo reporter na lista:
+                </Typography>
+                <div className="bg-slate-950 p-4 rounded-lg font-mono text-emerald-400 border border-slate-800 text-xs">
+<pre>{`import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  // Mantenha as outras configurações intactas...
   reporter: [
-    ['list'],
-    ['./playwright-reporter.ts']
+    ['list'], // Reporter padrão no terminal
+    ['./suzano-reporter.ts'] // Nosso Custom Reporter
   ],
-*/`}
-            </pre>
-            <Button 
-              sx={{ position: 'absolute', top: 8, right: 8, minWidth: 'auto', p: 1, color: '#94a3b8' }} 
-              onClick={copySnippet}
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
-          </Box>
-          <Typography variant="body2" sx={{ mt: 3, color: '#94a3b8' }}>
-            Lembre-se de instalar o <code className="text-cyan-400 bg-slate-800 px-1 rounded">axios</code> no seu projeto executando: <br/>
-            <code className="text-emerald-400 mt-2 block bg-slate-950 p-2 rounded w-max border border-slate-800">npm install axios</code>
-          </Typography>
+});`}</pre>
+                </div>
+                <Typography variant="body2" sx={{ color: '#10b981', mt: 3, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle size={18} />
+                  Tudo pronto! Na próxima vez que você executar seus testes, os resultados aparecerão neste dashboard.
+                </Typography>
+              </div>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
