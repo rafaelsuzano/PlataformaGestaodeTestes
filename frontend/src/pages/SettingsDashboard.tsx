@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, Shield, Server, Database, Save, 
-  Key, Webhook, Activity, Bell, CreditCard, Box 
+  Key, Webhook, Activity, Bell, CreditCard, Box, Settings2
 } from 'lucide-react';
 
 const settingsCategories = [
   {
     title: 'Organização',
     items: [
+      { id: 'modulos', name: 'Módulos e Categorias', icon: <Settings2 className="text-indigo-400" size={24} />, path: '/configuracoes/modulos-categorias', desc: 'Estrutura do sistema' },
       { id: 'times', name: 'Times', icon: <Users className="text-indigo-400" size={24} />, path: '/times', desc: 'Estrutura organizacional' },
     ]
   },

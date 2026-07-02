@@ -44,7 +44,8 @@ const qaMenu = [
   { text: 'Relatórios', icon: <BarChart4 size={20} />, path: '/relatorios' },
   { text: 'Métricas', icon: <Settings2 size={20} />, path: '/metricas' },
   { type: 'subheader', text: 'Configurações da Plataforma' },
-  { text: 'Módulos e Categorias', icon: <Settings2 size={20} />, path: '/configuracoes/modulos-categorias' },
+  { text: 'Painel de Configurações', icon: <Settings2 size={20} />, path: '/admin' },
+  { text: 'Módulos e Categorias', icon: <Puzzle size={20} />, path: '/configuracoes/modulos-categorias' },
 ];
 
 export function Sidebar() {
