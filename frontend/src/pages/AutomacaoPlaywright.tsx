@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Button, Dialog, DialogTitle, DialogContent, Typography, Box, Chip } from '@mui/material';
+import { Card, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, Chip } from '@mui/material';
 import { Copy, Terminal, CheckCircle, XCircle, Clock } from 'lucide-react';
 import type { AutomatedTestRun } from '@/services/api';
 import { AutomationIntegrationService } from '@/services/api';
@@ -99,21 +99,21 @@ export default SuzanoQA_Reporter;
         <DialogTitle sx={{ bgcolor: '#0f172a', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', pb: 2 }}>
           Guia de Integração com Playwright
         </DialogTitle>
-        <DialogContent sx={{ bgcolor: '#0f172a', color: '#cbd5e1', pt: 4 }}>
+        <DialogContent sx={{ bgcolor: '#0f172a', color: '#cbd5e1', pt: 4, overflowX: 'hidden' }}>
           
           <div className="space-y-8 mt-2">
             {/* Passo 1 */}
             <div className="flex gap-4">
               <div className="flex flex-col items-center">
-                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50">1</div>
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50 shrink-0">1</div>
                 <div className="w-px h-full bg-slate-800 mt-2"></div>
               </div>
-              <div className="flex-1 pb-4">
+              <div className="flex-1 pb-4 min-w-0">
                 <h3 className="text-lg font-semibold text-white mb-2">Instale a dependência</h3>
                 <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
                   O reporter customizado precisa da biblioteca <code>axios</code> para enviar os dados para a nossa API. Execute o comando abaixo no terminal do seu projeto de testes:
                 </Typography>
-                <div className="bg-slate-950 p-3 rounded-lg font-mono text-emerald-400 border border-slate-800 text-sm">
+                <div className="bg-slate-950 p-3 rounded-lg font-mono text-emerald-400 border border-slate-800 text-sm overflow-x-auto">
                   npm install axios
                 </div>
               </div>
@@ -122,17 +122,17 @@ export default SuzanoQA_Reporter;
             {/* Passo 2 */}
             <div className="flex gap-4">
               <div className="flex flex-col items-center">
-                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50">2</div>
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50 shrink-0">2</div>
                 <div className="w-px h-full bg-slate-800 mt-2"></div>
               </div>
-              <div className="flex-1 pb-4">
+              <div className="flex-1 pb-4 min-w-0">
                 <h3 className="text-lg font-semibold text-white mb-2">Crie o Custom Reporter</h3>
                 <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
                   Na raiz do seu projeto de automação, crie um arquivo chamado <code className="text-cyan-400 bg-slate-800 px-1 py-0.5 rounded">suzano-reporter.ts</code> e cole o código abaixo. Ele será responsável por interceptar a finalização dos testes e enviar os resultados.
                 </Typography>
                 
                 <Box sx={{ position: 'relative' }}>
-                  <pre className="bg-slate-950 p-4 rounded-lg overflow-x-auto text-xs font-mono text-emerald-400 border border-slate-800 max-h-[300px]">
+                  <pre className="bg-slate-950 p-4 rounded-lg overflow-x-auto overflow-y-auto text-xs font-mono text-emerald-400 border border-slate-800 max-h-[300px] w-full">
 {`import { Reporter, FullResult, TestCase, TestResult } from '@playwright/test/reporter';
 import axios from 'axios';
 
@@ -170,8 +170,9 @@ class SuzanoQA_Reporter implements Reporter {
 export default SuzanoQA_Reporter;`}
                   </pre>
                   <Button 
-                    sx={{ position: 'absolute', top: 8, right: 8, minWidth: 'auto', p: 1, color: '#94a3b8', bgcolor: 'rgba(255,255,255,0.05)' }} 
+                    sx={{ position: 'absolute', top: 8, right: 8, minWidth: 'auto', p: 1, color: '#94a3b8', bgcolor: 'rgba(255,255,255,0.05)', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }} 
                     onClick={copySnippet}
+                    title="Copiar Código"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
@@ -182,14 +183,14 @@ export default SuzanoQA_Reporter;`}
             {/* Passo 3 */}
             <div className="flex gap-4">
               <div className="flex flex-col items-center">
-                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50">3</div>
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/50 shrink-0">3</div>
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h3 className="text-lg font-semibold text-white mb-2">Ative o Reporter no Playwright</h3>
                 <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
                   Por fim, abra o seu arquivo de configuração <code className="text-cyan-400 bg-slate-800 px-1 py-0.5 rounded">playwright.config.ts</code> e registre o nosso novo reporter na lista:
                 </Typography>
-                <div className="bg-slate-950 p-4 rounded-lg font-mono text-emerald-400 border border-slate-800 text-xs">
+                <div className="bg-slate-950 p-4 rounded-lg font-mono text-emerald-400 border border-slate-800 text-xs overflow-x-auto">
 <pre>{`import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
@@ -208,6 +209,15 @@ export default defineConfig({
             </div>
           </div>
         </DialogContent>
+        <DialogActions sx={{ bgcolor: '#0f172a', borderTop: '1px solid rgba(255,255,255,0.05)', p: 2 }}>
+          <Button 
+            onClick={() => setDialogOpen(false)} 
+            variant="outlined"
+            sx={{ color: '#94a3b8', borderColor: 'rgba(255,255,255,0.1)', '&:hover': { bgcolor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)' } }}
+          >
+            Sair
+          </Button>
+        </DialogActions>
       </Dialog>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
