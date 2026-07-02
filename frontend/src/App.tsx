@@ -25,6 +25,9 @@ import Layout from './components/Layout';
 import Placeholder from './pages/Placeholder';
 import { SettingsDashboard } from './pages/SettingsDashboard';
 import { ConfiguracaoModulosCategorias } from './pages/ConfiguracaoModulosCategorias';
+import { Cobertura } from './pages/Cobertura';
+import { Relatorios } from './pages/Relatorios';
+import { Metricas } from './pages/Metricas';
 
 
 const queryClient = new QueryClient();
@@ -261,9 +264,9 @@ function App() {
                 <Route path="/automacao/gherkin-playwright" element={<GherkinPlaywright />} />
                 <Route path="/automacao-selenium" element={<Placeholder title="Integração Selenium" />} />
                 <Route path="/pipelines" element={<Placeholder title="Pipelines e CI/CD" />} />
-                <Route path="/cobertura" element={<Placeholder title="Cobertura de Testes" />} />
-                <Route path="/relatorios" element={<Placeholder title="Relatórios Gerais" />} />
-                <Route path="/metricas" element={<Placeholder title="Métricas de Qualidade" />} />
+                <Route path="/cobertura" element={<Cobertura />} />
+                <Route path="/relatorios" element={<Relatorios />} />
+                <Route path="/metricas" element={<Metricas />} />
 
                 {/* --- Placeholders para novas rotas Admin Settings --- */}
                 <Route path="/admin" element={<SettingsDashboard />} />
