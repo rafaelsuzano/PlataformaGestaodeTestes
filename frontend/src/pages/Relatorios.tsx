@@ -22,10 +22,27 @@ export const Relatorios = () => {
 
   const handleGenerate = () => {
     setIsGenerating(true);
-    // Simula tempo de requisição de geração
+    // Simula tempo de processamento
     setTimeout(() => {
       setIsGenerating(false);
       setToastOpen(true);
+
+      // Descobre a extensão baseada no relatório selecionado
+      const report = availableReports.find(r => r.id === reportType);
+      const extension = report ? report.type.toLowerCase() : 'pdf';
+      const fileName = `relatorio_${reportType}_${new Date().getTime()}.${extension}`;
+
+      // Cria um conteúdo de texto (dummy) e dispara o download no navegador
+      const fileContent = `Relatório: ${report?.title}\nData: ${new Date().toLocaleString()}\nFiltros: ${dateRange}, Projeto: ${project}\n\n---\n\nEste é um relatório gerado automaticamente pela Plataforma SuzanoIT QA.`;
+      const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     }, 2000);
   };
 
