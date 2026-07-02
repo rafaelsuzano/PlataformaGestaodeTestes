@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { 
   Box, Typography, Card, CardContent, Button, 
   Select, MenuItem, FormControl, InputLabel,
-  Checkbox, FormControlLabel, Chip
+  Checkbox, FormControlLabel, Chip, Snackbar, Alert, CircularProgress
 } from '@mui/material';
 import { FileText, Download, Filter, FileSpreadsheet, FileBarChart, Settings } from 'lucide-react';
 
@@ -17,6 +17,17 @@ export const Relatorios = () => {
   const [reportType, setReportType] = useState('exec');
   const [project, setProject] = useState('all');
   const [dateRange, setDateRange] = useState('30d');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
+
+  const handleGenerate = () => {
+    setIsGenerating(true);
+    // Simula tempo de requisição de geração
+    setTimeout(() => {
+      setIsGenerating(false);
+      setToastOpen(true);
+    }, 2000);
+  };
 
   return (
     <Box sx={{ p: 4, maxWidth: 1200, mx: 'auto', color: '#e2e8f0' }}>
@@ -98,15 +109,28 @@ export const Relatorios = () => {
                   variant="contained" 
                   fullWidth 
                   size="large"
-                  startIcon={<Download />}
+                  onClick={handleGenerate}
+                  disabled={isGenerating}
+                  startIcon={isGenerating ? <CircularProgress size={20} color="inherit" /> : <Download />}
                   sx={{ mt: 2, bgcolor: '#6366f1', '&:hover': { bgcolor: '#4f46e5' } }}
                 >
-                  Gerar e Baixar
+                  {isGenerating ? 'Gerando...' : 'Gerar e Baixar'}
                 </Button>
               </Box>
             </CardContent>
           </Card>
         </div>
+
+        <Snackbar 
+          open={toastOpen} 
+          autoHideDuration={4000} 
+          onClose={() => setToastOpen(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={() => setToastOpen(false)} severity="success" sx={{ width: '100%' }}>
+            Relatório gerado com sucesso! O download iniciará em instantes.
+          </Alert>
+        </Snackbar>
 
         {/* Painel Direito: Catálogo de Relatórios */}
         <div className="md:col-span-8">
