@@ -11,6 +11,7 @@ import {
 import { ShieldCheck, Target, AlertTriangle, Layers } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { CoverageService } from '../services/api';
+import type { CoverageGlobalDto, CoverageModuleDto, UncoveredRequirementDto } from '../services/api';
 
 export const Cobertura = () => {
   const [project, setProject] = useState('all');
@@ -33,7 +34,7 @@ export const Cobertura = () => {
   const isLoading = isGlobalLoading || isModuleLoading || isReqsLoading;
   
   // Calculate KPIs based on data
-  const totalReqsCovered = globalCoverage?.find(c => c.name === 'Cobertos')?.value ?? 0;
+  const totalReqsCovered = globalCoverage?.find((c: CoverageGlobalDto) => c.name === 'Cobertos')?.value ?? 0;
 
   return (
     <Box sx={{ p: 4, maxWidth: 1200, mx: 'auto', color: '#e2e8f0' }}>
@@ -73,7 +74,7 @@ export const Cobertura = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[
               { title: 'Requisitos Cobertos', value: `${totalReqsCovered}%`, icon: <Target size={24} color="#10b981" />, bg: 'rgba(16, 185, 129, 0.1)' },
-              { title: 'Módulos com Teste', value: `${moduleCoverage?.filter(m => m.coberto > 0).length || 0}/${moduleCoverage?.length || 0}`, icon: <Layers size={24} color="#3b82f6" />, bg: 'rgba(59, 130, 246, 0.1)' },
+              { title: 'Módulos com Teste', value: `${moduleCoverage?.filter((m: CoverageModuleDto) => m.coberto > 0).length || 0}/${moduleCoverage?.length || 0}`, icon: <Layers size={24} color="#3b82f6" />, bg: 'rgba(59, 130, 246, 0.1)' },
               { title: 'Requisitos Críticos Expostos', value: `${uncoveredReqs?.length || 0}`, icon: <AlertTriangle size={24} color="#f59e0b" />, bg: 'rgba(245, 158, 11, 0.1)' },
             ].map((kpi, idx) => (
               <div key={idx}>
@@ -102,7 +103,7 @@ export const Cobertura = () => {
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={globalCoverage} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
-                          {globalCoverage?.map((entry, index) => (
+                          {globalCoverage?.map((entry: CoverageGlobalDto, index: number) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
@@ -111,7 +112,7 @@ export const Cobertura = () => {
                     </ResponsiveContainer>
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 2 }}>
-                    {globalCoverage?.map(d => (
+                    {globalCoverage?.map((d: CoverageGlobalDto) => (
                       <Box key={d.name} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: d.color }} />
                         <Typography variant="body2" sx={{ color: '#cbd5e1' }}>{d.name} ({d.value}%)</Typography>
@@ -165,7 +166,7 @@ export const Cobertura = () => {
                       <tr>
                         <td colSpan={5} className="p-4 text-center text-slate-400">Nenhum requisito crítico exposto encontrado.</td>
                       </tr>
-                    ) : uncoveredReqs?.map(req => (
+                    ) : uncoveredReqs?.map((req: UncoveredRequirementDto) => (
                       <tr key={req.id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
                         <td className="p-3 font-mono text-indigo-400">{req.id}</td>
                         <td className="p-3 text-white font-medium">{req.title}</td>

@@ -748,3 +748,87 @@ export const AutomationIntegrationService = {
     return res.json();
   }
 };
+
+// ==========================================
+// METRICS & COVERAGE SERVICES (ANALYTICS)
+// ==========================================
+
+export interface KpiMetricsDto {
+  passRate: number;
+  defectsPerKloc: number;
+  testVelocity: number;
+  totalBugs: number;
+}
+
+export interface TrendDataDto {
+  name: string;
+  pass: number;
+  fail: number;
+  bugs: number;
+}
+
+export interface DefectDensityDto {
+  name: string;
+  density: number;
+}
+
+export interface CoverageGlobalDto {
+  name: string;
+  value: number;
+  color: string;
+}
+
+export interface CoverageModuleDto {
+  name: string;
+  coberto: number;
+  total: number;
+}
+
+export interface UncoveredRequirementDto {
+  id: string;
+  title: string;
+  status: string;
+  coverage: number;
+}
+
+export const MetricsService = {
+  getKpis: async (projectId?: string): Promise<KpiMetricsDto> => {
+    const query = projectId && projectId !== 'all' ? `?projectId=${projectId}` : '';
+    const res = await fetch(`${API_URL}/metrics/kpis${query}`);
+    if (!res.ok) throw new Error('Failed to fetch KPIs');
+    return res.json();
+  },
+  getTrend: async (projectId?: string): Promise<TrendDataDto[]> => {
+    const query = projectId && projectId !== 'all' ? `?projectId=${projectId}` : '';
+    const res = await fetch(`${API_URL}/metrics/trend${query}`);
+    if (!res.ok) throw new Error('Failed to fetch Trend Data');
+    return res.json();
+  },
+  getDefectDensity: async (projectId?: string): Promise<DefectDensityDto[]> => {
+    const query = projectId && projectId !== 'all' ? `?projectId=${projectId}` : '';
+    const res = await fetch(`${API_URL}/metrics/defects/density${query}`);
+    if (!res.ok) throw new Error('Failed to fetch Defect Density');
+    return res.json();
+  }
+};
+
+export const CoverageService = {
+  getGlobalCoverage: async (projectId?: string): Promise<CoverageGlobalDto[]> => {
+    const query = projectId && projectId !== 'all' ? `?projectId=${projectId}` : '';
+    const res = await fetch(`${API_URL}/coverage/global${query}`);
+    if (!res.ok) throw new Error('Failed to fetch Global Coverage');
+    return res.json();
+  },
+  getModuleCoverage: async (projectId?: string): Promise<CoverageModuleDto[]> => {
+    const query = projectId && projectId !== 'all' ? `?projectId=${projectId}` : '';
+    const res = await fetch(`${API_URL}/coverage/modules${query}`);
+    if (!res.ok) throw new Error('Failed to fetch Module Coverage');
+    return res.json();
+  },
+  getCriticalUncoveredRequirements: async (projectId?: string): Promise<UncoveredRequirementDto[]> => {
+    const query = projectId && projectId !== 'all' ? `?projectId=${projectId}` : '';
+    const res = await fetch(`${API_URL}/coverage/requirements/uncovered${query}`);
+    if (!res.ok) throw new Error('Failed to fetch Uncovered Requirements');
+    return res.json();
+  }
+};
