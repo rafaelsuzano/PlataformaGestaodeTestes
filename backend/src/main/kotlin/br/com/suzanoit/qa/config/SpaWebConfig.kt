@@ -11,6 +11,9 @@ import java.io.IOException
 @Configuration
 class SpaWebConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/uploads/**")
+            .addResourceLocations("file:data/uploads/")
+
         registry.addResourceHandler("/**")
             .addResourceLocations("classpath:/static/")
             .resourceChain(true)

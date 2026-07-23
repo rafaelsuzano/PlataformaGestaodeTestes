@@ -1,8 +1,10 @@
 import { Search, Bell, Settings, HelpCircle, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useBranding } from '../../contexts/BrandingContext';
 
 export function Topbar() {
   const navigate = useNavigate();
+  const { branding } = useBranding();
 
   return (
     <header className="h-16 flex items-center justify-between px-6 bg-background border-b border-slate-800/50 sticky top-0 z-30">
@@ -10,9 +12,9 @@ export function Topbar() {
         {/* Workspace Selector Placeholder */}
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-800/30 rounded-md border border-slate-700/50 cursor-pointer hover:bg-slate-800/50 transition-colors">
           <div className="w-5 h-5 rounded bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">
-            S
+            {branding?.companyName ? branding.companyName.charAt(0) : 'S'}
           </div>
-          <span className="text-sm font-medium text-slate-200">Suzano Core QA</span>
+          <span className="text-sm font-medium text-slate-200">{branding?.companyName || 'Suzano'} {branding?.platformName || 'Core QA'}</span>
         </div>
 
         {/* Global Search */}

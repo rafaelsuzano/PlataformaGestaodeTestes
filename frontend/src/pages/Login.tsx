@@ -15,12 +15,14 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import { UserService } from '../services/api';
+import { useBranding } from '../contexts/BrandingContext';
 
 interface LoginProps {
   onLogin: () => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
+  const { branding } = useBranding();
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -78,7 +80,10 @@ export default function Login({ onLogin }: LoginProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+        background: branding?.backgroundImage 
+            ? `url(${branding.backgroundImage}) no-repeat center center fixed` 
+            : 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+        backgroundSize: 'cover',
         padding: 3
       }}
     >
@@ -97,6 +102,11 @@ export default function Login({ onLogin }: LoginProps) {
             transition: 'all 0.3s ease-in-out'
           }}
         >
+          {branding?.logo && (
+            <Box display="flex" justifyContent="center" mb={2}>
+              <img src={branding.logo} alt="Logo" style={{ maxHeight: 80 }} />
+            </Box>
+          )}
           <Typography 
             component="h1" 
             variant="h4" 
@@ -111,7 +121,7 @@ export default function Login({ onLogin }: LoginProps) {
             align="center" 
             sx={{ color: '#aaa', mb: 4 }}
           >
-            SuzanoIT QA • Gestão de Testes
+            {branding?.companyName || 'SuzanoIT QA'} • {branding?.platformName || 'Gestão de Testes'}
           </Typography>
 
           {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }} onClose={() => setError('')}>{error}</Alert>}

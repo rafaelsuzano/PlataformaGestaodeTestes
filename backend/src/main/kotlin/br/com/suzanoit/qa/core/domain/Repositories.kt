@@ -107,3 +107,8 @@ interface SystemLogRepository {
     fun findAll(): List<SystemLog>
     fun delete(id: String)
 }
+
+interface TenantBrandingRepository {
+    fun save(branding: TenantBranding): TenantBranding
+    fun findByTenantId(tenantId: String): TenantBranding?
+}

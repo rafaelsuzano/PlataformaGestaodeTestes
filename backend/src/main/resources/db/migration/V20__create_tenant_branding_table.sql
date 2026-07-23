@@ -1,0 +1,21 @@
+CREATE TABLE tenant_branding (
+    id VARCHAR(36) PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL UNIQUE,
+    company_name VARCHAR(255),
+    platform_name VARCHAR(255),
+    logo VARCHAR(1024),
+    logo_small VARCHAR(1024),
+    favicon VARCHAR(1024),
+    background_image VARCHAR(1024),
+    primary_color VARCHAR(50),
+    secondary_color VARCHAR(50),
+    accent_color VARCHAR(50),
+    menu_color VARCHAR(50),
+    header_color VARCHAR(50),
+    background_color VARCHAR(50),
+    button_color VARCHAR(50),
+    font VARCHAR(100),
+    theme VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

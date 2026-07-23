@@ -28,190 +28,204 @@ import { ConfiguracaoModulosCategorias } from './pages/ConfiguracaoModulosCatego
 import { Cobertura } from './pages/Cobertura';
 import { Relatorios } from './pages/Relatorios';
 import { Metricas } from './pages/Metricas';
+import { WhiteLabelSettings } from './pages/WhiteLabelSettings';
 
 
 const queryClient = new QueryClient();
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#6366f1', // Indigo premium
-      light: '#818cf8',
-      dark: '#4f46e5',
+import { BrandingProvider, useBranding } from './contexts/BrandingContext';
+
+const ThemeProviderWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { branding } = useBranding();
+
+  const theme = createTheme({
+    palette: {
+      mode: (branding?.theme as 'light' | 'dark') || 'dark',
+      primary: {
+        main: branding?.primaryColor || '#6366f1',
+      },
+      secondary: {
+        main: branding?.secondaryColor || '#ec4899',
+      },
+      background: {
+        default: branding?.backgroundColor || '#0B0F19',
+        paper: 'rgba(26, 32, 53, 0.7)',
+      },
+      divider: 'rgba(255, 255, 255, 0.08)',
     },
-    secondary: {
-      main: '#ec4899', // Pink vibrant
-      light: '#f472b6',
-      dark: '#db2777',
+    typography: {
+      fontFamily: branding?.font || '"Inter", "Outfit", "Roboto", "Helvetica", "Arial", sans-serif',
+      h4: { fontWeight: 700, letterSpacing: '-0.02em', color: '#F8FAFC' },
+      h5: { fontWeight: 600, color: '#F1F5F9' },
+      h6: { fontWeight: 600, letterSpacing: '0.01em', color: '#E2E8F0' },
+      body1: { color: '#CBD5E1' },
+      body2: { color: '#94A3B8' },
+      button: { textTransform: 'none', fontWeight: 600 },
     },
-    background: {
-      default: '#0B0F19', // Deep space blue/black
-      paper: 'rgba(26, 32, 53, 0.7)', // Translúcido para Glassmorphism
+    shape: {
+      borderRadius: 12,
     },
-    divider: 'rgba(255, 255, 255, 0.08)',
-  },
-  typography: {
-    fontFamily: '"Inter", "Outfit", "Roboto", "Helvetica", "Arial", sans-serif',
-    h4: { fontWeight: 700, letterSpacing: '-0.02em', color: '#F8FAFC' },
-    h5: { fontWeight: 600, color: '#F1F5F9' },
-    h6: { fontWeight: 600, letterSpacing: '0.01em', color: '#E2E8F0' },
-    body1: { color: '#CBD5E1' },
-    body2: { color: '#94A3B8' },
-    button: { textTransform: 'none', fontWeight: 600 },
-  },
-  shape: {
-    borderRadius: 12,
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          backgroundColor: '#0B0F19',
-          backgroundImage: 'radial-gradient(ellipse at top, rgba(99, 102, 241, 0.15), transparent 80%)',
-          backgroundAttachment: 'fixed',
-          backgroundRepeat: 'no-repeat',
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            backgroundColor: branding?.backgroundColor || '#0B0F19',
+            backgroundImage: branding?.backgroundImage 
+                ? `url(${branding.backgroundImage})` 
+                : 'radial-gradient(ellipse at top, rgba(99, 102, 241, 0.15), transparent 80%)',
+            backgroundAttachment: 'fixed',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
+          },
+          '*::-webkit-scrollbar': {
+            width: '8px',
+            height: '8px',
+          },
+          '*::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '*::-webkit-scrollbar-thumb': {
+            background: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: '4px',
+          },
+          '*::-webkit-scrollbar-thumb:hover': {
+            background: 'rgba(255, 255, 255, 0.3)',
+          },
+        }
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 8,
+            boxShadow: 'none',
+            transition: 'all 0.2s ease-in-out',
+            backgroundColor: branding?.buttonColor ? branding.buttonColor : undefined,
+            '&:hover': { 
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+              transform: 'translateY(-1px)'
+            }
+          }
         },
-        '*::-webkit-scrollbar': {
-          width: '8px',
-          height: '8px',
-        },
-        '*::-webkit-scrollbar-track': {
-          background: 'transparent',
-        },
-        '*::-webkit-scrollbar-thumb': {
-          background: 'rgba(255, 255, 255, 0.2)',
-          borderRadius: '4px',
-        },
-        '*::-webkit-scrollbar-thumb:hover': {
-          background: 'rgba(255, 255, 255, 0.3)',
-        },
-      }
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          boxShadow: 'none',
-          transition: 'all 0.2s ease-in-out',
-          '&:hover': { 
-            boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
-            transform: 'translateY(-1px)'
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            backgroundImage: 'none',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.3)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            transition: 'box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out',
+            '&:hover': {
+              borderColor: 'rgba(255, 255, 255, 0.15)',
+            }
           }
         }
       },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: 'none',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.3)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          transition: 'box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out',
-          '&:hover': {
-            borderColor: 'rgba(255, 255, 255, 0.15)',
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            background: 'rgba(30, 41, 59, 0.5)',
+            backdropFilter: 'blur(12px)',
           }
         }
-      }
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          background: 'rgba(30, 41, 59, 0.5)',
-          backdropFilter: 'blur(12px)',
-        }
-      }
-    },
-    MuiTableCell: {
-      styleOverrides: {
-        root: {
-          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-          padding: '12px 16px',
-        },
-        head: {
-          fontWeight: 600,
-          color: '#94A3B8',
-          textTransform: 'uppercase',
-          fontSize: '0.75rem',
-          letterSpacing: '0.05em',
-          backgroundColor: 'rgba(0,0,0,0.2)'
-        }
-      }
-    },
-    MuiTableRow: {
-      styleOverrides: {
-        root: {
-          transition: 'background-color 0.2s ease',
-          '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.03) !important',
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+            padding: '12px 16px',
+          },
+          head: {
+            fontWeight: 600,
+            color: '#94A3B8',
+            textTransform: 'uppercase',
+            fontSize: '0.75rem',
+            letterSpacing: '0.05em',
+            backgroundColor: 'rgba(0,0,0,0.2)'
           }
         }
-      }
-    },
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
-          background: 'rgba(11, 15, 25, 0.85)',
-          backdropFilter: 'blur(20px)',
+      },
+      MuiTableRow: {
+        styleOverrides: {
+          root: {
+            transition: 'background-color 0.2s ease',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.03) !important',
+            }
+          }
         }
-      }
-    },
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          background: 'rgba(11, 15, 25, 0.7)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: 'none'
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+            background: branding?.menuColor || 'rgba(11, 15, 25, 0.85)',
+            backdropFilter: 'blur(20px)',
+          }
         }
-      }
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            background: branding?.headerColor || 'rgba(11, 15, 25, 0.7)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: 'none'
+          }
+        }
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              borderRadius: '8px',
+              transition: 'all 0.2s',
+              '& fieldset': {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+              },
+              '&:hover fieldset': {
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: branding?.primaryColor || '#6366f1',
+                borderWidth: '1px',
+                boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.2)',
+              },
+            }
+          }
+        }
+      },
+      MuiSelect: {
+        styleOverrides: {
+          root: {
             backgroundColor: 'rgba(0, 0, 0, 0.2)',
             borderRadius: '8px',
-            transition: 'all 0.2s',
-            '& fieldset': {
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            },
-            '&:hover fieldset': {
-              borderColor: 'rgba(255, 255, 255, 0.2)',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#6366f1',
-              borderWidth: '1px',
-              boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.2)',
-            },
+          }
+        }
+      },
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            background: 'rgba(30, 41, 59, 0.95)',
+            backdropFilter: 'blur(24px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
           }
         }
       }
     },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          borderRadius: '8px',
-        }
-      }
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          background: 'rgba(30, 41, 59, 0.95)',
-          backdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        }
-      }
-    }
-  },
-});
+  });
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </ThemeProvider>
+  );
+};
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -230,14 +244,14 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <Routes>
-            <Route 
-              path="/login" 
-              element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
-            />
+      <BrandingProvider>
+        <ThemeProviderWrapper>
+          <BrowserRouter>
+            <Routes>
+              <Route 
+                path="/login" 
+                element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
+              />
             {isAuthenticated ? (
               <Route element={<Layout />}>
                 <Route path="/" element={<Dashboard />} />
@@ -268,9 +282,9 @@ function App() {
                 <Route path="/relatorios" element={<Relatorios />} />
                 <Route path="/metricas" element={<Metricas />} />
 
-                {/* --- Placeholders para novas rotas Admin Settings --- */}
                 <Route path="/admin" element={<SettingsDashboard />} />
                 <Route path="/configuracoes/modulos-categorias" element={<ConfiguracaoModulosCategorias />} />
+                <Route path="/configuracoes/white-label" element={<WhiteLabelSettings />} />
                 <Route path="/times" element={<Placeholder title="Gestão de Times" />} />
                 <Route path="/perfis" element={<Placeholder title="Perfis de Acesso" />} />
                 <Route path="/permissoes" element={<Placeholder title="Gestão de Permissões" />} />
@@ -288,7 +302,8 @@ function App() {
             )}
           </Routes>
         </BrowserRouter>
-      </ThemeProvider>
+        </ThemeProviderWrapper>
+      </BrandingProvider>
     </QueryClientProvider>
   );
 }

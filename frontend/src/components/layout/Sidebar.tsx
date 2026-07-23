@@ -1,5 +1,6 @@
 
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useBranding } from '../../contexts/BrandingContext';
 import { 
   LayoutDashboard, 
   FolderOpen, 
@@ -46,20 +47,28 @@ const qaMenu = [
   { type: 'subheader', text: 'Configurações da Plataforma' },
   { text: 'Painel de Configurações', icon: <Settings2 size={20} />, path: '/admin' },
   { text: 'Módulos e Categorias', icon: <Puzzle size={20} />, path: '/configuracoes/modulos-categorias' },
+  { text: 'White Label', icon: <Settings2 size={20} />, path: '/configuracoes/white-label' },
 ];
 
 export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { branding } = useBranding();
 
   return (
     <aside className="w-64 h-screen bg-sidebar border-r border-slate-800/50 flex flex-col hidden md:flex shrink-0">
       <div className="h-16 flex items-center px-6 border-b border-slate-800/50">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">
-            S
-          </div>
-          <span className="font-semibold text-lg tracking-tight text-white">SuzanoIT QA</span>
+          {branding?.logoSmall || branding?.logo ? (
+            <img src={branding.logoSmall || branding.logo} alt="Logo" className="w-8 h-8 object-contain" />
+          ) : (
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">
+              {branding?.companyName ? branding.companyName.charAt(0) : 'S'}
+            </div>
+          )}
+          <span className="font-semibold text-lg tracking-tight text-white">
+            {branding?.companyName || 'SuzanoIT'} QA
+          </span>
         </div>
       </div>
 
@@ -103,8 +112,8 @@ export function Sidebar() {
       
       <div className="p-4 border-t border-slate-800/50">
         <div className="bg-slate-800/30 rounded-lg p-3 text-xs text-slate-400">
-          <div className="font-semibold text-slate-300 mb-1">Suzano IT</div>
-          <div>Plataforma de Qualidade</div>
+          <div className="font-semibold text-slate-300 mb-1">{branding?.companyName || 'Suzano IT'}</div>
+          <div>{branding?.platformName || 'Plataforma de Qualidade'}</div>
           <div className="mt-2 text-[10px] text-slate-500">v2.0.0-enterprise</div>
         </div>
       </div>

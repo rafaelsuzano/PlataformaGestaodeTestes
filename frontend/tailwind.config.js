@@ -21,14 +21,14 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
+        background: "var(--background-color, hsl(var(--background)))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "var(--primary-color, hsl(var(--primary)))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "var(--secondary-color, hsl(var(--secondary)))",
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
@@ -40,7 +40,7 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "var(--accent-color, hsl(var(--accent)))",
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
@@ -51,7 +51,7 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: "hsl(var(--sidebar))",
+        sidebar: "var(--menu-color, hsl(var(--sidebar)))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
