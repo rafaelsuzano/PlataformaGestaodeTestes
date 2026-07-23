@@ -103,7 +103,7 @@ export default function Login({ onLogin }: LoginProps) {
           }}
         >
           {branding?.logo && (
-            <Box display="flex" justifyContent="center" mb={2}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
               <img src={branding.logo} alt="Logo" style={{ maxHeight: 80 }} />
             </Box>
           )}
@@ -210,10 +210,11 @@ export default function Login({ onLogin }: LoginProps) {
                 borderRadius: 2, 
                 py: 1.5,
                 fontWeight: 'bold',
-                background: 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)',
-                boxShadow: '0 4px 15px rgba(42, 82, 152, 0.4)',
+                backgroundColor: branding?.buttonColor || branding?.primaryColor || 'primary.main',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
                 '&:hover': {
-                  background: 'linear-gradient(90deg, #2a5298 0%, #1e3c72 100%)',
+                  backgroundColor: branding?.buttonColor || branding?.primaryColor || 'primary.dark',
+                  opacity: 0.9
                 }
               }}
             >
