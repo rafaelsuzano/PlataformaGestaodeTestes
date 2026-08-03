@@ -42,13 +42,16 @@ class SprintJpaEntity(
     var startDate: LocalDateTime?,
     var endDate: LocalDateTime?,
     var status: String,
+    var repositoryUrl: String?,
+    var repositoryProvider: String?,
+    var repositoryBranch: String?,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.core.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, repositoryUrl, repositoryProvider, repositoryBranch, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Sprint) = SprintJpaEntity(
-            domain.id, domain.projectId, domain.name, domain.goal, domain.startDate, domain.endDate, domain.status, domain.createdAt, domain.updatedAt
+            domain.id, domain.projectId, domain.name, domain.goal, domain.startDate, domain.endDate, domain.status, domain.repositoryUrl, domain.repositoryProvider, domain.repositoryBranch, domain.createdAt, domain.updatedAt
         )
     }
 }

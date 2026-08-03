@@ -17,7 +17,8 @@ export default function Sprints() {
   const [editMode, setEditMode] = useState(false);
   
   const [formData, setFormData] = useState<Partial<Sprint>>({
-    name: '', projectId: '', goal: '', status: 'PLANEJADA', startDate: '', endDate: ''
+    name: '', projectId: '', goal: '', status: 'PLANEJADA', startDate: '', endDate: '',
+    repositoryUrl: '', repositoryProvider: '', repositoryBranch: ''
   });
 
   const { data: sprints, isLoading } = useQuery({ queryKey: ['sprints'], queryFn: SprintService.getAll });
@@ -51,7 +52,7 @@ export default function Sprints() {
       setFormData(sprint);
       setEditMode(true);
     } else {
-      setFormData({ name: '', projectId: '', goal: '', status: 'PLANEJADA', startDate: '', endDate: '' });
+      setFormData({ name: '', projectId: '', goal: '', status: 'PLANEJADA', startDate: '', endDate: '', repositoryUrl: '', repositoryProvider: '', repositoryBranch: '' });
       setEditMode(false);
     }
     setOpen(true);
@@ -59,7 +60,7 @@ export default function Sprints() {
 
   const handleClose = () => {
     setOpen(false);
-    setFormData({ name: '', projectId: '', goal: '', status: 'PLANEJADA', startDate: '', endDate: '' });
+    setFormData({ name: '', projectId: '', goal: '', status: 'PLANEJADA', startDate: '', endDate: '', repositoryUrl: '', repositoryProvider: '', repositoryBranch: '' });
     setEditMode(false);
   };
 
@@ -106,6 +107,7 @@ export default function Sprints() {
                 <TableCell>Objetivo</TableCell>
                 <TableCell>Início</TableCell>
                 <TableCell>Fim</TableCell>
+                <TableCell>Repositório</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
@@ -120,6 +122,13 @@ export default function Sprints() {
                     <TableCell>{sprint.goal || '-'}</TableCell>
                     <TableCell>{sprint.startDate?.split('T')[0] || '-'}</TableCell>
                     <TableCell>{sprint.endDate?.split('T')[0] || '-'}</TableCell>
+                    <TableCell>
+                      {sprint.repositoryProvider && sprint.repositoryUrl ? (
+                        <a href={sprint.repositoryUrl} target="_blank" rel="noopener noreferrer">
+                          {sprint.repositoryProvider} ({sprint.repositoryBranch || 'main'})
+                        </a>
+                      ) : '-'}
+                    </TableCell>
                     <TableCell>
                       <Chip label={sprint.status} color={getStatusColor(sprint.status) as any} size="small" />
                     </TableCell>
@@ -174,6 +183,24 @@ export default function Sprints() {
               onChange={e => setFormData({...formData, endDate: e.target.value})} 
             />
           </Box>
+
+          <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
+            <InputLabel>Provedor de Repositório</InputLabel>
+            <Select
+              value={formData.repositoryProvider || ''}
+              label="Provedor de Repositório"
+              onChange={e => setFormData({...formData, repositoryProvider: e.target.value as string})}
+            >
+              <MenuItem value="">Nenhum</MenuItem>
+              <MenuItem value="GITHUB">GitHub</MenuItem>
+              <MenuItem value="GITLAB">GitLab</MenuItem>
+              <MenuItem value="BITBUCKET">Bitbucket</MenuItem>
+              <MenuItem value="AZURE">Azure DevOps</MenuItem>
+            </Select>
+          </FormControl>
+          
+          <TextField margin="dense" label="URL do Repositório (ex: https://github.com/suzano/projeto)" fullWidth value={formData.repositoryUrl || ''} onChange={e => setFormData({...formData, repositoryUrl: e.target.value})} />
+          <TextField margin="dense" label="Branch Específica (ex: main, develop)" fullWidth value={formData.repositoryBranch || ''} onChange={e => setFormData({...formData, repositoryBranch: e.target.value})} />
 
           <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
             <InputLabel>Status</InputLabel>

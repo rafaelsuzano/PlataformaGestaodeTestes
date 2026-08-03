@@ -23,6 +23,9 @@ data class Sprint(
     val startDate: LocalDateTime?,
     val endDate: LocalDateTime?,
     val status: String, // PLANEJADA, ATIVA, CONCLUIDA
+    val repositoryUrl: String? = null,
+    val repositoryProvider: String? = null,
+    val repositoryBranch: String? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()
 )

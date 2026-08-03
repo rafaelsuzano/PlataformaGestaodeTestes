@@ -1,4 +1,4 @@
-import { Search, Bell, Settings, HelpCircle, Plus } from 'lucide-react';
+import { Search, Bell, Settings, HelpCircle, Plus, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useBranding } from '../../contexts/BrandingContext';
 
@@ -48,8 +48,20 @@ export function Topbar() {
         <button 
           onClick={() => navigate('/admin')}
           className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-md transition-colors"
+          title="Configurações"
         >
           <Settings size={18} />
+        </button>
+
+        <button 
+          onClick={() => {
+            localStorage.removeItem('auth');
+            window.location.href = '/login';
+          }}
+          className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800/50 rounded-md transition-colors"
+          title="Sair (Logoff)"
+        >
+          <LogOut size={18} />
         </button>
 
         {/* User Profile */}

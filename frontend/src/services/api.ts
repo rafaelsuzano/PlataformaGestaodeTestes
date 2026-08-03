@@ -37,6 +37,9 @@ export interface Sprint {
   startDate?: string;
   endDate?: string;
   status: string;
+  repositoryUrl?: string;
+  repositoryProvider?: string;
+  repositoryBranch?: string;
   createdAt?: string;
   updatedAt?: string;
 }
