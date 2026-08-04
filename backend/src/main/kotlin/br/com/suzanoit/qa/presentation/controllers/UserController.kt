@@ -44,4 +44,11 @@ class UserController(private val service: UserService) {
             ResponseEntity.status(401).build()
         }
     }
+
+    @PostMapping("/forgot-password")
+    fun forgotPassword(@RequestBody payload: Map<String, String>): ResponseEntity<Map<String, String>> {
+        val email = payload["email"] ?: return ResponseEntity.badRequest().build()
+        println("Simulando envio de e-mail de recuperação para: $email")
+        return ResponseEntity.ok(mapOf("message" to "Instruções de recuperação enviadas para o e-mail informado (simulado)."))
+    }
 }

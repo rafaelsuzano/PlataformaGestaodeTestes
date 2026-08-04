@@ -42,16 +42,13 @@ class SprintJpaEntity(
     var startDate: LocalDateTime?,
     var endDate: LocalDateTime?,
     var status: String,
-    var repositoryUrl: String?,
-    var repositoryProvider: String?,
-    var repositoryBranch: String?,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, repositoryUrl, repositoryProvider, repositoryBranch, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.core.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Sprint) = SprintJpaEntity(
-            domain.id, domain.projectId, domain.name, domain.goal, domain.startDate, domain.endDate, domain.status, domain.repositoryUrl, domain.repositoryProvider, domain.repositoryBranch, domain.createdAt, domain.updatedAt
+            domain.id ?: UUID.randomUUID().toString(), domain.projectId, domain.name, domain.goal, domain.startDate, domain.endDate, domain.status, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
         )
     }
 }
@@ -299,15 +296,18 @@ class TestExecutionJpaEntity(
     var testerId: String?,
     var environment: String?,
     var status: String,
+    var repositoryProvider: String?,
+    var repositoryUrl: String?,
+    var repositoryBranch: String?,
     var startedAt: LocalDateTime?,
     var completedAt: LocalDateTime?,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestExecution(id, name, sprint, testCaseId, testPlanId, testerId, environment, status, startedAt, completedAt, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.core.domain.TestExecution(id, name, sprint, testCaseId, testPlanId, testerId, environment, status, repositoryProvider, repositoryUrl, repositoryBranch, startedAt, completedAt, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestExecution) = TestExecutionJpaEntity(
-            domain.id, domain.name, domain.sprint, domain.testCaseId, domain.testPlanId, domain.testerId, domain.environment, domain.status, domain.startedAt, domain.completedAt, domain.createdAt, domain.updatedAt
+            domain.id ?: UUID.randomUUID().toString(), domain.name, domain.sprint, domain.testCaseId, domain.testPlanId, domain.testerId, domain.environment, domain.status, domain.repositoryProvider, domain.repositoryUrl, domain.repositoryBranch, domain.startedAt, domain.completedAt, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
         )
     }
 }

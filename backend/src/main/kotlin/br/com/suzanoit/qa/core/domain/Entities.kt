@@ -16,18 +16,15 @@ data class Project(
 )
 
 data class Sprint(
-    val id: String = UUID.randomUUID().toString(),
+    val id: String? = null,
     val projectId: String,
     val name: String,
-    val goal: String?,
-    val startDate: LocalDateTime?,
-    val endDate: LocalDateTime?,
-    val status: String, // PLANEJADA, ATIVA, CONCLUIDA
-    val repositoryUrl: String? = null,
-    val repositoryProvider: String? = null,
-    val repositoryBranch: String? = null,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-    val updatedAt: LocalDateTime = LocalDateTime.now()
+    val goal: String? = null,
+    val startDate: LocalDateTime? = null,
+    val endDate: LocalDateTime? = null,
+    val status: String,
+    val createdAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null
 )
 
 data class User(
@@ -175,18 +172,21 @@ data class TestStep(
 )
 
 data class TestExecution(
-    val id: String = UUID.randomUUID().toString(),
-    val name: String?,
-    val sprint: String?,
+    val id: String? = null,
+    val name: String? = null,
+    val sprint: String? = null,
     val testCaseId: String,
-    val testPlanId: String?, // Vinculo com o Plano de Testes
-    val testerId: String?,
-    val environment: String?,
+    val testPlanId: String? = null,
+    val testerId: String? = null,
+    val environment: String? = null,
     val status: String, // PENDING, IN_PROGRESS, PASSED, FAILED, BLOCKED
-    val startedAt: LocalDateTime?,
-    val completedAt: LocalDateTime?,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-    val updatedAt: LocalDateTime = LocalDateTime.now()
+    val repositoryProvider: String? = null,
+    val repositoryUrl: String? = null,
+    val repositoryBranch: String? = null,
+    val startedAt: LocalDateTime? = null,
+    val completedAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null
 )
 
 data class TestExecutionStep(

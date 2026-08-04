@@ -37,9 +37,6 @@ export interface Sprint {
   startDate?: string;
   endDate?: string;
   status: string;
-  repositoryUrl?: string;
-  repositoryProvider?: string;
-  repositoryBranch?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -251,14 +248,24 @@ export const UserService = {
     });
     if (!res.ok) throw new Error('Failed to delete user');
   },
-  login: async (credentials: any): Promise<User> => {
-    const res = await fetch(`${API_URL}/users/login`, {
+  login: async (credentials: any) => {
+    const response = await fetch(`${API_URL}/users/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
     });
-    if (!res.ok) throw new Error('Credenciais inválidas');
-    return res.json();
+    if (!response.ok) throw new Error('Falha no login. Verifique suas credenciais.');
+    return response.json();
+  },
+
+  forgotPassword: async (email: string) => {
+    const response = await fetch(`${API_URL}/users/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (!response.ok) throw new Error('Erro ao solicitar recuperação de senha.');
+    return response.json();
   }
 };
 
@@ -503,6 +510,9 @@ export interface TestExecution {
   testerId?: string;
   environment?: string;
   status: string;
+  repositoryProvider?: string;
+  repositoryUrl?: string;
+  repositoryBranch?: string;
   startedAt?: string;
   completedAt?: string;
   createdAt?: string;

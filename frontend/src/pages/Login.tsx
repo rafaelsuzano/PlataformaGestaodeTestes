@@ -23,7 +23,7 @@ interface LoginProps {
 
 export default function Login({ onLogin }: LoginProps) {
   const { branding } = useBranding();
-  const [isLogin, setIsLogin] = useState(true);
+  const [mode, setMode] = useState<'LOGIN' | 'REGISTER' | 'FORGOT_PASSWORD'>('LOGIN');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -38,7 +38,7 @@ export default function Login({ onLogin }: LoginProps) {
     setSuccess('');
     setLoading(true);
 
-    if (isLogin) {
+    if (mode === 'LOGIN') {
       try {
         const user = await UserService.login({ email: username, password }); // Usando o campo username como email
         localStorage.setItem('user', JSON.stringify(user));
@@ -47,7 +47,7 @@ export default function Login({ onLogin }: LoginProps) {
       } catch (err: any) {
         setError(err.message || 'Credenciais inválidas.');
       }
-    } else {
+    } else if (mode === 'REGISTER') {
       // Cadastro
       try {
         if (username && password && email) {
@@ -60,7 +60,7 @@ export default function Login({ onLogin }: LoginProps) {
           });
           setSuccess('Cadastro realizado com sucesso! Faça login.');
           setTimeout(() => {
-            setIsLogin(true);
+            setMode('LOGIN');
             setSuccess('');
           }, 2000);
         } else {
@@ -68,6 +68,21 @@ export default function Login({ onLogin }: LoginProps) {
         }
       } catch (err: any) {
         setError(err.message || 'Erro ao cadastrar.');
+      }
+    } else if (mode === 'FORGOT_PASSWORD') {
+      try {
+        if (username) {
+          await UserService.forgotPassword(username);
+          setSuccess('Instruções de recuperação enviadas para o seu e-mail!');
+          setTimeout(() => {
+            setMode('LOGIN');
+            setSuccess('');
+          }, 4000);
+        } else {
+          setError('Informe seu e-mail para recuperar a senha.');
+        }
+      } catch (err: any) {
+        setError(err.message || 'Erro ao solicitar recuperação.');
       }
     }
     setLoading(false);
@@ -113,7 +128,7 @@ export default function Login({ onLogin }: LoginProps) {
             align="center" 
             sx={{ fontWeight: 'bold', mb: 1, color: '#fff', letterSpacing: 1 }}
           >
-            {isLogin ? 'Bem-vindo de volta' : 'Crie sua conta'}
+            {mode === 'LOGIN' ? 'Bem-vindo de volta' : mode === 'REGISTER' ? 'Crie sua conta' : 'Recuperar Senha'}
           </Typography>
           <Typography 
             component="h2" 
@@ -133,7 +148,7 @@ export default function Login({ onLogin }: LoginProps) {
               required
               fullWidth
               id="username"
-              label={isLogin ? "E-mail de Acesso" : "Nome Completo"}
+              label={mode === 'LOGIN' || mode === 'FORGOT_PASSWORD' ? "E-mail de Acesso" : "Nome Completo"}
               name="username"
               autoFocus
               value={username}
@@ -150,8 +165,8 @@ export default function Login({ onLogin }: LoginProps) {
               }}
             />
 
-            {!isLogin && (
-              <Fade in={!isLogin} timeout={500}>
+            {mode === 'REGISTER' && (
+              <Fade in={mode === 'REGISTER'} timeout={500}>
                 <TextField
                   margin="normal"
                   required
@@ -176,10 +191,11 @@ export default function Login({ onLogin }: LoginProps) {
               </Fade>
             )}
 
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+            {mode !== 'FORGOT_PASSWORD' && (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
               name="password"
               label="Senha"
               type="password"
@@ -197,6 +213,20 @@ export default function Login({ onLogin }: LoginProps) {
                 }
               }}
             />
+            )}
+
+            {mode === 'LOGIN' && (
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+                <Button 
+                  size="small" 
+                  color="secondary" 
+                  onClick={() => { setMode('FORGOT_PASSWORD'); setError(''); setSuccess(''); }}
+                  sx={{ textTransform: 'none' }}
+                >
+                  Esqueci minha senha
+                </Button>
+              </Box>
+            )}
 
             <Button
               type="submit"
@@ -218,20 +248,20 @@ export default function Login({ onLogin }: LoginProps) {
                 }
               }}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : (isLogin ? 'ACESSAR PLATAFORMA' : 'CADASTRAR-SE')}
+              {loading ? <CircularProgress size={24} color="inherit" /> : (mode === 'LOGIN' ? 'ACESSAR PLATAFORMA' : mode === 'REGISTER' ? 'CADASTRAR-SE' : 'RECUPERAR SENHA')}
             </Button>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
               <Button 
                 color="secondary" 
                 onClick={() => {
-                  setIsLogin(!isLogin);
+                  setMode(mode === 'LOGIN' ? 'REGISTER' : 'LOGIN');
                   setError('');
                   setSuccess('');
                 }}
                 sx={{ textTransform: 'none', fontWeight: 'bold' }}
               >
-                {isLogin ? 'Não tem uma conta? Cadastre-se' : 'Já tem uma conta? Faça login'}
+                {mode === 'LOGIN' ? 'Não tem uma conta? Cadastre-se' : 'Voltar para o login'}
               </Button>
             </Box>
           </Box>

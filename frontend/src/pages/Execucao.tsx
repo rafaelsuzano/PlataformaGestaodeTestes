@@ -21,7 +21,8 @@ export default function Execucao() {
   const [editOpen, setEditOpen] = useState(false);
   
   const [formData, setFormData] = useState({
-    name: '', sprint: '', testCaseIds: [] as string[], status: 'ATIVO', environment: ''
+    name: '', sprint: '', testCaseIds: [] as string[], status: 'ATIVO', environment: '',
+    repositoryProvider: '', repositoryUrl: '', repositoryBranch: ''
   });
 
   const [editData, setEditData] = useState<Partial<TestExecution> & { additionalTestCaseIds?: string[] }>({});
@@ -67,11 +68,14 @@ export default function Execucao() {
         sprint: formData.sprint,
         testCaseId,
         status: formData.status,
-        environment: formData.environment
+        environment: formData.environment,
+        repositoryProvider: formData.repositoryProvider,
+        repositoryUrl: formData.repositoryUrl,
+        repositoryBranch: formData.repositoryBranch
       });
     }
     setOpen(false);
-    setFormData({ name: '', sprint: '', testCaseIds: [], status: 'ATIVO', environment: '' });
+    setFormData({ name: '', sprint: '', testCaseIds: [], status: 'ATIVO', environment: '', repositoryProvider: '', repositoryUrl: '', repositoryBranch: '' });
   };
 
   const handleUpdate = async () => {
@@ -85,7 +89,10 @@ export default function Execucao() {
             sprint: editData.sprint,
             testCaseId,
             status: editData.status || 'ATIVO',
-            environment: editData.environment || 'QA'
+            environment: editData.environment || 'QA',
+            repositoryProvider: editData.repositoryProvider,
+            repositoryUrl: editData.repositoryUrl,
+            repositoryBranch: editData.repositoryBranch
           });
         }
       }
@@ -180,6 +187,7 @@ export default function Execucao() {
                 <TableCell>Sprint</TableCell>
                 <TableCell>Caso de Teste</TableCell>
                 <TableCell>Ambiente</TableCell>
+                <TableCell>Repositório</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
@@ -193,6 +201,13 @@ export default function Execucao() {
                     <TableCell>{exec.sprint || '-'}</TableCell>
                     <TableCell>{tc?.title || exec.testCaseId}</TableCell>
                     <TableCell>{exec.environment}</TableCell>
+                    <TableCell>
+                      {exec.repositoryProvider && exec.repositoryUrl ? (
+                        <a href={exec.repositoryUrl} target="_blank" rel="noopener noreferrer">
+                          {exec.repositoryProvider} ({exec.repositoryBranch || 'main'})
+                        </a>
+                      ) : '-'}
+                    </TableCell>
                     <TableCell>
                       <Chip label={exec.status} color={getStatusColor(exec.status) as any} size="small" />
                     </TableCell>
@@ -267,6 +282,25 @@ export default function Execucao() {
               ))}
             </Select>
           </FormControl>
+          
+          <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
+            <InputLabel>Provedor de Repositório</InputLabel>
+            <Select
+              value={formData.repositoryProvider || ''}
+              label="Provedor de Repositório"
+              onChange={e => setFormData({...formData, repositoryProvider: e.target.value as string})}
+            >
+              <MenuItem value="">Nenhum</MenuItem>
+              <MenuItem value="GITHUB">GitHub</MenuItem>
+              <MenuItem value="GITLAB">GitLab</MenuItem>
+              <MenuItem value="BITBUCKET">Bitbucket</MenuItem>
+              <MenuItem value="AZURE">Azure DevOps</MenuItem>
+            </Select>
+          </FormControl>
+          
+          <TextField margin="dense" label="URL do Repositório (ex: https://github.com/suzano/projeto)" fullWidth value={formData.repositoryUrl || ''} onChange={e => setFormData({...formData, repositoryUrl: e.target.value})} />
+          <TextField margin="dense" label="Branch Específica (ex: main, develop)" fullWidth value={formData.repositoryBranch || ''} onChange={e => setFormData({...formData, repositoryBranch: e.target.value})} />
+
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancelar</Button>
@@ -338,6 +372,25 @@ export default function Execucao() {
               <MenuItem value="PROD">Produção</MenuItem>
             </Select>
           </FormControl>
+          
+          <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
+            <InputLabel>Provedor de Repositório</InputLabel>
+            <Select
+              value={editData.repositoryProvider || ''}
+              label="Provedor de Repositório"
+              onChange={e => setEditData({...editData, repositoryProvider: e.target.value as string})}
+            >
+              <MenuItem value="">Nenhum</MenuItem>
+              <MenuItem value="GITHUB">GitHub</MenuItem>
+              <MenuItem value="GITLAB">GitLab</MenuItem>
+              <MenuItem value="BITBUCKET">Bitbucket</MenuItem>
+              <MenuItem value="AZURE">Azure DevOps</MenuItem>
+            </Select>
+          </FormControl>
+          
+          <TextField margin="dense" label="URL do Repositório" fullWidth value={editData.repositoryUrl || ''} onChange={e => setEditData({...editData, repositoryUrl: e.target.value})} />
+          <TextField margin="dense" label="Branch Específica" fullWidth value={editData.repositoryBranch || ''} onChange={e => setEditData({...editData, repositoryBranch: e.target.value})} />
+
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditOpen(false)}>Cancelar</Button>
@@ -380,7 +433,20 @@ export default function Execucao() {
       <Dialog open={runnerOpen} onClose={() => setRunnerOpen(false)} maxWidth="lg" fullWidth sx={{ '& .MuiDialog-paper': { height: '90vh' } }}>
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'rgba(30, 41, 59, 0.95)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Runner de Execução</Typography>
-          {runningExec && <Chip label={`Ambiente: ${environments?.find(e => e.id === selectedEnvId)?.name || selectedEnvId}`} color="primary" size="small" />}
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {runningExec?.repositoryProvider && runningExec?.repositoryUrl && (
+              <Chip 
+                label={`${runningExec.repositoryProvider} (${runningExec.repositoryBranch || 'main'})`} 
+                component="a" 
+                href={runningExec.repositoryUrl} 
+                target="_blank" 
+                clickable 
+                color="secondary" 
+                size="small" 
+              />
+            )}
+            {runningExec && <Chip label={`Ambiente: ${environments?.find(e => e.id === selectedEnvId)?.name || selectedEnvId}`} color="primary" size="small" />}
+          </Box>
         </DialogTitle>
         <DialogContent sx={{ p: 0, bgcolor: '#0f172a' }}>
           <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>

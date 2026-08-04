@@ -34,7 +34,6 @@ const qaMenu = [
   { type: 'subheader', text: 'Execução' },
   { text: 'Central de Execução', icon: <PlaySquare size={20} />, path: '/execucao' },
   { text: 'Histórico', icon: <History size={20} />, path: '/historico-execucoes' },
-  { text: 'Evidências', icon: <FolderArchive size={20} />, path: '/evidencias' },
   { type: 'subheader', text: 'Automação' },
   { text: 'Automação Playwright', icon: <Terminal size={20} />, path: '/automacao' },
   { text: 'Gerador Playwright (IA)', icon: <Wand2 size={20} />, path: '/automacao/gherkin-playwright' },

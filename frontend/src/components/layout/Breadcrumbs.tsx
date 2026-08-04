@@ -21,7 +21,6 @@ const routeNames: Record<string, string> = {
   'funcionalidades': 'Funcionalidades',
   'features': 'Features',
   'cenarios': 'Cenários',
-  'evidencias': 'Evidências',
   'automacao': 'Playwright',
   'automacao-playwright': 'Playwright',
   'automacao-selenium': 'Selenium',

@@ -3,10 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, 
-  DialogActions, TextField
+  DialogActions, TextField, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
-import { ProjectService } from '../services/api';
-import type { Project } from '../services/api';
+import { ProjectService, UserService } from '../services/api';
+import type { Project, User } from '../services/api';
 export default function Projects() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -18,6 +18,15 @@ export default function Projects() {
     queryKey: ['projects'],
     queryFn: ProjectService.getAll
   });
+
+  const { data: users } = useQuery({
+    queryKey: ['users'],
+    queryFn: UserService.getAll
+  });
+
+  const managerCandidates = users?.filter(u => 
+    ['ADMIN', 'QA', 'PO'].includes(u.profile?.toUpperCase() || '')
+  ) || [];
 
 
   const mutation = useMutation({
@@ -73,7 +82,24 @@ export default function Projects() {
           <TextField margin="dense" label="Nome do Projeto" fullWidth value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
           <TextField margin="dense" label="Descrição" fullWidth value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
           <TextField margin="dense" label="Versão" fullWidth value={formData.version} onChange={e => setFormData({...formData, version: e.target.value})} />
-          <TextField margin="dense" label="Gerente Responsável" fullWidth value={formData.managerName} onChange={e => setFormData({...formData, managerName: e.target.value})} />
+          
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Gerente Responsável</InputLabel>
+            <Select
+              value={formData.managerName || ''}
+              label="Gerente Responsável"
+              onChange={e => setFormData({...formData, managerName: e.target.value})}
+            >
+              <MenuItem value="">
+                <em>Nenhum</em>
+              </MenuItem>
+              {managerCandidates.map((user: User) => (
+                <MenuItem key={user.id} value={user.name}>
+                  {user.name} ({user.profile})
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancelar</Button>
