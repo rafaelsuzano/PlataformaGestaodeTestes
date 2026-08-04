@@ -10,7 +10,6 @@ import {
   CalendarCheck, 
   PlaySquare, 
   History, 
-  FolderArchive,
   Terminal,
   Wand2,
   Activity,
