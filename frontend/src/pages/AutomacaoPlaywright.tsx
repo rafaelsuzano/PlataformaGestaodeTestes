@@ -57,7 +57,7 @@ class SuzanoQA_Reporter implements Reporter {
     };
 
     try {
-      await axios.post('https://plataformagestaodetestes-production.up.railway.app/api/integrations/automation/report', payload);
+      await axios.post('https://<SUA_API_AQUI>/api/integrations/automation/report', payload);
       console.log('✅ Resultados enviados para a Plataforma SuzanoIT QA');
     } catch (e: any) {
       console.error('❌ Falha ao enviar resultados:', e.message);
@@ -160,7 +160,7 @@ class SuzanoQA_Reporter implements Reporter {
 
     try {
       // O Endpoint da Plataforma
-      await axios.post('https://plataformagestaodetestes-production.up.railway.app/api/integrations/automation/report', payload);
+      await axios.post('https://<SUA_API_AQUI>/api/integrations/automation/report', payload);
       console.log('✅ Resultados enviados com sucesso para a Plataforma SuzanoIT QA');
     } catch (e: any) {
       console.error('❌ Falha ao enviar resultados para a Plataforma QA:', e.message);
