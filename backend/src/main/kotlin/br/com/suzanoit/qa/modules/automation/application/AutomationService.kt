@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.automation.application
 
+
 import br.com.suzanoit.qa.modules.automation.infrastructure.JpaAutomatedTestResult
 import br.com.suzanoit.qa.modules.automation.infrastructure.JpaAutomatedTestResultRepository
 import br.com.suzanoit.qa.modules.automation.infrastructure.JpaAutomatedTestRun

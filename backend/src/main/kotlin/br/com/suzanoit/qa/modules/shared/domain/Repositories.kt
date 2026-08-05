@@ -2,6 +2,7 @@ package br.com.suzanoit.qa.modules.shared.domain
 
 
 
+
 interface ProjectRepository {
     fun save(project: Project): Project
     fun findById(id: String): Project?

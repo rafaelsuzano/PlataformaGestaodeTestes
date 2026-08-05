@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.executions.application
 
+
 import br.com.suzanoit.qa.modules.shared.domain.TestPlan
 import br.com.suzanoit.qa.modules.shared.domain.TestPlanRepository
 import br.com.suzanoit.qa.modules.shared.domain.TestExecution

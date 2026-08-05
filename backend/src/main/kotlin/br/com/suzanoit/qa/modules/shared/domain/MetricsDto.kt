@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.shared.domain
 
+
 data class KpiMetricsDto(
     val passRate: Double,
     val defectsPerKloc: Double,

@@ -1,5 +1,21 @@
 package br.com.suzanoit.qa.modules.shared.infrastructure.jpa
 
+import br.com.suzanoit.qa.modules.shared.domain.Category
+import br.com.suzanoit.qa.modules.shared.domain.Defect
+import br.com.suzanoit.qa.modules.shared.domain.Environment
+import br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory
+import br.com.suzanoit.qa.modules.shared.domain.Feature
+import br.com.suzanoit.qa.modules.shared.domain.Module
+import br.com.suzanoit.qa.modules.shared.domain.Requirement
+import br.com.suzanoit.qa.modules.shared.domain.Sprint
+import br.com.suzanoit.qa.modules.shared.domain.SystemLog
+import br.com.suzanoit.qa.modules.shared.domain.TestCase
+import br.com.suzanoit.qa.modules.shared.domain.TestCaseFolder
+import br.com.suzanoit.qa.modules.shared.domain.TestExecution
+import br.com.suzanoit.qa.modules.shared.domain.TestExecutionStep
+import br.com.suzanoit.qa.modules.shared.domain.TestPlan
+import br.com.suzanoit.qa.modules.shared.domain.TestStep
+
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -45,9 +61,9 @@ class SprintJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Sprint) = SprintJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Sprint) = SprintJpaEntity(
             domain.id ?: UUID.randomUUID().toString(), domain.projectId, domain.name, domain.goal, domain.startDate, domain.endDate, domain.status, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
         )
     }
@@ -138,9 +154,9 @@ class ModuleJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Module(id, projectId, name, description, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Module(id, projectId, name, description, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Module) = ModuleJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Module) = ModuleJpaEntity(
             domain.id, domain.projectId, domain.name, domain.description, domain.createdAt, domain.updatedAt
         )
     }
@@ -155,9 +171,9 @@ class CategoryJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Category(id, name, description, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Category(id, name, description, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Category) = CategoryJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Category) = CategoryJpaEntity(
             domain.id, domain.name, domain.description, domain.createdAt, domain.updatedAt
         )
     }
@@ -180,11 +196,11 @@ class RequirementJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Requirement(
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Requirement(
         id, projectId, code, title, description, source, priority, criticality, sprint, releaseVersion, status, createdAt, updatedAt
     )
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Requirement) = RequirementJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Requirement) = RequirementJpaEntity(
             domain.id, domain.projectId, domain.code, domain.title, domain.description, domain.source, domain.priority, domain.criticality, domain.sprint, domain.releaseVersion, domain.status, domain.createdAt, domain.updatedAt
         )
     }
@@ -215,11 +231,11 @@ class FeatureJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Feature(
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Feature(
         id, moduleId, categoryId, code, name, description, objective, status, priority, version, permissions, dependencies, tags, iconName, color, menuOrder, url, visibleInMenu, showInDashboard, createdAt, updatedAt
     )
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Feature) = FeatureJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Feature) = FeatureJpaEntity(
             domain.id, domain.moduleId, domain.categoryId, domain.code, domain.name, domain.description, domain.objective, domain.status, domain.priority, domain.version, domain.permissions, domain.dependencies, domain.tags, domain.iconName, domain.color, domain.menuOrder, domain.url, domain.visibleInMenu, domain.showInDashboard, domain.createdAt, domain.updatedAt
         )
     }
@@ -235,9 +251,9 @@ class TestCaseFolderJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestCaseFolder(id, projectId, parentId, name, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestCaseFolder(id, projectId, parentId, name, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestCaseFolder) = TestCaseFolderJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestCaseFolder) = TestCaseFolderJpaEntity(
             domain.id, domain.projectId, domain.parentId, domain.name, domain.createdAt, domain.updatedAt
         )
     }
@@ -258,9 +274,9 @@ class TestCaseJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestCase(id, featureId, folderId, requirementId, title, description, type, status, gherkinContent, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestCase(id, featureId, folderId, requirementId, title, description, type, status, gherkinContent, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestCase) = TestCaseJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestCase) = TestCaseJpaEntity(
             domain.id, domain.featureId, domain.folderId, domain.requirementId, domain.title, domain.description, domain.type, domain.status, domain.gherkinContent, domain.createdAt, domain.updatedAt
         )
     }
@@ -277,9 +293,9 @@ class TestStepJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestStep(id, testCaseId, stepNumber, action, expectedResult, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestStep(id, testCaseId, stepNumber, action, expectedResult, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestStep) = TestStepJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestStep) = TestStepJpaEntity(
             domain.id, domain.testCaseId, domain.stepNumber, domain.action, domain.expectedResult, domain.createdAt, domain.updatedAt
         )
     }
@@ -304,9 +320,9 @@ class TestExecutionJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestExecution(id, name, sprint, testCaseId, testPlanId, testerId, environment, status, repositoryProvider, repositoryUrl, repositoryBranch, startedAt, completedAt, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestExecution(id, name, sprint, testCaseId, testPlanId, testerId, environment, status, repositoryProvider, repositoryUrl, repositoryBranch, startedAt, completedAt, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestExecution) = TestExecutionJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestExecution) = TestExecutionJpaEntity(
             domain.id ?: UUID.randomUUID().toString(), domain.name, domain.sprint, domain.testCaseId, domain.testPlanId, domain.testerId, domain.environment, domain.status, domain.repositoryProvider, domain.repositoryUrl, domain.repositoryBranch, domain.startedAt, domain.completedAt, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
         )
     }
@@ -326,9 +342,9 @@ class TestExecutionStepJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestExecutionStep(id, testExecutionId, testStepId, stepNumber, action, expectedResult, actualResult, status, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestExecutionStep(id, testExecutionId, testStepId, stepNumber, action, expectedResult, actualResult, status, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestExecutionStep) = TestExecutionStepJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestExecutionStep) = TestExecutionStepJpaEntity(
             domain.id, domain.testExecutionId, domain.testStepId, domain.stepNumber, domain.action, domain.expectedResult, domain.actualResult, domain.status, domain.createdAt, domain.updatedAt
         )
     }
@@ -347,9 +363,9 @@ class DefectJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Defect(id, testExecutionId, testCaseId, title, description, severity, status, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Defect(id, testExecutionId, testCaseId, title, description, severity, status, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Defect) = DefectJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Defect) = DefectJpaEntity(
             domain.id, domain.testExecutionId, domain.testCaseId, domain.title, domain.description, domain.severity, domain.status, domain.createdAt, domain.updatedAt
         )
     }
@@ -368,9 +384,9 @@ class TestPlanJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.TestPlan(id, projectId, sprintId, name, description, environment, status, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestPlan(id, projectId, sprintId, name, description, environment, status, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.TestPlan) = TestPlanJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestPlan) = TestPlanJpaEntity(
             domain.id, domain.projectId, domain.sprintId, domain.name, domain.description, domain.environment, domain.status, domain.createdAt, domain.updatedAt
         )
     }
@@ -390,9 +406,9 @@ class EnvironmentJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.Environment(id, name, description, baseUrl, type, status, color, icon, createdAt, updatedAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Environment(id, name, description, baseUrl, type, status, color, icon, createdAt, updatedAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.Environment) = EnvironmentJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Environment) = EnvironmentJpaEntity(
             domain.id, domain.name, domain.description, domain.baseUrl, domain.type, domain.status, domain.color, domain.icon, domain.createdAt, domain.updatedAt
         )
     }
@@ -418,9 +434,9 @@ class ExecutionHistoryJpaEntity(
     var browserVersion: String?,
     var observations: String?
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.ExecutionHistory(id, testExecutionId, testCaseId, environmentId, userId, startTime, endTime, durationMs, totalSteps, passedSteps, failedSteps, blockedSteps, status, browser, browserVersion, observations)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory(id, testExecutionId, testCaseId, environmentId, userId, startTime, endTime, durationMs, totalSteps, passedSteps, failedSteps, blockedSteps, status, browser, browserVersion, observations)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.ExecutionHistory) = ExecutionHistoryJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory) = ExecutionHistoryJpaEntity(
             domain.id, domain.testExecutionId, domain.testCaseId, domain.environmentId, domain.userId, domain.startTime, domain.endTime, domain.durationMs, domain.totalSteps, domain.passedSteps, domain.failedSteps, domain.blockedSteps, domain.status, domain.browser, domain.browserVersion, domain.observations
         )
     }
@@ -439,9 +455,9 @@ class SystemLogJpaEntity(
     var result: String?,
     var createdAt: LocalDateTime
 ) {
-    fun toDomain() = br.com.suzanoit.qa.core.domain.SystemLog(id, userId, actionType, module, description, ipAddress, browser, result, createdAt)
+    fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.SystemLog(id, userId, actionType, module, description, ipAddress, browser, result, createdAt)
     companion object {
-        fun fromDomain(domain: br.com.suzanoit.qa.core.domain.SystemLog) = SystemLogJpaEntity(
+        fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.SystemLog) = SystemLogJpaEntity(
             domain.id, domain.userId, domain.actionType, domain.module, domain.description, domain.ipAddress, domain.browser, domain.result, domain.createdAt
         )
     }

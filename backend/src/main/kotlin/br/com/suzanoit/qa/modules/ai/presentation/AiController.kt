@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.ai.presentation
 
+
 import br.com.suzanoit.qa.modules.ai.application.AiService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

@@ -1,5 +1,14 @@
 package br.com.suzanoit.qa.modules.api_testing.application
 
+import br.com.suzanoit.qa.modules.api_testing.infrastructure.ApiTestExecutionRepository
+import br.com.suzanoit.qa.modules.api_testing.infrastructure.ApiTestPlanRepository
+import br.com.suzanoit.qa.modules.api_testing.infrastructure.ApiTestRequestRepository
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.ApiTestExecutionJpaEntity
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.ApiTestPlanJpaEntity
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.ApiTestRequestJpaEntity
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.TestExecutionJpaEntity
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.TestExecutionJpaRepository
+
 import br.com.suzanoit.qa.modules.shared.domain.ApiTestExecution
 import br.com.suzanoit.qa.modules.shared.domain.ApiTestPlan
 import br.com.suzanoit.qa.modules.shared.domain.ApiTestRequest

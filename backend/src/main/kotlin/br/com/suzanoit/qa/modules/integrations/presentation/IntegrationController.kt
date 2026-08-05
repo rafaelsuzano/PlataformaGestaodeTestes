@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.integrations.presentation
 
+
 import br.com.suzanoit.qa.modules.integrations.application.IntegrationService
 import br.com.suzanoit.qa.modules.shared.domain.IntegrationConfig
 import org.springframework.http.ResponseEntity

@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.projects.application
 
+
 import br.com.suzanoit.qa.modules.shared.domain.Requirement
 import br.com.suzanoit.qa.modules.shared.domain.RequirementRepository
 import org.springframework.stereotype.Service

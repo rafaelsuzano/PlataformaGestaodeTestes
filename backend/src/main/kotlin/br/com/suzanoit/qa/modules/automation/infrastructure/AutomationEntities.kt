@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.automation.infrastructure
 
+
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.UUID

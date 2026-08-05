@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.shared.domain
 
+
 import java.time.LocalDateTime
 import java.util.UUID
 

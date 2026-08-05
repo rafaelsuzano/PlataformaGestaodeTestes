@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.tenant.infrastructure
 
+
 import br.com.suzanoit.qa.modules.shared.domain.TenantBranding
 import br.com.suzanoit.qa.modules.shared.domain.TenantBrandingRepository
 import br.com.suzanoit.qa.modules.tenant.infrastructure.TenantBrandingJpaEntity

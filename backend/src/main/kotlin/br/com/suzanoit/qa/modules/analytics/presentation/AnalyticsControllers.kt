@@ -1,5 +1,12 @@
 package br.com.suzanoit.qa.modules.analytics.presentation
 
+import br.com.suzanoit.qa.modules.shared.domain.CoverageGlobalDto
+import br.com.suzanoit.qa.modules.shared.domain.CoverageModuleDto
+import br.com.suzanoit.qa.modules.shared.domain.DefectDensityDto
+import br.com.suzanoit.qa.modules.shared.domain.KpiMetricsDto
+import br.com.suzanoit.qa.modules.shared.domain.TrendDataDto
+import br.com.suzanoit.qa.modules.shared.domain.UncoveredRequirementDto
+
 import br.com.suzanoit.qa.modules.analytics.application.MetricsService
 import br.com.suzanoit.qa.modules.analytics.application.CoverageService
 import br.com.suzanoit.qa.modules.shared.domain.*

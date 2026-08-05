@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.audit.application
 
+
 import br.com.suzanoit.qa.modules.shared.domain.SystemLog
 import br.com.suzanoit.qa.modules.shared.domain.SystemLogRepository
 import org.springframework.stereotype.Service

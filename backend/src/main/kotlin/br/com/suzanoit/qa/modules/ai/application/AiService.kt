@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.ai.application
 
+
 import org.springframework.stereotype.Service
 
 @Service

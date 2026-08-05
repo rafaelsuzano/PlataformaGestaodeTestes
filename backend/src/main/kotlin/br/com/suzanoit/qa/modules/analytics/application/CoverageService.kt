@@ -1,5 +1,13 @@
 package br.com.suzanoit.qa.modules.analytics.application
 
+import br.com.suzanoit.qa.modules.shared.domain.CoverageGlobalDto
+import br.com.suzanoit.qa.modules.shared.domain.CoverageModuleDto
+import br.com.suzanoit.qa.modules.shared.domain.FeatureRepository
+import br.com.suzanoit.qa.modules.shared.domain.ModuleRepository
+import br.com.suzanoit.qa.modules.shared.domain.RequirementRepository
+import br.com.suzanoit.qa.modules.shared.domain.TestCaseRepository
+import br.com.suzanoit.qa.modules.shared.domain.UncoveredRequirementDto
+
 import br.com.suzanoit.qa.modules.shared.domain.*
 import org.springframework.stereotype.Service
 import java.util.Locale

@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.users.presentation
 
+
 import br.com.suzanoit.qa.modules.users.application.UserService
 import br.com.suzanoit.qa.modules.shared.domain.User
 import org.springframework.http.ResponseEntity

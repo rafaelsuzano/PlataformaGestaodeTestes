@@ -1,5 +1,10 @@
 package br.com.suzanoit.qa.modules.users.application
 
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.UserJpaEntity
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.UserProjectJpaEntity
+import br.com.suzanoit.qa.modules.users.infrastructure.UserProjectRepository
+import br.com.suzanoit.qa.modules.users.infrastructure.UserRepository
+
 import br.com.suzanoit.qa.modules.shared.domain.User
 import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.*
 import org.springframework.stereotype.Service

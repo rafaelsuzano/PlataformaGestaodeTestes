@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.tenant.presentation
 
+
 import br.com.suzanoit.qa.modules.tenant.application.TenantBrandingService
 import br.com.suzanoit.qa.modules.shared.domain.TenantBranding
 import org.springframework.http.ResponseEntity

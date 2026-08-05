@@ -1,5 +1,7 @@
 package br.com.suzanoit.qa.modules.integrations.infrastructure
 
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.IntegrationConfigJpaEntity
+
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

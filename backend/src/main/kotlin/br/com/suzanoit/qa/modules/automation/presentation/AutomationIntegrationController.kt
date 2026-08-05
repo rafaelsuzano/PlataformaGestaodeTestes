@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.automation.presentation
 
+
 import br.com.suzanoit.qa.modules.automation.application.AutomatedTestRunResponse
 import br.com.suzanoit.qa.modules.automation.application.AutomationRunReportDto
 import br.com.suzanoit.qa.modules.automation.application.AutomationService

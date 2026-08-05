@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.audit.presentation
 
+
 import br.com.suzanoit.qa.modules.audit.application.SystemLogService
 import br.com.suzanoit.qa.modules.shared.domain.SystemLog
 import org.springframework.http.ResponseEntity

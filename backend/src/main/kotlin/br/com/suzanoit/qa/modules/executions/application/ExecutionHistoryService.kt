@@ -1,5 +1,7 @@
 package br.com.suzanoit.qa.modules.executions.application
 
+import br.com.suzanoit.qa.modules.audit.application.SystemLogService
+
 import br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory
 import br.com.suzanoit.qa.modules.shared.domain.ExecutionHistoryRepository
 import org.springframework.stereotype.Service

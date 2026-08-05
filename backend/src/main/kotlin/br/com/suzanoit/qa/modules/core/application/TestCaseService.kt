@@ -1,5 +1,6 @@
 package br.com.suzanoit.qa.modules.core.application
 
+
 import br.com.suzanoit.qa.modules.shared.domain.TestCase
 import br.com.suzanoit.qa.modules.shared.domain.TestCaseRepository
 import org.springframework.stereotype.Service

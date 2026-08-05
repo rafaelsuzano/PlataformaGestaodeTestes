@@ -1,5 +1,9 @@
 package br.com.suzanoit.qa.modules.api_testing.infrastructure
 
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.ApiTestExecutionJpaEntity
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.ApiTestPlanJpaEntity
+import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.ApiTestRequestJpaEntity
+
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
