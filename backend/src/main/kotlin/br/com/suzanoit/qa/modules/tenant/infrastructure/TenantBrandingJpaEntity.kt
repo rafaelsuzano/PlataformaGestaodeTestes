@@ -7,6 +7,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 import java.util.UUID
+import org.hibernate.annotations.TenantId
 
 @Entity
 @Table(name = "tenant_branding")
@@ -14,6 +15,7 @@ class TenantBrandingJpaEntity(
     @Id
     val id: String = UUID.randomUUID().toString(),
 
+    @TenantId
     @Column(name = "tenant_id", nullable = false, unique = true)
     val tenantId: String,
 

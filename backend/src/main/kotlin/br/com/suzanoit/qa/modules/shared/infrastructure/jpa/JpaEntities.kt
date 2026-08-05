@@ -18,9 +18,11 @@ import br.com.suzanoit.qa.modules.shared.domain.TestStep
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import org.hibernate.annotations.TenantId
 import jakarta.persistence.Table
 import jakarta.persistence.Column
-import jakarta.persistence.IdClass
+import jakarta.persistence.Id
+import org.hibernate.annotations.TenantIdClass
 import java.time.LocalDateTime
 
 import br.com.suzanoit.qa.modules.shared.domain.Project
@@ -30,6 +32,7 @@ import br.com.suzanoit.qa.modules.shared.domain.Project
 class ProjectJpaEntity(
     @Id
     var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
 
     var name: String,
     var description: String?,
@@ -52,6 +55,7 @@ class ProjectJpaEntity(
 @Table(name = "sprints")
 class SprintJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var name: String,
     var goal: String?,
@@ -73,6 +77,7 @@ class SprintJpaEntity(
 @Table(name = "users")
 class UserJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var email: String,
     var password: String,
@@ -86,6 +91,7 @@ class UserJpaEntity(
 @IdClass(UserProjectId::class)
 class UserProjectJpaEntity(
     @Id var userId: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     @Id var projectId: String
 )
 
@@ -98,6 +104,7 @@ data class UserProjectId(
 @Table(name = "integrations")
 class IntegrationConfigJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var type: String,
     var url: String,
     var apiToken: String,
@@ -110,6 +117,7 @@ class IntegrationConfigJpaEntity(
 @Table(name = "api_test_plans")
 class ApiTestPlanJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var description: String?,
     var projectId: String?,
@@ -122,6 +130,7 @@ class ApiTestPlanJpaEntity(
 @Table(name = "api_test_requests")
 class ApiTestRequestJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var planId: String,
     var name: String,
     var method: String,
@@ -137,6 +146,7 @@ class ApiTestRequestJpaEntity(
 @Table(name = "api_test_executions")
 class ApiTestExecutionJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var planId: String,
     var status: String,
     var executionTimeMs: Long,
@@ -148,6 +158,7 @@ class ApiTestExecutionJpaEntity(
 @Table(name = "modules")
 class ModuleJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var name: String,
     var description: String?,
@@ -166,6 +177,7 @@ class ModuleJpaEntity(
 @Table(name = "categories")
 class CategoryJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var description: String?,
     var createdAt: LocalDateTime,
@@ -183,6 +195,7 @@ class CategoryJpaEntity(
 @Table(name = "requirements")
 class RequirementJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var code: String,
     var title: String,
@@ -210,6 +223,7 @@ class RequirementJpaEntity(
 @Table(name = "features")
 class FeatureJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var moduleId: String,
     var categoryId: String?,
     var code: String?,
@@ -245,6 +259,7 @@ class FeatureJpaEntity(
 @Table(name = "test_case_folders")
 class TestCaseFolderJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var parentId: String?,
     var name: String,
@@ -263,6 +278,7 @@ class TestCaseFolderJpaEntity(
 @Table(name = "test_cases")
 class TestCaseJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var featureId: String?,
     var folderId: String?,
     var requirementId: String?,
@@ -286,6 +302,7 @@ class TestCaseJpaEntity(
 @Table(name = "test_steps")
 class TestStepJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testCaseId: String,
     var stepNumber: Int,
     var action: String,
@@ -305,6 +322,7 @@ class TestStepJpaEntity(
 @Table(name = "test_executions")
 class TestExecutionJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String?,
     var sprint: String?,
     var testCaseId: String,
@@ -332,6 +350,7 @@ class TestExecutionJpaEntity(
 @Table(name = "test_execution_steps")
 class TestExecutionStepJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testExecutionId: String,
     var testStepId: String?,
     var stepNumber: Int,
@@ -354,6 +373,7 @@ class TestExecutionStepJpaEntity(
 @Table(name = "defects")
 class DefectJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testExecutionId: String?,
     var testCaseId: String,
     var title: String,
@@ -375,6 +395,7 @@ class DefectJpaEntity(
 @Table(name = "test_plans")
 class TestPlanJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var sprintId: String?,
     var name: String,
@@ -396,6 +417,7 @@ class TestPlanJpaEntity(
 @Table(name = "environments")
 class EnvironmentJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var description: String?,
     var baseUrl: String?,
@@ -418,6 +440,7 @@ class EnvironmentJpaEntity(
 @Table(name = "execution_history")
 class ExecutionHistoryJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testExecutionId: String?,
     var testCaseId: String,
     var environmentId: String?,
@@ -446,6 +469,7 @@ class ExecutionHistoryJpaEntity(
 @Table(name = "system_logs")
 class SystemLogJpaEntity(
     @Id var id: String,
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var userId: String?,
     var actionType: String,
     var module: String,
