@@ -124,6 +124,9 @@ class ApiExecutionService(
                 null, // testerId
                 "API", // environment
                 status,
+                null, // repositoryProvider
+                null, // repositoryUrl
+                null, // repositoryBranch
                 LocalDateTime.now(), // startedAt
                 LocalDateTime.now(), // completedAt
                 LocalDateTime.now(), // createdAt

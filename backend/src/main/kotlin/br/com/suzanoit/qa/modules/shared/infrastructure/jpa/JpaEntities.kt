@@ -64,7 +64,7 @@ class SprintJpaEntity(
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Sprint) = SprintJpaEntity(
-            domain.id ?: UUID.randomUUID().toString(), domain.projectId, domain.name, domain.goal, domain.startDate, domain.endDate, domain.status, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
+            domain.id ?: java.util.UUID.randomUUID().toString(), domain.projectId, domain.name, domain.goal, domain.startDate, domain.endDate, domain.status, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
         )
     }
 }
@@ -323,7 +323,7 @@ class TestExecutionJpaEntity(
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestExecution(id, name, sprint, testCaseId, testPlanId, testerId, environment, status, repositoryProvider, repositoryUrl, repositoryBranch, startedAt, completedAt, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestExecution) = TestExecutionJpaEntity(
-            domain.id ?: UUID.randomUUID().toString(), domain.name, domain.sprint, domain.testCaseId, domain.testPlanId, domain.testerId, domain.environment, domain.status, domain.repositoryProvider, domain.repositoryUrl, domain.repositoryBranch, domain.startedAt, domain.completedAt, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
+            domain.id ?: java.util.UUID.randomUUID().toString(), domain.name, domain.sprint, domain.testCaseId, domain.testPlanId, domain.testerId, domain.environment, domain.status, domain.repositoryProvider, domain.repositoryUrl, domain.repositoryBranch, domain.startedAt, domain.completedAt, domain.createdAt ?: LocalDateTime.now(), domain.updatedAt ?: LocalDateTime.now()
         )
     }
 }
