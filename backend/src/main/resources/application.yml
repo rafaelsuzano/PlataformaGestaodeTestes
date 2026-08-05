@@ -2,10 +2,12 @@ spring:
   application:
     name: SuzanoIT-QA
   datasource:
-    url: jdbc:sqlite:data/suzanoit-qa.db
-    driver-class-name: org.sqlite.JDBC
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/suzanoit_qa}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
     show-sql: true
@@ -14,9 +16,9 @@ spring:
         format_sql: true
   flyway:
     enabled: true
-    url: jdbc:sqlite:data/suzanoit-qa.db
-    user: sa
-    password:
+    url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/suzanoit_qa}
+    user: ${SPRING_FLYWAY_USER:postgres}
+    password: ${SPRING_FLYWAY_PASSWORD:postgres}
 
 server:
   port: 8080

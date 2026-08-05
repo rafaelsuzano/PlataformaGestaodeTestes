@@ -26,7 +26,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("tools.jackson.module:jackson-module-kotlin")
-	implementation("org.xerial:sqlite-jdbc:3.46.0.0")
+	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.hibernate.orm:hibernate-community-dialects:6.5.2.Final")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")

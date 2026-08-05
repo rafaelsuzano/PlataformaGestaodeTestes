@@ -9,8 +9,8 @@ CREATE TABLE test_cases_new (
     type TEXT NOT NULL,
     status TEXT NOT NULL,
     gherkin_content TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (feature_id) REFERENCES features(id)
 );
 
