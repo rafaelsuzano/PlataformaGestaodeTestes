@@ -2,9 +2,9 @@ spring:
   application:
     name: SuzanoIT-QA
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/suzanoit_qa}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:suzanoit_qa}
+    username: ${PGUSER:postgres}
+    password: ${PGPASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -17,9 +17,9 @@ spring:
         tenant_identifier_resolver: br.com.suzanoit.qa.modules.tenant.infrastructure.CurrentTenantIdentifierResolverImpl
   flyway:
     enabled: true
-    url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/suzanoit_qa}
-    user: ${SPRING_FLYWAY_USER:postgres}
-    password: ${SPRING_FLYWAY_PASSWORD:postgres}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:suzanoit_qa}
+    user: ${PGUSER:postgres}
+    password: ${PGPASSWORD:postgres}
 
 server:
   port: 8080
