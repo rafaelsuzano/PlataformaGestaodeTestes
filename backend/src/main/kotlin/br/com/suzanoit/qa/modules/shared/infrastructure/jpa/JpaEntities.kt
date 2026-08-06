@@ -18,11 +18,10 @@ import br.com.suzanoit.qa.modules.shared.domain.TestStep
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import org.hibernate.annotations.TenantId
 import jakarta.persistence.Table
 import jakarta.persistence.Column
-import jakarta.persistence.Id
-import org.hibernate.annotations.TenantIdClass
+import jakarta.persistence.IdClass
+import org.hibernate.annotations.TenantId
 import java.time.LocalDateTime
 
 import br.com.suzanoit.qa.modules.shared.domain.Project
