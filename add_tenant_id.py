@@ -10,18 +10,18 @@ with open(filepath, "r") as f:
 if "import org.hibernate.annotations.TenantId" not in content:
     content = content.replace("import jakarta.persistence.Id", "import jakarta.persistence.Id\nimport org.hibernate.annotations.TenantId")
 
-# Find all @Entity classes and add tenantId
-# class XJpaEntity(
-#     @Id var id: String,
-#     ...
-# )
+# Regex to find: class XxxJpaEntity( ... ) {
+# and replace with: class XxxJpaEntity( ... ) {\n    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
 def replacer(match):
-    # match.group(0) is something like "class ProjectJpaEntity(\n    @Id var id: String,"
-    return match.group(0) + "\n    @TenantId @Column(name = \"tenant_id\") var tenantId: String? = null,"
+    return match.group(0) + "\n    @TenantId @Column(name = \"tenant_id\") var tenantId: String? = null"
 
-content = re.sub(r"(class\s+[A-Za-z0-9_]+JpaEntity\s*\(\n\s*@Id\s+var\s+[A-Za-z0-9_]+\s*:\s*String,)", replacer, content)
+# We look for ") {" that comes after "JpaEntity("
+# A simple way is to replace ") {" only for classes ending with JpaEntity.
+# Let's find all occurrences of "class XxxJpaEntity" and the next ") {"
+pattern = re.compile(r'(class\s+[A-Za-z0-9_]+JpaEntity\s*\([\s\S]*?\)\s*\{)')
+content = pattern.sub(replacer, content)
 
 with open(filepath, "w") as f:
     f.write(content)
 
-print("Added tenantId to all JPA entities")
+print("Added tenantId inside class bodies")

@@ -32,7 +32,6 @@ import br.com.suzanoit.qa.modules.shared.domain.Project
 class ProjectJpaEntity(
     @Id
     var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
 
     var name: String,
     var description: String?,
@@ -42,6 +41,7 @@ class ProjectJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = Project(id, name, description, version, status, managerName, createdAt, updatedAt)
 
     companion object {
@@ -55,7 +55,6 @@ class ProjectJpaEntity(
 @Table(name = "sprints")
 class SprintJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var name: String,
     var goal: String?,
@@ -65,6 +64,7 @@ class SprintJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Sprint(id, projectId, name, goal, startDate, endDate, status, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Sprint) = SprintJpaEntity(
@@ -77,7 +77,6 @@ class SprintJpaEntity(
 @Table(name = "users")
 class UserJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var email: String,
     var password: String,
@@ -91,7 +90,6 @@ class UserJpaEntity(
 @IdClass(UserProjectId::class)
 class UserProjectJpaEntity(
     @Id var userId: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     @Id var projectId: String
 )
 
@@ -104,7 +102,6 @@ data class UserProjectId(
 @Table(name = "integrations")
 class IntegrationConfigJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var type: String,
     var url: String,
     var apiToken: String,
@@ -117,7 +114,6 @@ class IntegrationConfigJpaEntity(
 @Table(name = "api_test_plans")
 class ApiTestPlanJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var description: String?,
     var projectId: String?,
@@ -130,7 +126,6 @@ class ApiTestPlanJpaEntity(
 @Table(name = "api_test_requests")
 class ApiTestRequestJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var planId: String,
     var name: String,
     var method: String,
@@ -146,7 +141,6 @@ class ApiTestRequestJpaEntity(
 @Table(name = "api_test_executions")
 class ApiTestExecutionJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var planId: String,
     var status: String,
     var executionTimeMs: Long,
@@ -158,13 +152,13 @@ class ApiTestExecutionJpaEntity(
 @Table(name = "modules")
 class ModuleJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var name: String,
     var description: String?,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Module(id, projectId, name, description, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Module) = ModuleJpaEntity(
@@ -177,12 +171,12 @@ class ModuleJpaEntity(
 @Table(name = "categories")
 class CategoryJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var description: String?,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Category(id, name, description, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Category) = CategoryJpaEntity(
@@ -195,7 +189,6 @@ class CategoryJpaEntity(
 @Table(name = "requirements")
 class RequirementJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var code: String,
     var title: String,
@@ -209,6 +202,7 @@ class RequirementJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Requirement(
         id, projectId, code, title, description, source, priority, criticality, sprint, releaseVersion, status, createdAt, updatedAt
     )
@@ -223,7 +217,6 @@ class RequirementJpaEntity(
 @Table(name = "features")
 class FeatureJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var moduleId: String,
     var categoryId: String?,
     var code: String?,
@@ -245,6 +238,7 @@ class FeatureJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Feature(
         id, moduleId, categoryId, code, name, description, objective, status, priority, version, permissions, dependencies, tags, iconName, color, menuOrder, url, visibleInMenu, showInDashboard, createdAt, updatedAt
     )
@@ -259,13 +253,13 @@ class FeatureJpaEntity(
 @Table(name = "test_case_folders")
 class TestCaseFolderJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var parentId: String?,
     var name: String,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestCaseFolder(id, projectId, parentId, name, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestCaseFolder) = TestCaseFolderJpaEntity(
@@ -278,7 +272,6 @@ class TestCaseFolderJpaEntity(
 @Table(name = "test_cases")
 class TestCaseJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var featureId: String?,
     var folderId: String?,
     var requirementId: String?,
@@ -290,6 +283,7 @@ class TestCaseJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestCase(id, featureId, folderId, requirementId, title, description, type, status, gherkinContent, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestCase) = TestCaseJpaEntity(
@@ -302,7 +296,6 @@ class TestCaseJpaEntity(
 @Table(name = "test_steps")
 class TestStepJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testCaseId: String,
     var stepNumber: Int,
     var action: String,
@@ -310,6 +303,7 @@ class TestStepJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestStep(id, testCaseId, stepNumber, action, expectedResult, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestStep) = TestStepJpaEntity(
@@ -322,7 +316,6 @@ class TestStepJpaEntity(
 @Table(name = "test_executions")
 class TestExecutionJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String?,
     var sprint: String?,
     var testCaseId: String,
@@ -338,6 +331,7 @@ class TestExecutionJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestExecution(id, name, sprint, testCaseId, testPlanId, testerId, environment, status, repositoryProvider, repositoryUrl, repositoryBranch, startedAt, completedAt, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestExecution) = TestExecutionJpaEntity(
@@ -350,7 +344,6 @@ class TestExecutionJpaEntity(
 @Table(name = "test_execution_steps")
 class TestExecutionStepJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testExecutionId: String,
     var testStepId: String?,
     var stepNumber: Int,
@@ -361,6 +354,7 @@ class TestExecutionStepJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestExecutionStep(id, testExecutionId, testStepId, stepNumber, action, expectedResult, actualResult, status, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestExecutionStep) = TestExecutionStepJpaEntity(
@@ -373,7 +367,6 @@ class TestExecutionStepJpaEntity(
 @Table(name = "defects")
 class DefectJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testExecutionId: String?,
     var testCaseId: String,
     var title: String,
@@ -383,6 +376,7 @@ class DefectJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Defect(id, testExecutionId, testCaseId, title, description, severity, status, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Defect) = DefectJpaEntity(
@@ -395,7 +389,6 @@ class DefectJpaEntity(
 @Table(name = "test_plans")
 class TestPlanJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var projectId: String,
     var sprintId: String?,
     var name: String,
@@ -405,6 +398,7 @@ class TestPlanJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestPlan(id, projectId, sprintId, name, description, environment, status, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.TestPlan) = TestPlanJpaEntity(
@@ -417,7 +411,6 @@ class TestPlanJpaEntity(
 @Table(name = "environments")
 class EnvironmentJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var name: String,
     var description: String?,
     var baseUrl: String?,
@@ -428,6 +421,7 @@ class EnvironmentJpaEntity(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.Environment(id, name, description, baseUrl, type, status, color, icon, createdAt, updatedAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.Environment) = EnvironmentJpaEntity(
@@ -440,7 +434,6 @@ class EnvironmentJpaEntity(
 @Table(name = "execution_history")
 class ExecutionHistoryJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var testExecutionId: String?,
     var testCaseId: String,
     var environmentId: String?,
@@ -457,6 +450,7 @@ class ExecutionHistoryJpaEntity(
     var browserVersion: String?,
     var observations: String?
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory(id, testExecutionId, testCaseId, environmentId, userId, startTime, endTime, durationMs, totalSteps, passedSteps, failedSteps, blockedSteps, status, browser, browserVersion, observations)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory) = ExecutionHistoryJpaEntity(
@@ -469,7 +463,6 @@ class ExecutionHistoryJpaEntity(
 @Table(name = "system_logs")
 class SystemLogJpaEntity(
     @Id var id: String,
-    @TenantId @Column(name = "tenant_id") var tenantId: String? = null,
     var userId: String?,
     var actionType: String,
     var module: String,
@@ -479,6 +472,7 @@ class SystemLogJpaEntity(
     var result: String?,
     var createdAt: LocalDateTime
 ) {
+    @TenantId @Column(name = "tenant_id") var tenantId: String? = null
     fun toDomain() = br.com.suzanoit.qa.modules.shared.domain.SystemLog(id, userId, actionType, module, description, ipAddress, browser, result, createdAt)
     companion object {
         fun fromDomain(domain: br.com.suzanoit.qa.modules.shared.domain.SystemLog) = SystemLogJpaEntity(
