@@ -47,7 +47,7 @@ data class FeatureResponse(
     val updatedAt: LocalDateTime
 )
 
-fun CreateFeatureRequest.toDomain() = br.com.suzanoit.qa.modules.shared.domain.Feature(
+fun CreateFeatureRequest.toDomain() = br.com.suzanoit.qa.modules.projects.domain.Feature(
     moduleId = this.moduleId,
     categoryId = this.categoryId,
     code = this.code,
@@ -68,7 +68,7 @@ fun CreateFeatureRequest.toDomain() = br.com.suzanoit.qa.modules.shared.domain.F
     showInDashboard = this.showInDashboard
 )
 
-fun br.com.suzanoit.qa.modules.shared.domain.Feature.toResponse() = FeatureResponse(
+fun br.com.suzanoit.qa.modules.projects.domain.Feature.toResponse() = FeatureResponse(
     id = this.id,
     moduleId = this.moduleId,
     categoryId = this.categoryId,

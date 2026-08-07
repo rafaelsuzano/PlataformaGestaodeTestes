@@ -9,7 +9,6 @@ import br.com.suzanoit.qa.modules.shared.domain.UncoveredRequirementDto
 
 import br.com.suzanoit.qa.modules.analytics.application.MetricsService
 import br.com.suzanoit.qa.modules.analytics.application.CoverageService
-import br.com.suzanoit.qa.modules.shared.domain.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

@@ -38,7 +38,7 @@ data class TestCaseResponse(
     val updatedAt: LocalDateTime
 )
 
-fun CreateTestCaseRequest.toDomain() = br.com.suzanoit.qa.modules.shared.domain.TestCase(
+fun CreateTestCaseRequest.toDomain() = br.com.suzanoit.qa.modules.core.domain.TestCase(
     featureId = this.featureId,
     folderId = this.folderId,
     requirementId = this.requirementId,
@@ -49,7 +49,7 @@ fun CreateTestCaseRequest.toDomain() = br.com.suzanoit.qa.modules.shared.domain.
     gherkinContent = this.gherkinContent
 )
 
-fun br.com.suzanoit.qa.modules.shared.domain.TestCase.toResponse() = TestCaseResponse(
+fun br.com.suzanoit.qa.modules.core.domain.TestCase.toResponse() = TestCaseResponse(
     id = this.id,
     featureId = this.featureId,
     folderId = this.folderId,

@@ -1,19 +1,15 @@
 package br.com.suzanoit.qa.modules.analytics.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
-import br.com.suzanoit.qa.modules.shared.domain.Defect
+
+import br.com.suzanoit.qa.modules.core.domain.Defect
 import br.com.suzanoit.qa.modules.shared.domain.DefectDensityDto
-import br.com.suzanoit.qa.modules.shared.domain.DefectRepository
-import br.com.suzanoit.qa.modules.shared.domain.Feature
-import br.com.suzanoit.qa.modules.shared.domain.FeatureRepository
+import br.com.suzanoit.qa.modules.projects.domain.Feature
 import br.com.suzanoit.qa.modules.shared.domain.KpiMetricsDto
-import br.com.suzanoit.qa.modules.shared.domain.Module
-import br.com.suzanoit.qa.modules.shared.domain.ModuleRepository
-import br.com.suzanoit.qa.modules.shared.domain.TestCase
-import br.com.suzanoit.qa.modules.shared.domain.TestCaseRepository
-import br.com.suzanoit.qa.modules.shared.domain.TestExecutionRepository
+import br.com.suzanoit.qa.modules.core.domain.Module
+import br.com.suzanoit.qa.modules.core.domain.TestCase
 import br.com.suzanoit.qa.modules.shared.domain.TrendDataDto
 
-import br.com.suzanoit.qa.modules.shared.domain.*
 import org.springframework.stereotype.Service
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields

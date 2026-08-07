@@ -1,8 +1,8 @@
 package br.com.suzanoit.qa.modules.core.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
-import br.com.suzanoit.qa.modules.shared.domain.TestCaseFolder
-import br.com.suzanoit.qa.modules.shared.domain.TestCaseFolderRepository
+import br.com.suzanoit.qa.modules.core.domain.TestCaseFolder
 import org.springframework.stereotype.Service
 
 @Service

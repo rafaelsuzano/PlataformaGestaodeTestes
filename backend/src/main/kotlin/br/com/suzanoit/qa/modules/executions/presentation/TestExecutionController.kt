@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.executions.presentation
 
-import br.com.suzanoit.qa.modules.shared.domain.User
+import br.com.suzanoit.qa.modules.users.domain.User
 
 import br.com.suzanoit.qa.modules.executions.application.TestExecutionService
-import br.com.suzanoit.qa.modules.shared.domain.TestExecution
+import br.com.suzanoit.qa.modules.executions.domain.TestExecution
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

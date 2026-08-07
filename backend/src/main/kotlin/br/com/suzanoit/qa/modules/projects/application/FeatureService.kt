@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.projects.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
 import br.com.suzanoit.qa.modules.projects.presentation.dto.*
-import br.com.suzanoit.qa.modules.shared.domain.Feature
-import br.com.suzanoit.qa.modules.shared.domain.FeatureRepository
+import br.com.suzanoit.qa.modules.projects.domain.Feature
 import br.com.suzanoit.qa.modules.shared.domain.exceptions.ResourceNotFoundException
 import org.springframework.stereotype.Service
 

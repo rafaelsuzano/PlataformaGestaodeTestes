@@ -1,4 +1,5 @@
 package br.com.suzanoit.qa.modules.api_testing.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 import br.com.suzanoit.qa.modules.api_testing.infrastructure.ApiTestExecutionRepository
 import br.com.suzanoit.qa.modules.api_testing.infrastructure.ApiTestPlanRepository
@@ -9,9 +10,9 @@ import br.com.suzanoit.qa.modules.api_testing.infrastructure.jpa.ApiTestRequestJ
 import br.com.suzanoit.qa.modules.executions.infrastructure.jpa.TestExecutionJpaEntity
 import br.com.suzanoit.qa.modules.executions.infrastructure.jpa.TestExecutionJpaRepository
 
-import br.com.suzanoit.qa.modules.shared.domain.ApiTestExecution
-import br.com.suzanoit.qa.modules.shared.domain.ApiTestPlan
-import br.com.suzanoit.qa.modules.shared.domain.ApiTestRequest
+import br.com.suzanoit.qa.modules.api_testing.domain.ApiTestExecution
+import br.com.suzanoit.qa.modules.api_testing.domain.ApiTestPlan
+import br.com.suzanoit.qa.modules.api_testing.domain.ApiTestRequest
 import br.com.suzanoit.qa.modules.projects.infrastructure.jpa.*
 import br.com.suzanoit.qa.modules.core.infrastructure.jpa.*
 import br.com.suzanoit.qa.modules.executions.infrastructure.jpa.*
@@ -42,7 +43,7 @@ class ApiExecutionService(
     fun getAllPlans(): List<ApiTestPlan> {
         return planRepository.findAll().map { plan ->
             val reqs = requestRepository.findByPlanId(plan.id).map { req ->
-                ApiTestRequest(req.id, req.planId, req.name, req.method, req.url, req.headers, req.body, req.expectedStatus, req.createdAt, req.updatedAt)
+                ApiTestRequest(id=req.id, planId=req.planId, name=req.name, method=req.method, url=req.url, headers=req.headers, body=req.body, expectedStatus=req.expectedStatus, createdAt=req.createdAt, updatedAt=req.updatedAt)
             }
             ApiTestPlan(plan.id, plan.name, plan.description, plan.projectId, plan.testCaseId, reqs, plan.createdAt, plan.updatedAt)
         }
@@ -56,7 +57,24 @@ class ApiExecutionService(
 
     @Transactional
     fun addRequestToPlan(request: ApiTestRequest): ApiTestRequest {
-        val saved = requestRepository.save(ApiTestRequestJpaEntity(request.id, request.planId, request.name, request.method, request.url, request.headers, request.body, request.expectedStatus, request.createdAt, request.updatedAt))
+        val saved = requestRepository.save(ApiTestRequestJpaEntity(
+            id = request.id,
+            collectionId = request.collectionId,
+            planId = request.planId,
+            name = request.name,
+            method = request.method,
+            url = request.url,
+            headers = request.headers,
+            bodyType = request.bodyType,
+            preRequestScript = request.preRequestScript,
+            postResponseScript = request.postResponseScript,
+            authType = request.authType,
+            authConfig = request.authConfig,
+            body = request.body,
+            expectedStatus = request.expectedStatus,
+            createdAt = request.createdAt,
+            updatedAt = request.updatedAt
+        ))
         return request.copy(id = saved.id)
     }
 
@@ -114,7 +132,17 @@ class ApiExecutionService(
     }
 
     private fun saveExecution(planId: String, status: String, time: Long, rate: Double): ApiTestExecution {
-        val entity = ApiTestExecutionJpaEntity(java.util.UUID.randomUUID().toString(), planId, status, time, rate, LocalDateTime.now())
+        val entity = ApiTestExecutionJpaEntity(
+            id = java.util.UUID.randomUUID().toString(),
+            collectionId = null,
+            planId = planId,
+            status = status,
+            executionTimeMs = time,
+            totalPassed = 0,
+            totalFailed = 0,
+            successRate = rate,
+            createdAt = LocalDateTime.now()
+        )
         val saved = executionRepository.save(entity)
         
         // Se este plano estiver vinculado a um Caso de Teste, registre uma Execução Global para a Rastreabilidade
@@ -141,12 +169,12 @@ class ApiExecutionService(
             testExecutionRepository.save(globalExec)
         }
 
-        return ApiTestExecution(saved.id, saved.planId, saved.status, saved.executionTimeMs, saved.successRate, saved.createdAt)
+        return ApiTestExecution(id=saved.id, planId=saved.planId, status=saved.status, executionTimeMs=saved.executionTimeMs, successRate=saved.successRate, createdAt=saved.createdAt)
     }
 
     fun getRecentExecutions(): List<ApiTestExecution> {
         return executionRepository.findTop5ByOrderByCreatedAtDesc().map {
-            ApiTestExecution(it.id, it.planId, it.status, it.executionTimeMs, it.successRate, it.createdAt)
+            ApiTestExecution(id=it.id, planId=it.planId, status=it.status, executionTimeMs=it.executionTimeMs, successRate=it.successRate, createdAt=it.createdAt)
         }
     }
 }

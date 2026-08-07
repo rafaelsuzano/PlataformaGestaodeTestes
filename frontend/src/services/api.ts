@@ -19,6 +19,13 @@ export const ProjectService = {
   create: async (project: Project): Promise<Project> => {
     const res = await api.post(`/projects`, project);
     return res.data;
+  },
+  update: async (id: string, project: Project): Promise<Project> => {
+    const res = await api.put(`/projects/${id}`, project);
+    return res.data;
+  },
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/projects/${id}`);
   }
 };
 

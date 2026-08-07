@@ -1,12 +1,12 @@
 package br.com.suzanoit.qa.modules.projects.infrastructure.jpa
 
-import br.com.suzanoit.qa.modules.shared.domain.Category
-import br.com.suzanoit.qa.modules.shared.domain.Environment
-import br.com.suzanoit.qa.modules.shared.domain.Feature
-import br.com.suzanoit.qa.modules.shared.domain.Module
-import br.com.suzanoit.qa.modules.shared.domain.Project
-import br.com.suzanoit.qa.modules.shared.domain.Requirement
-import br.com.suzanoit.qa.modules.shared.domain.Sprint
+import br.com.suzanoit.qa.modules.core.domain.Category
+import br.com.suzanoit.qa.modules.projects.domain.Environment
+import br.com.suzanoit.qa.modules.projects.domain.Feature
+import br.com.suzanoit.qa.modules.core.domain.Module
+import br.com.suzanoit.qa.modules.projects.domain.Project
+import br.com.suzanoit.qa.modules.projects.domain.Requirement
+import br.com.suzanoit.qa.modules.projects.domain.Sprint
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

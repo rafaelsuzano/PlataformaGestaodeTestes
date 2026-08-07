@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.core.infrastructure.jpa
 
-import br.com.suzanoit.qa.modules.shared.domain.Defect
-import br.com.suzanoit.qa.modules.shared.domain.TestCase
-import br.com.suzanoit.qa.modules.shared.domain.TestCaseFolder
-import br.com.suzanoit.qa.modules.shared.domain.TestStep
+import br.com.suzanoit.qa.modules.core.domain.Defect
+import br.com.suzanoit.qa.modules.core.domain.TestCase
+import br.com.suzanoit.qa.modules.core.domain.TestCaseFolder
+import br.com.suzanoit.qa.modules.core.domain.TestStep
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

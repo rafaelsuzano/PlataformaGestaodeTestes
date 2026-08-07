@@ -2,7 +2,7 @@ package br.com.suzanoit.qa.modules.users.presentation
 
 
 import br.com.suzanoit.qa.modules.users.application.UserService
-import br.com.suzanoit.qa.modules.shared.domain.User
+import br.com.suzanoit.qa.modules.users.domain.User
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

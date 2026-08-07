@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.projects.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 import br.com.suzanoit.qa.modules.audit.application.SystemLogService
 
-import br.com.suzanoit.qa.modules.shared.domain.Environment
-import br.com.suzanoit.qa.modules.shared.domain.EnvironmentRepository
+import br.com.suzanoit.qa.modules.projects.domain.Environment
 import org.springframework.stereotype.Service
 
 @Service

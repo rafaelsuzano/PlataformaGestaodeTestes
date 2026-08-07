@@ -21,8 +21,11 @@ interface LoginProps {
   onLogin: () => void;
 }
 
+import { useAuth } from '../hooks/useAuth';
+
 export default function Login({ onLogin }: LoginProps) {
   const { branding } = useBranding();
+  const { login } = useAuth();
   const [mode, setMode] = useState<'LOGIN' | 'REGISTER' | 'FORGOT_PASSWORD'>('LOGIN');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -40,8 +43,8 @@ export default function Login({ onLogin }: LoginProps) {
 
     if (mode === 'LOGIN') {
       try {
-        const user = await UserService.login({ email: username, password }); // Usando o campo username como email
-        localStorage.setItem('user', JSON.stringify(user));
+        const data = await UserService.login({ email: username, password }); // Usando o campo username como email
+        login(data.token, data.user);
         onLogin();
         navigate('/');
       } catch (err: any) {

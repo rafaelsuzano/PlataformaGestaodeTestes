@@ -2,7 +2,7 @@ package br.com.suzanoit.qa.modules.tenant.presentation
 
 
 import br.com.suzanoit.qa.modules.tenant.application.TenantBrandingService
-import br.com.suzanoit.qa.modules.shared.domain.TenantBranding
+import br.com.suzanoit.qa.modules.tenant.domain.TenantBranding
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile

@@ -1,9 +1,10 @@
 package br.com.suzanoit.qa.modules.shared.presentation
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
-import br.com.suzanoit.qa.modules.shared.domain.Category
+import br.com.suzanoit.qa.modules.core.domain.Category
 import br.com.suzanoit.qa.modules.shared.domain.CategoryRepository
-import br.com.suzanoit.qa.modules.shared.domain.Module
+import br.com.suzanoit.qa.modules.core.domain.Module
 import br.com.suzanoit.qa.modules.shared.domain.ModuleRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

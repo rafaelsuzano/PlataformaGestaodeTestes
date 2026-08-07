@@ -1,4 +1,5 @@
 package br.com.suzanoit.qa.modules.ai.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
 import org.springframework.stereotype.Service

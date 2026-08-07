@@ -1,10 +1,12 @@
 import { Search, Bell, Settings, HelpCircle, Plus, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useBranding } from '../../contexts/BrandingContext';
+import { useAuth } from '../../hooks/useAuth';
 
 export function Topbar() {
   const navigate = useNavigate();
   const { branding } = useBranding();
+  const { logout } = useAuth();
 
   return (
     <header className="h-16 flex items-center justify-between px-6 bg-background border-b border-slate-800/50 sticky top-0 z-30">
@@ -55,8 +57,8 @@ export function Topbar() {
 
         <button 
           onClick={() => {
-            localStorage.removeItem('auth');
-            window.location.href = '/login';
+            logout();
+            navigate('/login');
           }}
           className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800/50 rounded-md transition-colors"
           title="Sair (Logoff)"

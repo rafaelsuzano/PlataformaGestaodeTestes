@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.core.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
 import br.com.suzanoit.qa.modules.core.presentation.dto.*
-import br.com.suzanoit.qa.modules.shared.domain.TestCase
-import br.com.suzanoit.qa.modules.shared.domain.TestCaseRepository
+import br.com.suzanoit.qa.modules.core.domain.TestCase
 import br.com.suzanoit.qa.modules.shared.domain.exceptions.ResourceNotFoundException
 import org.springframework.stereotype.Service
 

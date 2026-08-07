@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.executions.infrastructure.jpa
 
-import br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory
-import br.com.suzanoit.qa.modules.shared.domain.TestExecution
-import br.com.suzanoit.qa.modules.shared.domain.TestExecutionStep
-import br.com.suzanoit.qa.modules.shared.domain.TestPlan
+import br.com.suzanoit.qa.modules.executions.domain.ExecutionHistory
+import br.com.suzanoit.qa.modules.executions.domain.TestExecution
+import br.com.suzanoit.qa.modules.executions.domain.TestExecutionStep
+import br.com.suzanoit.qa.modules.executions.domain.TestPlan
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

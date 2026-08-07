@@ -1,7 +1,8 @@
 package br.com.suzanoit.qa.modules.auth.application
+import br.com.suzanoit.qa.modules.users.infrastructure.*
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 import br.com.suzanoit.qa.modules.auth.infrastructure.security.JwtService
-import br.com.suzanoit.qa.modules.users.infrastructure.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 

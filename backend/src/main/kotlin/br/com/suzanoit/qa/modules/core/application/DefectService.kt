@@ -1,8 +1,8 @@
 package br.com.suzanoit.qa.modules.core.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
-import br.com.suzanoit.qa.modules.shared.domain.Defect
-import br.com.suzanoit.qa.modules.shared.domain.DefectRepository
+import br.com.suzanoit.qa.modules.core.domain.Defect
 import org.springframework.stereotype.Service
 
 @Service

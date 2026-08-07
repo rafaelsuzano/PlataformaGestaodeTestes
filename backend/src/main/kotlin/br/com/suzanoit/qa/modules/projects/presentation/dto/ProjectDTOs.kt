@@ -29,7 +29,7 @@ data class ProjectResponse(
     val updatedAt: LocalDateTime
 )
 
-fun CreateProjectRequest.toDomain() = br.com.suzanoit.qa.modules.shared.domain.Project(
+fun CreateProjectRequest.toDomain() = br.com.suzanoit.qa.modules.projects.domain.Project(
     name = this.name,
     description = this.description,
     version = this.version,
@@ -37,7 +37,7 @@ fun CreateProjectRequest.toDomain() = br.com.suzanoit.qa.modules.shared.domain.P
     managerName = this.managerName
 )
 
-fun br.com.suzanoit.qa.modules.shared.domain.Project.toResponse() = ProjectResponse(
+fun br.com.suzanoit.qa.modules.projects.domain.Project.toResponse() = ProjectResponse(
     id = this.id,
     name = this.name,
     description = this.description,

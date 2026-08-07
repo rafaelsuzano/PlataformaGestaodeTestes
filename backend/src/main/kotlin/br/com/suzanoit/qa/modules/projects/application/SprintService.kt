@@ -1,9 +1,10 @@
 package br.com.suzanoit.qa.modules.projects.application
+import br.com.suzanoit.qa.modules.projects.infrastructure.*
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
-import br.com.suzanoit.qa.modules.shared.domain.Sprint
+import br.com.suzanoit.qa.modules.projects.domain.Sprint
 import br.com.suzanoit.qa.modules.projects.infrastructure.jpa.SprintJpaEntity
-import br.com.suzanoit.qa.modules.projects.infrastructure.SprintRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 

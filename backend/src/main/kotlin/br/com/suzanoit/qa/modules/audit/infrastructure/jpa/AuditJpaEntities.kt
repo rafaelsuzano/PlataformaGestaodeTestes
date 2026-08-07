@@ -1,6 +1,6 @@
 package br.com.suzanoit.qa.modules.audit.infrastructure.jpa
 
-import br.com.suzanoit.qa.modules.shared.domain.SystemLog
+import br.com.suzanoit.qa.modules.audit.domain.SystemLog
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

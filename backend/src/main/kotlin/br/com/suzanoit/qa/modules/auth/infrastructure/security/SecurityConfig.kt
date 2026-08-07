@@ -28,6 +28,11 @@ class SecurityConfig(private val jwtAuthenticationFilter: JwtAuthenticationFilte
             .csrf { it.disable() }
             .cors { it.configurationSource(corsConfigurationSource()) }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .exceptionHandling {
+                it.authenticationEntryPoint { _, response, _ ->
+                    response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                }
+            }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/v1/auth/**").permitAll() // Endpoints de login/registro
                 it.anyRequest().authenticated()

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
@@ -227,20 +226,10 @@ const ThemeProviderWrapper = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+import { useAuth } from './hooks/useAuth';
+
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem('auth') === 'true'
-  );
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem('auth', 'true');
-  };
-
-  // const handleLogout = () => {
-  //   setIsAuthenticated(false);
-  //   localStorage.removeItem('auth');
-  // };
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -250,7 +239,7 @@ function App() {
             <Routes>
               <Route 
                 path="/login" 
-                element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
+                element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={() => {}} />} 
               />
             {isAuthenticated ? (
               <Route element={<Layout />}>

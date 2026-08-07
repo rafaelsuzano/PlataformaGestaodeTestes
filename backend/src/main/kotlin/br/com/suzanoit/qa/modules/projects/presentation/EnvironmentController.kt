@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.projects.presentation
 
-import br.com.suzanoit.qa.modules.shared.domain.User
+import br.com.suzanoit.qa.modules.users.domain.User
 
 import br.com.suzanoit.qa.modules.projects.application.EnvironmentService
-import br.com.suzanoit.qa.modules.shared.domain.Environment
+import br.com.suzanoit.qa.modules.projects.domain.Environment
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

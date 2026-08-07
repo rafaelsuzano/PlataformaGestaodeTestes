@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.executions.presentation
 
-import br.com.suzanoit.qa.modules.shared.domain.User
+import br.com.suzanoit.qa.modules.users.domain.User
 
 import br.com.suzanoit.qa.modules.executions.application.ExecutionHistoryService
-import br.com.suzanoit.qa.modules.shared.domain.ExecutionHistory
+import br.com.suzanoit.qa.modules.executions.domain.ExecutionHistory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

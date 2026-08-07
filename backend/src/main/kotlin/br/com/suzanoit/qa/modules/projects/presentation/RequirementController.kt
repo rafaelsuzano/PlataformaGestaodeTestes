@@ -2,7 +2,7 @@ package br.com.suzanoit.qa.modules.projects.presentation
 
 
 import br.com.suzanoit.qa.modules.projects.application.RequirementService
-import br.com.suzanoit.qa.modules.shared.domain.Requirement
+import br.com.suzanoit.qa.modules.projects.domain.Requirement
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

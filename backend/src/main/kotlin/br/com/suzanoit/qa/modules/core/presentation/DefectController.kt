@@ -2,7 +2,7 @@ package br.com.suzanoit.qa.modules.core.presentation
 
 
 import br.com.suzanoit.qa.modules.core.application.DefectService
-import br.com.suzanoit.qa.modules.shared.domain.Defect
+import br.com.suzanoit.qa.modules.core.domain.Defect
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

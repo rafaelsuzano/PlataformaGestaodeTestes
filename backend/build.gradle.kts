@@ -31,11 +31,14 @@ dependencies {
 	implementation("tools.jackson.module:jackson-module-kotlin")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.hibernate.orm:hibernate-community-dialects:6.5.2.Final")
+	implementation("com.jayway.jsonpath:json-path:2.9.0")
+	implementation("org.mozilla:rhino:1.7.14")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("io.mockk:mockk:1.13.9")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

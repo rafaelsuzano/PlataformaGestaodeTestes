@@ -1,7 +1,8 @@
 package br.com.suzanoit.qa.modules.tenant.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 
-import br.com.suzanoit.qa.modules.shared.domain.TenantBranding
+import br.com.suzanoit.qa.modules.tenant.domain.TenantBranding
 import br.com.suzanoit.qa.modules.shared.domain.TenantBrandingRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime

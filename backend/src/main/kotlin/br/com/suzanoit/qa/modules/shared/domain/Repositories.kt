@@ -1,7 +1,11 @@
 package br.com.suzanoit.qa.modules.shared.domain
 
-
-
+import br.com.suzanoit.qa.modules.projects.domain.*
+import br.com.suzanoit.qa.modules.core.domain.*
+import br.com.suzanoit.qa.modules.executions.domain.*
+import br.com.suzanoit.qa.modules.audit.domain.*
+import br.com.suzanoit.qa.modules.tenant.domain.*
+import br.com.suzanoit.qa.modules.users.domain.*
 
 interface ProjectRepository {
     fun save(project: Project): Project

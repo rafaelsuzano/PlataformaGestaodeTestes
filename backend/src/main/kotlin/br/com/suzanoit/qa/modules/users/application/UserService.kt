@@ -1,11 +1,11 @@
 package br.com.suzanoit.qa.modules.users.application
+import br.com.suzanoit.qa.modules.users.infrastructure.*
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 import br.com.suzanoit.qa.modules.users.infrastructure.jpa.UserJpaEntity
 import br.com.suzanoit.qa.modules.users.infrastructure.jpa.UserProjectJpaEntity
-import br.com.suzanoit.qa.modules.users.infrastructure.UserProjectRepository
-import br.com.suzanoit.qa.modules.users.infrastructure.UserRepository
 
-import br.com.suzanoit.qa.modules.shared.domain.User
+import br.com.suzanoit.qa.modules.users.domain.User
 import br.com.suzanoit.qa.modules.projects.infrastructure.jpa.*
 import br.com.suzanoit.qa.modules.core.infrastructure.jpa.*
 import br.com.suzanoit.qa.modules.executions.infrastructure.jpa.*

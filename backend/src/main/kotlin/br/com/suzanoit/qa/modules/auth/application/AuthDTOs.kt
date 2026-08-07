@@ -1,4 +1,5 @@
 package br.com.suzanoit.qa.modules.auth.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 data class LoginRequest(
     val email: String,

@@ -1,9 +1,9 @@
 package br.com.suzanoit.qa.modules.executions.application
+import br.com.suzanoit.qa.modules.shared.domain.*
 
 import br.com.suzanoit.qa.modules.audit.application.SystemLogService
 
-import br.com.suzanoit.qa.modules.shared.domain.TestExecution
-import br.com.suzanoit.qa.modules.shared.domain.TestExecutionRepository
+import br.com.suzanoit.qa.modules.executions.domain.TestExecution
 import org.springframework.stereotype.Service
 
 @Service

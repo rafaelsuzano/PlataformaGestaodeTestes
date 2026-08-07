@@ -11,9 +11,9 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 
 import br.com.suzanoit.qa.modules.api_testing.application.ApiExecutionService
-import br.com.suzanoit.qa.modules.shared.domain.ApiTestExecution
-import br.com.suzanoit.qa.modules.shared.domain.ApiTestPlan
-import br.com.suzanoit.qa.modules.shared.domain.ApiTestRequest
+import br.com.suzanoit.qa.modules.api_testing.domain.ApiTestExecution
+import br.com.suzanoit.qa.modules.api_testing.domain.ApiTestPlan
+import br.com.suzanoit.qa.modules.api_testing.domain.ApiTestRequest
 
 @RestController
 @RequestMapping("/api/tester")
