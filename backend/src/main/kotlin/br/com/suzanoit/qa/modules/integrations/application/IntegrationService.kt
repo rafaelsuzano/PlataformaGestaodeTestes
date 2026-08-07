@@ -2,7 +2,7 @@ package br.com.suzanoit.qa.modules.integrations.application
 
 
 import br.com.suzanoit.qa.modules.shared.domain.IntegrationConfig
-import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.IntegrationConfigJpaEntity
+import br.com.suzanoit.qa.modules.integrations.infrastructure.jpa.IntegrationConfigJpaEntity
 import br.com.suzanoit.qa.modules.integrations.infrastructure.IntegrationConfigRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

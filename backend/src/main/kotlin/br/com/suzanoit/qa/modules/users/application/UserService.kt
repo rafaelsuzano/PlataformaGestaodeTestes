@@ -1,12 +1,18 @@
 package br.com.suzanoit.qa.modules.users.application
 
-import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.UserJpaEntity
-import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.UserProjectJpaEntity
+import br.com.suzanoit.qa.modules.users.infrastructure.jpa.UserJpaEntity
+import br.com.suzanoit.qa.modules.users.infrastructure.jpa.UserProjectJpaEntity
 import br.com.suzanoit.qa.modules.users.infrastructure.UserProjectRepository
 import br.com.suzanoit.qa.modules.users.infrastructure.UserRepository
 
 import br.com.suzanoit.qa.modules.shared.domain.User
-import br.com.suzanoit.qa.modules.shared.infrastructure.jpa.*
+import br.com.suzanoit.qa.modules.projects.infrastructure.jpa.*
+import br.com.suzanoit.qa.modules.core.infrastructure.jpa.*
+import br.com.suzanoit.qa.modules.executions.infrastructure.jpa.*
+import br.com.suzanoit.qa.modules.users.infrastructure.jpa.*
+import br.com.suzanoit.qa.modules.audit.infrastructure.jpa.*
+import br.com.suzanoit.qa.modules.integrations.infrastructure.jpa.*
+import br.com.suzanoit.qa.modules.api_testing.infrastructure.jpa.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
